@@ -13,10 +13,13 @@
 <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.1/angular-route.min.js"></script>
 <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.25/angular-resource.min.js"></script>
 
-<!--<script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.5.5/angular-animate.min.js"></script>-->
-<!--<script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.5.5/angular-aria.min.js"></script>-->
-<!--<script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.5.5/angular-messages.min.js"></script>-->
+<script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.5.5/angular-animate.min.js"></script>
+<script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.5.5/angular-aria.min.js"></script>
+<script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.5.5/angular-messages.min.js"></script>
 <link rel="stylesheet" href="http://ajax.googleapis.com/ajax/libs/angular_material/1.1.0/angular-material.min.css">
+
+<!-- AngularJS Material Javascript now available via Google CDN; version 1.0.7 used here -->
+<script src="https://ajax.googleapis.com/ajax/libs/angular_material/1.0.7/angular-material.min.js"></script>
 
 <script src="javascripts/controllers/index.js"></script>
 <!-- Template -->
@@ -30,18 +33,15 @@
       <md-content layout="column" class="md-padding">
         <md-input-container>
           <label>EmailAddress</label>
-          <input type="email" ng-model="username"/>
+          <input type="text" ng-model="username"/>
         </md-input-container>
         <md-input-container>
           <label>Password</label>
-          <input type="password" ng-model="password"/>
+          <input type="text" ng-model="password"/>
         </md-input-container>
         <div layout="row" layout-align="center center" style="padding-top:20px;">
-          <button ng-click="login()">Login</button>
-          <md-button>Login</md-button>
-          <md-button class="md-raised md-primary">Primary</md-button>
+          <md-button class="md-raised md-primary">Login</md-button>
           <div flex="flex"></div>
-          <button>Forgot Password</button>
           <md-button href="" md-no-ink="md-no-ink">Forgot Password</md-button>
         </div>
       </md-content>
