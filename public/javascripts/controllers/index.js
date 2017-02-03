@@ -5,7 +5,7 @@
  * Created by root on 01/02/2017.
  */
 
-angular.module('app', ['ngRoute', 'ngResource'])
+angular.module('app', ['ngRoute', 'ngResource', 'ngMaterial'])
 
 //---------------
 // Services
