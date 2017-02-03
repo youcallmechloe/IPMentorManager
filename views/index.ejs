@@ -1,11 +1,43 @@
-<!DOCTYPE html>
-<html>
-  <head>
-    <title><%= title %></title>
-    <link rel='stylesheet' href='/stylesheets/style.css' />
-  </head>
-  <body>
-    <h1><%= title %></h1>
-    <p>Welcome to <%= title %></p>
-  </body>
+<html ng-app="app">
+<head>
+  <title><%= title %></title>
+  <link rel='stylesheet' href='/stylesheets/style.css' />
+</head>
+<body>
+<h1><%= title %></h1>
+
+<div ng-view></div>
+
+<!-- Libraries -->
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.25/angular.min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.25/angular-route.min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.25/angular-resource.min.js"></script>
+
+<script src="javascripts/controllers/index.js"></script>
+<!-- Template -->
+
+<script type="text/ng-template" id="/login.html">
+  <input type="text" placeholder="Username" ng-model="username">
+  <input type="text" placeholder="Password" ng-model="password">
+  <button ng-click="login()">Login</button>
+  <br>
+  <br>
+  Don't have an account? <button ng-click="createAccount()">Sign Up</button>
+</script>
+
+<script type="text/ng-template" id="/signup.html">
+  <h4>Please fill in all boxes</h4>
+  <input type="text" placeholder="Username" ng-model="username">
+  <input type="text" placeholder="Email" ng-model="email">
+  <br>
+  <input type="text" placeholder="Password" ng-model="password">
+  <input type="text" placeholder="Full Name" ng-model="fullName">
+  <input type="number" placeholder="Age" ng-model="number">
+  <br>
+  <input type="text" placeholder="Gender" ng-model="gender">
+  <input type="text" placeholder="Degree" ng-model="degree">
+  <button ng-click="signup()">Sign Up</button>
+</script>
+
+</body>
 </html>
