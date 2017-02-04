@@ -9,15 +9,9 @@ var routes = require('./routes/index');
 var users = require('./routes/users');
 
 // load mongoose package
-var mongoose = require('mongoose');
+var monk = require('monk');
+var db = monk('localhost:27017/mentormanager');
 
-// Use native Node promises
-mongoose.Promise = global.Promise;
-
-// connect to MongoDB
-mongoose.connect('mongodb://localhost/mentormanager')
-    .then(() =>  console.log('connection succesful'))
-    .catch((err) => console.error(err));
 
 var app = express();
 
@@ -32,6 +26,12 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
+
+// Make our db accessible to our router
+app.use(function(req,res,next){
+    req.db = db;
+    next();
+});
 
 app.use('/', routes);
 app.use('/users', users);

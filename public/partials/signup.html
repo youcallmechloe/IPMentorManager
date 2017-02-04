@@ -1,0 +1,52 @@
+<div id="form" ng-controller="SignupController" layout="column" layout-align="center center">
+        <form name="form" layout="column" class="createAccount">
+            <md-content layout="row" class="md-padding" layout-align="center">
+                <md-input-container>
+                    <label>Username</label>
+                    <input type="text" class="myform" placeholder="Username" ng-model="username" required>
+                </md-input-container>
+                <md-input-container>
+                    <label>Email</label>
+                    <input type="text" class="myform" placeholder="Email" ng-model="email" required>
+                </md-input-container>
+                <md-input-container>
+                    <label>Password</label>
+                    <input type="text" class="myform" placeholder="Password" ng-model="password" required>
+                </md-input-container>
+            </md-content>
+            <md-content layout="row" class="md-padding" layout-align="center">
+                <md-input-container>
+                    <label>Full Name</label>
+                    <input type="text" class="myform" placeholder="Full Name" ng-model="fullName" required>
+                </md-input-container>
+                <md-input-container>
+                    <label>Age</label>
+                    <input type="text" class="myform" placeholder="Age" ng-model="age" required>
+                </md-input-container>
+            </md-content>
+            <md-content layout="row" class="md-padding" layout-align="center">
+                <md-input-container>
+                    <label>Gender</label>
+                    <input type="text" class="myform" placeholder="Gender" ng-model="gender" required>
+                </md-input-container>
+                <md-input-container>
+                    <label>Degree</label>
+                    <input type="text" class="myform" placeholder="Degree" ng-model="degree" required>
+                </md-input-container>
+            </md-content>
+            <md-content layout="row" class="md-padding" layout-align="center">
+                <div id="dynamicInput">
+                    <md-input-container>
+                        <label>Knowledge area 0</label>
+                        <input type="text" id="interestText0">
+                        <select id="interestCategory0">options</select>
+                    </md-input-container>
+                </div>
+            </md-content>
+            <div layout="row" layout-align="center center" style="padding-top:20px;">
+                <md-button id="newInterest" ng-click="addNewInterest()">Add New Interest</md-button>
+                <md-button class="md-raised md-primary" ng-click="signup()">Create Account</md-button>
+            <md-button class="md-raised" ng-click="goback()">Go Back</md-button>
+            </div>
+        </form>
+</div>

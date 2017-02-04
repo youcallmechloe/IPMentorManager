@@ -30,16 +30,21 @@ angular.module('app', ['ngRoute', 'ngResource', 'ngMaterial'])
                 }
             };
 
-            $http.post('/users/loginuser', {
-                'username': $scope.username,
-                'password': $scope.password
-            }, config)
-                .success(function (data, status, headers, config) {
-                    alert("yes");
-                })
-                .error(function (data, status, header, config) {
-                    alert("no");
+            var loginData = {
+                'username' : $scope.username,
+                'password' : $scope.password
+            };
+
+            $http.post("/users/loginuser", loginData)
+                .then(function (response) {
+                    console.log(response.data);
+                    if(response.data === "true"){
+                        alert("change to homepage");
+                    } else{
+                        alert("Login Failed. Please try again");
+                    }
                 });
+
         };
 
         $scope.createAccount = function(){
@@ -47,24 +52,61 @@ angular.module('app', ['ngRoute', 'ngResource', 'ngMaterial'])
         };
     }])
 
-    .controller('SignupController', ['$scope', function($scope) {
+    .controller('SignupController', ['$scope', '$location', function($scope, $location) {
+
+        var counter = 0;
+        $scope.addNewInterest = function() {
+            var divName = 'dynamicInput';
+            var newdiv = document.createElement('md-input-container');
+
+            var options = "";
+            $.getJSON( '/users/databaseCategories', function( data ) {
+                $.each(data, function(index, value){
+                    var line = "<option value=\"" + value + "\">" + value + "</option>";
+                    options += line;
+                });
+                console.log(counter);
+                newdiv.innerHTML = "<label>Knowledge Area " + counter + " </label> <input type='text' id='interestText"+counter+"'>" +
+                    "<select id='interestCategory" + counter + "'>" + options + "</select>";
+                console.log(newdiv);
+                $('#'+divName).append(newdiv);
+
+                counter++;
+            });
+        };
+
         $scope.signup = function(){
-            alert('sldfns');
+
+        };
+
+        //TODO: doesn't actually work needs to be looked at, think html needs to be moved out of md-input thingys to work?
+        function formIsEmpty() {
+            console.log('dsfsdf')
+            $('#form input').each(function(index, val) {
+                if($(this).val() === '') { return false; }
+            });
+        }
+
+        $scope.goback = function(){
+            $location.url('/');
         };
     }])
 
     //---------------
-    // Routes
+    // Routes - add in accesses to each url
     //---------------
 
     .config(['$routeProvider', function ($routeProvider) {
         $routeProvider
             .when('/', {
-                templateUrl: '/login.html',
+                templateUrl: 'partials/login.html',
                 controller: 'LoginController'
             })
             .when('/signup', {
-                templateUrl: '/signup.html',
+                templateUrl: 'partials/signup.html',
                 controller: 'SignupController'
+            })
+            .otherwise({
+                redirectTo: '/'
             });
     }]);

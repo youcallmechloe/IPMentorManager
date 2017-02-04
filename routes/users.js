@@ -158,18 +158,20 @@ router.post('/loginuser', function(req, res){
     var collection = db.get('userlist');
     var body = req.body;
 
-    console.log(body);
-
     collection.find({'username': body['username']}, {}, function(e, docs){
-        console.log('db: ' + docs[0]['password'] + ' and body: ' + body['password']);
+        if(docs.length > 0) {
+            console.log('db: ' + docs[0]['password'] + ' and body: ' + body['password']);
 
-        bcrypt.compare(body['password'], docs[0]['password']).then(function(result) {
-            if(result){
-                res.send('true');
-            } else {
-                res.send('false');
-            }
-        });
+            bcrypt.compare(body['password'], docs[0]['password']).then(function (result) {
+                if (result) {
+                    res.send('true');
+                } else {
+                    res.send('false');
+                }
+            });
+        } else {
+            res.send('false');
+        }
     });
 });
 
