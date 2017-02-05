@@ -17,7 +17,7 @@
             <md-content layout="row" class="md-padding" layout-align="center">
                 <md-input-container>
                     <label>Full Name</label>
-                    <input type="text" class="myform" placeholder="Full Name" ng-model="fullName" required>
+                    <input type="text" class="myform" placeholder="Full Name" ng-model="fullname" required>
                 </md-input-container>
                 <md-input-container>
                     <label>Age</label>
@@ -34,14 +34,7 @@
                     <input type="text" class="myform" placeholder="Degree" ng-model="degree" required>
                 </md-input-container>
             </md-content>
-            <md-content layout="row" class="md-padding" layout-align="center">
-                <div id="dynamicInput">
-                    <md-input-container>
-                        <label>Knowledge area 0</label>
-                        <input type="text" id="interestText0">
-                        <select id="interestCategory0">options</select>
-                    </md-input-container>
-                </div>
+            <md-content id=dynamicInput layout="row" class="md-padding" layout-align="center">
             </md-content>
             <div layout="row" layout-align="center center" style="padding-top:20px;">
                 <md-button id="newInterest" ng-click="addNewInterest()">Add New Interest</md-button>

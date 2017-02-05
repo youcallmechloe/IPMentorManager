@@ -110,7 +110,7 @@ router.post('/adduser', function(req, res) {
                     );
                 }
             }
-            res.send((error !== null) ? {msg: ''} : {msg: 'error: ' + error});
+            res.send((error !== null) ? 'true' : error);
         }
     });
 
