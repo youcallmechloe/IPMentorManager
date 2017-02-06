@@ -1,3 +1,9 @@
-<div id="home" ng-controller="HomepageController" layout="column" layout-align="center center">
-
+<div id="wrap" ng-controller="HomepageController" layout="row">
+    <md-content layout="column" id="sidenav1" md-is-locked-open='true'>
+        <h1>Work Partners</h1>
+        {{username}}
+    </md-content>
+    <md-content id="homepagecontent" flex layout="column">
+        <h1>Groups</h1>
+    </md-content>
 </div>

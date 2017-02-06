@@ -1,5 +1,9 @@
 * { box-sizing:border-box; }
 
+[ng\:cloak], [ng-cloak], [data-ng-cloak], [x-ng-cloak], .ng-cloak, .x-ng-cloak {
+  display: none !important;
+}
+
 body {
   font-family: Helvetica;
   background: #eee;
@@ -12,7 +16,7 @@ hgroup {
   margin-top: 4em;
 }
 
-h1, h3 { font-weight: 300; text-align:center;}
+h1, h3 { margin-top: 20px; font-weight: 300; text-align:center;}
 
 h1 { color: #636363; }
 
@@ -239,4 +243,22 @@ footer img:focus , footer a:focus { outline: none; }
 .createAccount {
   width: 800px;
 }
+
+
+#sidenav1 {
+  width: 30%;
+  height:100%;
+  padding:20px;
+  border: dimgrey solid 1px;
+  box-shadow: rgba(0,0,0,0.14902) 0px 1px 1px 0px,rgba(0,0,0,0.09804) 0px 1px 2px 0px;
+}
+
+#homepagecontent {
+  height:100%;
+  padding:20px;
+  border: dimgrey solid 1px;
+  box-shadow: rgba(0,0,0,0.14902) 0px 1px 1px 0px,rgba(0,0,0,0.09804) 0px 1px 2px 0px;
+}
+
+
 

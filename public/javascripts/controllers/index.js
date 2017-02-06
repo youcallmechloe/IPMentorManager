@@ -29,12 +29,47 @@ angular.module('app', ['ngRoute', 'ngResource', 'ngMaterial', 'ngCookies'])
         }
     }])
 
+    .directive('header', function () {
+        return {
+            restrict: 'A', //This menas that it will be used as an attribute and NOT as an element. I don't like creating custom HTML elements
+            replace: true,
+            scope: {user: '='}, // This is one of the cool things :). Will be explained in post.
+            controller: ['$scope', '$filter', 'userPersistence', function ($scope, $filter, userPersistence) {
+                // $scope.$on('$routeChangeStart', function (next, current) {
+                //     console.log(userPersistence.getCookieData());
+                //     $scope.loggedIn = isLoggedIn();
+                // });
+
+
+            }]
+        }
+    })
+
     //---------------
     // Controllers
     //---------------
 
-    .controller('LoginController', ['$scope', '$location', '$http',
-        function ($scope, $location, $http) {
+    .controller('HeaderController', ['$scope', 'userPersistence', '$location', function($scope, userPersistence, $location){
+        $scope.isLoggedIn = function(){
+            if(userPersistence.getCookieData() !== undefined){
+                return true;
+            } else{
+                return false;
+            }
+        };
+
+        $scope.userLogout = function(){
+            var logged = confirm("Do you want to log out?");
+            if(logged === true){
+                userPersistence.clearCookieData();
+                $location.url('/');
+            }
+        };
+
+    }])
+
+    .controller('LoginController', ['$scope', '$location', '$http', 'userPersistence',
+        function ($scope, $location, $http, userPersistence) {
 
         $scope.login = function() {
             var username = $scope.username;
@@ -53,7 +88,7 @@ angular.module('app', ['ngRoute', 'ngResource', 'ngMaterial', 'ngCookies'])
                 .then(function (response) {
                     console.log(response.data);
                     if(response.data === "true"){
-                        // userPersistence.setCookieData(username);
+                        userPersistence.setCookieData(username);
                         $location.url('/home')
                     } else{
                         alert("Login Failed. Please try again");
@@ -70,6 +105,7 @@ angular.module('app', ['ngRoute', 'ngResource', 'ngMaterial', 'ngCookies'])
     .controller('SignupController', ['$scope', '$location', '$http', function($scope, $location, $http) {
         var limit = 10;
         var counter = 0;
+        $scope.interests = [];
 
         $scope.addNewInterest = function() {
             var divName = 'dynamicInput';
@@ -87,7 +123,7 @@ angular.module('app', ['ngRoute', 'ngResource', 'ngMaterial', 'ngCookies'])
                     });
                     console.log(counter);
                     newdiv.innerHTML = "<label>Knowledge</label>" +
-                        "<input type='text' id='interestText" + counter + "' class='md-input' placeholder='Knowledge' required>" +
+                        "<input type='text' id='interestText" + counter + "' class='myform ng-pristine ng-untouched md-input ng-empty ng-invalid ng-invalid-required' placeholder='Knowledge' required>" +
                         "<div class='md-errors-spacer'></div>" +
                         "<select id='interestCategory" + counter + "'>" + options + "</select>";
                     console.log(newdiv);
@@ -96,6 +132,32 @@ angular.module('app', ['ngRoute', 'ngResource', 'ngMaterial', 'ngCookies'])
                     counter++;
                 });
             }
+        };
+
+        $scope.getOptions = function(){
+            var options = [];
+            $.getJSON('/users/databaseCategories', function (data) {
+                $.each(data, function(index, value){
+                    options.push(value);
+            })});
+            return options;
+        };
+
+        $scope.addNew = function(){
+
+            var options = "";
+
+            $.getJSON('/users/databaseCategories', function (data) {
+                $.each(data, function (index, value) {
+                    var line = "<option value=\"" + value + "\">" + value + "</option>";
+                    options += line;
+                });
+
+                var elem = {'word' : ''};
+                $scope.interests.push(elem);
+            });
+
+            console.log($scope.interests);
         };
 
         $scope.signup = function(){
@@ -145,6 +207,16 @@ angular.module('app', ['ngRoute', 'ngResource', 'ngMaterial', 'ngCookies'])
 
     .controller('HomepageController', ['$scope', '$location', '$http', 'userPersistence',
         function($scope, $location, $http, userPersistence) {
+            // $scope.username = userPersistence.getCookieData();
+    }])
+
+    .controller('UserprofileController', ['$scope', '$location', '$http', 'userPersistence',
+        function($scope, $location, $http, userPersistence) {
+
+    }])
+
+    .controller('WorkpartnerController', ['$scope', '$location', '$http', 'userPersistence',
+        function($scope, $location, $http, userPersistence) {
 
     }])
 
@@ -165,6 +237,14 @@ angular.module('app', ['ngRoute', 'ngResource', 'ngMaterial', 'ngCookies'])
             .when('/home', {
                 templateUrl: 'partials/homepage.html',
                 controller: 'HomepageController'
+            })
+            .when('/profile', {
+                templateUrl: 'partials/userprofile.html',
+                controller: 'UserprofileController'
+            })
+            .when('/partner',{
+                templateUrl: 'partials/workpartner.html',
+                controller: 'WorkpartnerController'
             })
             .otherwise({
                 redirectTo: '/'
