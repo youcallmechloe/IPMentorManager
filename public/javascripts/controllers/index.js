@@ -35,10 +35,7 @@ angular.module('app', ['ngRoute', 'ngResource', 'ngMaterial', 'ngCookies'])
             replace: true,
             scope: {user: '='}, // This is one of the cool things :). Will be explained in post.
             controller: ['$scope', '$filter', 'userPersistence', function ($scope, $filter, userPersistence) {
-                // $scope.$on('$routeChangeStart', function (next, current) {
-                //     console.log(userPersistence.getCookieData());
-                //     $scope.loggedIn = isLoggedIn();
-                // });
+
 
 
             }]
@@ -50,6 +47,13 @@ angular.module('app', ['ngRoute', 'ngResource', 'ngMaterial', 'ngCookies'])
     //---------------
 
     .controller('HeaderController', ['$scope', 'userPersistence', '$location', function($scope, userPersistence, $location){
+        $scope.$on('$routeChangeStart', function (next, current) {
+            console.log(userPersistence.getCookieData());
+            if(userPersistence.getCookieData() === undefined){
+                $location.url('/');
+            }
+        });
+
         $scope.isLoggedIn = function(){
             if(userPersistence.getCookieData() !== undefined){
                 return true;
@@ -64,6 +68,10 @@ angular.module('app', ['ngRoute', 'ngResource', 'ngMaterial', 'ngCookies'])
                 userPersistence.clearCookieData();
                 $location.url('/');
             }
+        };
+
+        $scope.goHome = function() {
+            $location.url('/home');
         };
 
     }])
@@ -235,7 +243,7 @@ angular.module('app', ['ngRoute', 'ngResource', 'ngMaterial', 'ngCookies'])
                 controller: 'SignupController'
             })
             .when('/home', {
-                templateUrl: 'partials/homepage.html',
+                templateUrl: 'partials/homepage2.html',
                 controller: 'HomepageController'
             })
             .when('/profile', {

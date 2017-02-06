@@ -1,9 +1,16 @@
 <div id="wrap" ng-controller="HomepageController" layout="row">
-    <md-content layout="column" id="sidenav1" md-is-locked-open='true'>
+    <md-content layout="column" id="partners" md-is-locked-open='true'>
         <h1>Work Partners</h1>
         {{username}}
     </md-content>
-    <md-content id="homepagecontent" flex layout="column">
+    <md-content id="groups" flex layout="column">
         <h1>Groups</h1>
+        <md-content id="findGroup">
+            <h3>Find a group</h3>
+            <h4>Enter course or group name</h4>
+        </md-content>
+        <md-content id="createGroup">
+            <h3>Create a group</h3>
+        </md-content>
     </md-content>
 </div>
