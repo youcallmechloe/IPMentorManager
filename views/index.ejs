@@ -20,8 +20,9 @@
 </head>
 <body>
 <div ng-controller="HeaderController" layout="row" class="ng-cloak" layout-align="center">
-  <h1><%= title %></h1>
-  <md-button ng-show="isLoggedIn()" class="md-raised md-primary" ng-click="userLogout()">Logout</md-button>
+  <button ng-show="isLoggedIn()" class="homeButton" ng-click="goHome()"><%= title %></button>
+  <span flex></span>
+  <md-button ng-show="isLoggedIn()" class="md-raised md-primary" style="float: right; margin-right:50px; height: 1%; margin-top: 20px" ng-click="userLogout()">Logout</md-button>
 </div>
 
 <div ng-view></div>
