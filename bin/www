@@ -6,17 +6,12 @@
 
 var app = require('../app');
 var debug = require('debug')('ipmentormanager:server');
-var https = require('https');
+var https = require('http');
 var fs = require('fs');
 
-var privateKey = fs.readFileSync('key.pem');
-var certificate = fs.readFileSync( 'cert.crt' );
 var port = normalizePort(process.env.PORT || '55555');
 
-var server = https.createServer({
-    key: privateKey.toString(),
-    cert: certificate.toString()
-}, app);
+var server = https.createServer(app);
 
 /**
  * Listen on provided port, on all network interfaces.
