@@ -6,20 +6,22 @@ var router = express.Router();
 
 //TODO: on front end!!! do the group name thingy so user gets told straight away of a taken group name!
 /*
- * want group JSON to look like: {'groupname' : '', 'description' : '', 'members' : ['', ''], 'posts' : ['', '']}
+ * want group JSON to look like: {'groupname' : '', 'description' : '', 'adim' : '', 'members' : ['', ''], 'posts' : ['', '']}
  */
 router.post('/creategroup', function(req, res){
     var db = req.db;
     var collection = db.get('groups');
     var body = req.body;
 
-    collection.find({'username': body['username']}, {}, function(e, docs) {
+    collection.find({'groupname': body['groupname']}, {}, function(e, docs) {
+
+        console.log(docs);
 
         if (docs.length > 0) {
             res.send('false');
         } else {
             collection.insert(body, function (err, result) {
-                res.send((err === null) ? {msg: ''} : {msg: 'error: ' + err});
+                res.send((err === null) ? '' : {msg: 'error: ' + err});
             })
         }
     });
@@ -39,6 +41,20 @@ router.post('/joingroup', function(req, res){
     res.send({msg: ''});
 });
 
+router.post('/canjoingroup', function(req, res){
+    var db = req.db;
+    var collection = db.get('groups');
+    var body = req.body;
+
+    collection.find({'groupname' : body['groupname'], 'members': {$in : [body['username']]}}, {}, function(e, docs){
+        if(docs === undefined){
+            res.send('true');
+        } else{
+            res.send('false');
+        }
+    });
+});
+
 //TODO: again check, could add timestamps to posts? could use $currentDate to set a timestamp
 /*
  * Want post JSON to look like: {'username' : '', 'groupname' : '', 'post' : ''}
@@ -54,5 +70,20 @@ router.post('/postingroup', function(req, res){
     res.send({msg: ''});
 });
 
+router.get('/getgroups/:id', function (req, res) {
+    var db = req.db;
+    var groupCollection = db.get('groups');
+    var body = req.params['id'];
+
+    console.log(body);
+    groupCollection.find({'groupname': {'$regex' : body}}, {_id: 0, 'groupname': 1}, function (e, docs) {
+        var categories = [];
+        for (var i = 0; i < docs.length; i++) {
+            categories.push(docs[i]['groupname']);
+        }
+        console.log(categories);
+        res.json(categories);
+    });
+});
 
 module.exports = router;

@@ -29,24 +29,16 @@ angular.module('app', ['ngRoute', 'ngResource', 'ngMaterial', 'ngCookies'])
         }
     }])
 
-    .directive('header', function () {
-        return {
-            restrict: 'A', //This menas that it will be used as an attribute and NOT as an element. I don't like creating custom HTML elements
-            replace: true,
-            scope: {user: '='}, // This is one of the cool things :). Will be explained in post.
-            controller: ['$scope', '$filter', 'userPersistence', function ($scope, $filter, userPersistence) {
-
-
-
-            }]
-        }
-    })
-
     //---------------
     // Controllers
     //---------------
 
     .controller('HeaderController', ['$scope', 'userPersistence', '$location', function($scope, userPersistence, $location){
+
+        $scope.getUsername = function(){
+            return userPersistence.getCookieData();
+        };
+
         //TODO: need to change as when user creates account they cant go to create account page as this is stopping it which is wrong
         // $scope.$on('$routeChangeStart', function (next, current) {
         //     console.log(userPersistence.getCookieData());
@@ -124,7 +116,8 @@ angular.module('app', ['ngRoute', 'ngResource', 'ngMaterial', 'ngCookies'])
         };
     }])
 
-    .controller('SignupController', ['$scope', '$location', '$http', function($scope, $location, $http) {
+    .controller('SignupController', ['$scope', '$location', '$http', 'userPersistence',
+        function($scope, $location, $http, userPersistence) {
         var limit = 10;
         var counter = 0;
         $scope.interests = [];
@@ -183,6 +176,7 @@ angular.module('app', ['ngRoute', 'ngResource', 'ngMaterial', 'ngCookies'])
         };
 
         $scope.signup = function(){
+            var username = $scope.username;
             var knowledgeList = [];
             for(var i = 0; i < counter; i++){
                 var interest = {
@@ -192,7 +186,7 @@ angular.module('app', ['ngRoute', 'ngResource', 'ngMaterial', 'ngCookies'])
                 knowledgeList[i] = interest;
             }
             var newUser = {
-                'username': $scope.username,
+                'username': username,
                 'email': $scope.email,
                 'password': $scope.password,
                 'fullname': $scope.fullname,
@@ -207,6 +201,8 @@ angular.module('app', ['ngRoute', 'ngResource', 'ngMaterial', 'ngCookies'])
                 .then(function (response) {
                     console.log(response.data);
                     if(response.data === 'true'){
+                        userPersistence.setCookieData(username);
+                        console.log(username);
                         $location.url('/home');
                     } else{
                         alert('There has been a problem creating your account. Please try again.')
@@ -229,23 +225,7 @@ angular.module('app', ['ngRoute', 'ngResource', 'ngMaterial', 'ngCookies'])
 
     .controller('HomepageController', ['$scope', '$location', '$http', 'userPersistence',
         function($scope, $location, $http, userPersistence) {
-            $scope.menu = [
-                {
-                    link : '',
-                    title: 'Dashboard',
-                    icon: 'dashboard'
-                },
-                {
-                    link : '',
-                    title: 'Friends',
-                    icon: 'group'
-                },
-                {
-                    link : '',
-                    title: 'Messages',
-                    icon: 'message'
-                }
-            ];
+
     }])
 
     .controller('UserprofileController', ['$scope', '$location', '$http', 'userPersistence',
@@ -260,112 +240,63 @@ angular.module('app', ['ngRoute', 'ngResource', 'ngMaterial', 'ngCookies'])
 
     .controller('GroupController', ['$scope', '$location', '$http', 'userPersistence',
         function($scope, $location, $http, userPersistence) {
+        $scope.groups = false;
+        $scope.searchList = [];
+        $scope.selectedItem = '';
 
-    }])
-
-    .controller('AppCtrl', ['$scope', '$mdBottomSheet','$mdSidenav', '$mdDialog', function($scope, $mdBottomSheet, $mdSidenav, $mdDialog){
-        $scope.toggleSidenav = function(menuId) {
-            $mdSidenav(menuId).toggle();
+            $scope.creatingGroup = function() {
+            $scope.groups = true;
         };
-        $scope.menu = [
-            {
-                link : '',
-                title: 'Dashboard',
-                icon: 'dashboard'
-            },
-            {
-                link : '',
-                title: 'Friends',
-                icon: 'group'
-            },
-            {
-                link : '',
-                title: 'Messages',
-                icon: 'message'
+
+        $scope.cancelGroup = function() {
+            $scope.groups = false;
+        };
+
+        $scope.createGroup = function() {
+            var groupJSON = {
+                'groupname' : $scope.groupname,
+                'description' : $scope.groupdescription,
+                'admin' : userPersistence.getCookieData(),
+                'members' : [userPersistence.getCookieData()],
+                'posts' : []
+            };
+
+            $http.post("/groups/creategroup", groupJSON)
+                .then(function(response){
+                    if(response.data === 'false'){
+                        alert('Sorry, that group name is taken, please choose another one');
+                    } else{
+                        $scope.groupname = '';
+                        $scope.$parent.groupdescription = '';
+                       $scope.groups = false;
+                    }
+                });
+
+        };
+
+        $scope.canJoin = function(groupName){
+
+        };
+
+        $scope.joinGroup = function(groupName){
+            var joinJSON = {
+                'username' : userPersistence.getCookieData(),
+                'groupname' : groupName
             }
-        ];
-        $scope.admin = [
-            {
-                link : '',
-                title: 'Trash',
-                icon: 'delete'
-            },
-            {
-                link : 'showListBottomSheet($event)',
-                title: 'Settings',
-                icon: 'settings'
-            }
-        ];
-        $scope.activity = [
-            {
-                what: 'Brunch this weekend?',
-                who: 'Ali Conners',
-                when: '3:08PM',
-                notes: " I'll be in your neighborhood doing errands"
-            },
-            {
-                what: 'Summer BBQ',
-                who: 'to Alex, Scott, Jennifer',
-                when: '3:08PM',
-                notes: "Wish I could come out but I'm out of town this weekend"
-            },
-            {
-                what: 'Oui Oui',
-                who: 'Sandra Adams',
-                when: '3:08PM',
-                notes: "Do you have Paris recommendations? Have you ever been?"
-            },
-            {
-                what: 'Birthday Gift',
-                who: 'Trevor Hansen',
-                when: '3:08PM',
-                notes: "Have any ideas of what we should get Heidi for her birthday?"
-            },
-            {
-                what: 'Recipe to try',
-                who: 'Brian Holt',
-                when: '3:08PM',
-                notes: "We should eat this: Grapefruit, Squash, Corn, and Tomatillo tacos"
-            },
-        ];
-        $scope.alert = '';
-        $scope.showListBottomSheet = function($event) {
-            $scope.alert = '';
-            $mdBottomSheet.show({
-                template: '<md-bottom-sheet class="md-list md-has-header"> <md-subheader>Settings</md-subheader> <md-list> <md-item ng-repeat="item in items"><md-item-content md-ink-ripple flex class="inset"> <a flex aria-label="{{item.name}}" ng-click="listItemClick($index)"> <span class="md-inline-list-icon-label">{{ item.name }}</span> </a></md-item-content> </md-item> </md-list></md-bottom-sheet>',
-                controller: 'ListBottomSheetCtrl',
-                targetEvent: $event
-            }).then(function(clickedItem) {
-                $scope.alert = clickedItem.name + ' clicked!';
+
+            $http.post('/groups/joingroup', joinJSON)
+                .then(function(response){
+                    console.log(response.data);
             });
         };
 
-        $scope.showAdd = function(ev) {
-            $mdDialog.show({
-                controller: DialogController,
-                template: '<md-dialog aria-label="Mango (Fruit)"> <md-content class="md-padding"> <form name="userForm"> <div layout layout-sm="column"> <md-input-container flex> <label>First Name</label> <input ng-model="user.firstName" placeholder="Placeholder text"> </md-input-container> <md-input-container flex> <label>Last Name</label> <input ng-model="theMax"> </md-input-container> </div> <md-input-container flex> <label>Address</label> <input ng-model="user.address"> </md-input-container> <div layout layout-sm="column"> <md-input-container flex> <label>City</label> <input ng-model="user.city"> </md-input-container> <md-input-container flex> <label>State</label> <input ng-model="user.state"> </md-input-container> <md-input-container flex> <label>Postal Code</label> <input ng-model="user.postalCode"> </md-input-container> </div> <md-input-container flex> <label>Biography</label> <textarea ng-model="user.biography" columns="1" md-maxlength="150"></textarea> </md-input-container> </form> </md-content> <div class="md-actions" layout="row"> <span flex></span> <md-button ng-click="answer(\'not useful\')"> Cancel </md-button> <md-button ng-click="answer(\'useful\')" class="md-primary"> Save </md-button> </div></md-dialog>',
-                targetEvent: ev,
-            })
-                .then(function(answer) {
-                    $scope.alert = 'You said the information was "' + answer + '".';
-                }, function() {
-                    $scope.alert = 'You cancelled the dialog.';
-                });
+        $scope.getGroups = function(searchText) {
+            return $http.get('/groups/getgroups/' + searchText)
+                .then(function(response){
+                return response.data;
+            });
         };
     }])
-    .controller('ListBottomSheetCtrl', function($scope, $mdBottomSheet) {
-        $scope.items = [
-            { name: 'Share', icon: 'share' },
-            { name: 'Upload', icon: 'upload' },
-            { name: 'Copy', icon: 'copy' },
-            { name: 'Print this page', icon: 'print' },
-        ];
-
-        $scope.listItemClick = function($index) {
-            var clickedItem = $scope.items[$index];
-            $mdBottomSheet.hide(clickedItem);
-        };
-    })
 
         //---------------
     // Routes - add in accesses to each url
