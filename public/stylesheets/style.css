@@ -274,18 +274,20 @@ footer img:focus , footer a:focus { outline: none; }
   margin-bottom: 50px;
 }
 
-md-sidenav {
-  fill: #737373;
-  ng-md-icon {
-    position: relative;
-    top: 5px; // adjust for svg viewbox
-}
-}
 
 .sideButton{
   background:none;
   border:none;
   font-family: Helvetica;
   color: #636363;
+  text-align:center;
+
+}
+
+.createGroupDiv{
+  position: relative;
+  width: 300px;
+  z-index: 15;
+  left: 35%;
 }
 

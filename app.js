@@ -7,12 +7,11 @@ var bodyParser = require('body-parser');
 
 var routes = require('./routes/index');
 var users = require('./routes/users');
+var groups = require('./routes/groups');
 
 // load mongoose package
 var monk = require('monk');
 var db = monk('localhost:27017/mentormanager');
-
-
 
 var app = express();
 
@@ -36,6 +35,7 @@ app.use(function(req,res,next){
 
 app.use('/', routes);
 app.use('/users', users);
+app.use('/groups', groups);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

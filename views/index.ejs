@@ -23,8 +23,8 @@
   <button ng-show="isLoggedIn()" class="homeButton" ng-click="goHome()">Mentor Manager</button>
   <button ng-hide="isLoggedIn()" class="homeButton">Mentor Manager</button>
   <span flex></span>
-  <md-button ng-show="isLoggedIn()" ng-click="ProfileClick()">
-    Profile
+  <md-button ng-show="isLoggedIn()" ng-click="ProfileClick()" style=" height: 1%; margin-top: 20px;">
+    {{getUsername()}}
   </md-button>
   <md-button ng-show="isLoggedIn()" class="md-raised md-primary" style="float: right; margin-right:50px; height: 1%; margin-top: 20px" ng-click="userLogout()">Logout</md-button>
 </div>
