@@ -41,7 +41,7 @@ router.post('/joingroup', function(req, res){
     res.send({msg: ''});
 });
 
-router.post('/canjoingroup', function(req, res){
+router.post('/groupmember', function(req, res){
     var db = req.db;
     var collection = db.get('groups');
     var body = req.body;
@@ -65,7 +65,7 @@ router.post('/postingroup', function(req, res){
     var body = req.body;
 
     collection.update({'groupname' : body['groupname']},
-        {$push : {'posts': {'post' : body['post'], 'username' : body['username']}}});
+        {$push : {'posts': {$each: [{'post' : body['post'], 'username' : body['username']}], $position : 0}}});
 
     res.send({msg: ''});
 });
@@ -75,14 +75,43 @@ router.get('/getgroups/:id', function (req, res) {
     var groupCollection = db.get('groups');
     var body = req.params['id'];
 
-    console.log(body);
-    groupCollection.find({'groupname': {'$regex' : body}}, {_id: 0, 'groupname': 1}, function (e, docs) {
+    groupCollection.find({'groupname': {'$regex' : body}}, {}, function (e, docs) {
         var categories = [];
         for (var i = 0; i < docs.length; i++) {
             categories.push(docs[i]['groupname']);
         }
         console.log(categories);
         res.json(categories);
+    });
+});
+
+router.get('/getdescription/:id', function(req, res){
+    var db = req.db;
+    var groupCollection = db.get('groups');
+    var body = req.params['id'];
+
+    groupCollection.find({'groupname' : body}, {}, function(e, docs){
+        if(docs !== undefined) {
+            res.send(docs[0]['description']);
+        } else{
+            res.send('');
+        }
+    });
+});
+
+router.post('/groupsmemberof', function(req, res){
+    var db = req.db;
+    var collection = db.get('groups');
+    var body = req.body;
+
+    collection.find({'members': {$in : [body['username']]}}, {}, function(e, docs){
+        console.log(docs['groupname']);
+        var names = [];
+
+        for(var i = 0; i < docs.length; i++){
+            names.push(docs[i]);
+        }
+        res.send(names);
     });
 });
 
