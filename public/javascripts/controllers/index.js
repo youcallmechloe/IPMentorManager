@@ -243,6 +243,17 @@ angular.module('app', ['ngRoute', 'ngResource', 'ngMaterial', 'ngCookies'])
         $scope.groups = false;
         $scope.searchList = [];
         $scope.selectedItem = '';
+        $scope.memberList = [];
+        $scope.selectedGroup = '';
+        $scope.post = false;
+
+        var getGroups = function() {
+            $http.post('/groups/groupsmemberof', {'username' : userPersistence.getCookieData()})
+                .then(function (response){
+                    $scope.memberList = response.data;
+                });
+        };
+        getGroups();
 
             $scope.creatingGroup = function() {
             $scope.groups = true;
@@ -253,8 +264,9 @@ angular.module('app', ['ngRoute', 'ngResource', 'ngMaterial', 'ngCookies'])
         };
 
         $scope.createGroup = function() {
+            var groupName = $scope.groupname;
             var groupJSON = {
-                'groupname' : $scope.groupname,
+                'groupname' : groupName,
                 'description' : $scope.groupdescription,
                 'admin' : userPersistence.getCookieData(),
                 'members' : [userPersistence.getCookieData()],
@@ -266,9 +278,10 @@ angular.module('app', ['ngRoute', 'ngResource', 'ngMaterial', 'ngCookies'])
                     if(response.data === 'false'){
                         alert('Sorry, that group name is taken, please choose another one');
                     } else{
+                        getGroups();
                         $scope.groupname = '';
                         $scope.$parent.groupdescription = '';
-                       $scope.groups = false;
+                        $scope.groups = false;
                     }
                 });
 
@@ -286,16 +299,69 @@ angular.module('app', ['ngRoute', 'ngResource', 'ngMaterial', 'ngCookies'])
 
             $http.post('/groups/joingroup', joinJSON)
                 .then(function(response){
+                    getGroups();
+                    $scope.selectedItem = '';
+                    $scope.searchText = '';
                     console.log(response.data);
             });
         };
 
-        $scope.getGroups = function(searchText) {
-            return $http.get('/groups/getgroups/' + searchText)
+        $scope.postGroup = function(groupName){
+            var postJSON = {
+                'username' : userPersistence.getCookieData(),
+                'groupname' : groupName,
+                'post' : $scope.grouppost
+            };
+
+            $http.post('/groups/postingroup', postJSON)
                 .then(function(response){
-                return response.data;
-            });
+                   $scope.$parent.grouppost = '';
+                   $scope.post = false;
+                   getGroups();
+                });
         };
+
+        $scope.chooseGroup = function(groupName){
+            console.log(groupName);
+            $scope.selectedGroup = groupName;
+        };
+
+        $scope.getGroups = function(searchText) {
+            if(searchText !== '') {
+                return $http.get('/groups/getgroups/' + searchText)
+                    .then(function (response) {
+                        return response.data;
+                    });
+            }
+        };
+
+        $scope.goBack = function(){
+            $scope.selectedGroup = '';
+            console.log('back');
+        };
+
+        $scope.getDescription = function(groupName) {
+            if(groupName !== '') {
+                return $http.get('/groups/getdescription/' + groupName)
+                    .then(function (response) {
+                        return response.data;
+                    });
+            }
+        };
+
+        $scope.areMember = function(groupName) {
+            if(groupName !== '') {
+                console.log($scope.memberList);
+                for (var i = 0; i < $scope.memberList.length; i++) {
+                    if ($scope.memberList[i] === groupName) {
+                        return true;
+                    }
+                }
+                return false;
+            } else{
+                return false;
+            }
+        }
     }])
 
         //---------------

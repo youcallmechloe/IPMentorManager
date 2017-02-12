@@ -1,4 +1,4 @@
-<div id="wrap" ng-controller="GroupController" layout="row">
+<iv id="wrap" ng-controller="GroupController" layout="row">
     <md-content id="groups" flex layout="column">
         <h1>Groups</h1>
         <md-content layout="row">
@@ -11,28 +11,50 @@
                         No matches found.
                     </md-not-found>
                 </md-autocomplete>
-                <md-content ng-show="selectedItem !== ''">
-                    {{selectedItem}}
-                    <div ng-repeat="post in getGroups(selectedItem)">
-                        {{post}}
-                    </div>
-                    <md-button ng-show="canJoin(selectedItem)" ng-click="joinGroup(selectedItem)">Join Group</md-button>
-                    <md-button ng-hide="canJoin(selectedItem)" ng-disabled="true" ng-click="joinGroup(selectedItem)">Join Group</md-button>
+                <md-content ng-show="selectedItem.length > 2">
+                    <h3>{{selectedItem}}</h3>
+                    <md-button ng-hide="areMember(selectedItem)" ng-click="joinGroup(selectedItem)">Join Group</md-button>
+                    <md-button ng-show="areMember(selectedItem)" ng-disabled="true" ng-click="joinGroup(selectedItem)">Join Group</md-button>
                 </md-content>
             </md-content>
-            <md-content id="createGroup" layout-align="center" style="width: 60%;">
-                <md-button class="sideButton" ng-click="creatingGroup()">Create a Group</md-button>
-                <div class="createGroupDiv" ng-show="groups" layout="column">
-                    <md-input-container>
-                        <label>Group Name</label>
-                        <input type="text" placeholder="Group Name" ng-model="groupname" required>
-                    </md-input-container>
-                    <textarea type="text" placeholder="Description" ng-model="$parent.groupdescription" required></textarea>
-                    <div layout="row" layout-align="center">
-                        <md-button class="md-raised md-primary" ng-click="createGroup()">Create</md-button>
-                        <md-button class="sideButton" ng-click="cancelGroup()">Cancel</md-button>
-                    </div>
+            <md-content id="createGroup" style="width: 60%;" layout="column">
+                <h3>My Groups</h3>
+                <div layout="row">
+                    <md-content ng-repeat="groups in memberList">
+                        <md-button ng-click="chooseGroup(groups)">{{groups.groupname}}</md-button>
+                    </md-content>
                 </div>
+                <br>
+                <md-content ng-show="selectedGroup === ''" layout-align="center" style="height: 50%">
+                    <md-button class="sideButton" ng-click="creatingGroup()">Create a Group</md-button>
+                    <div class="createGroupDiv" ng-show="groups" layout="column">
+                        <md-input-container>
+                            <label>Group Name</label>
+                            <input type="text" placeholder="Group Name" ng-model="groupname" required>
+                        </md-input-container>
+                        <textarea type="text" placeholder="Description" ng-model="$parent.groupdescription" required></textarea>
+                        <div layout="row" layout-align="center">
+                            <md-button class="md-raised md-primary" ng-click="createGroup()">Create</md-button>
+                            <md-button class="sideButton" ng-click="cancelGroup()">Cancel</md-button>
+                        </div>
+                    </div>
+                </md-content>
+                <md-content ng-show="selectedGroup !== ''" layout-align="center" style="height: 50%">
+                    <div layout="row" align="center">
+                        <md-button class="sideButton" ng-click="goBack()">Go Back</md-button>
+                        <h3>{{selectedGroup.groupname}}</h3>
+                    </div>
+                    <md-button ng-hide="post" class="md-raised md-primary" ng-click="post=true">Create Post</md-button>
+                    <div ng-show="post">
+                        <textarea type="text" placeholder="Write your post..." ng-model="$parent.grouppost" required></textarea>
+                        <md-button class="md-raised md-primary" ng-click="postGroup(selectedGroup.groupname)">Post</md-button>
+                        <md-button class="sideButton" ng-click="post=false">Cancel</md-button>
+                    </div>
+                    <div ng-repeat="post in selectedGroup.posts" style="border-style:solid;">
+                        <h3>{{post.username}}</h3>
+                        <h4>{{post.post}}</h4>
+                    </div>
+                </md-content>
             </md-content>
         </md-content>
     </md-content>
