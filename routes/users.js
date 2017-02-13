@@ -66,11 +66,28 @@ router.post('/adduser', function(req, res) {
 
             const saltRounds = 10;
             const myPlaintextPassword = body['password'];
+            var knowledge = JSON.parse(body['knowledge']);
+
+
+            var userKnowledge = [];
+
+            if (knowledge.length > 0) {
+                for (var i = 0; i < knowledge.length; i++) {
+                    var obj = {'word' : knowledge[i].word, 'category' : knowledge[i].category};
+                    userKnowledge.push(obj);
+                }
+            }
 
             bcrypt.hash(myPlaintextPassword, saltRounds).then(function (hash) {
                 var userInfo = {
-                    'username': body['username'], 'email': body['email'], 'password': hash,
-                    'fullname': body['fullname'], 'age': body['age'], 'gender': body['gender'], 'degree': body['gender']
+                    'username': body['username'],
+                    'email': body['email'],
+                    'password': hash,
+                    'fullname': body['fullname'],
+                    'age': body['age'],
+                    'gender': body['gender'],
+                    'degree': body['gender'],
+                    'knowledge' : userKnowledge
                 };
                 //TODO: why am i checking this twice???
                 collection.find({'username': body['username']}, {}, function (e, docs) {
@@ -87,7 +104,6 @@ router.post('/adduser', function(req, res) {
             });
 
             var wordCollection = db.get('words');
-            var knowledge = JSON.parse(body['knowledge']);
             console.log(knowledge);
 
             if (knowledge.length > 0) {
@@ -105,7 +121,7 @@ router.post('/adduser', function(req, res) {
                             'category.name': {$in: [knowledge[i].category]},
                             'category.words': {$elemMatch: {'name': knowledge[i].word}}
                         },
-                        {$push: {'category.words.$.users': req.body.username}},
+                        {$push: {'category.words.$.users': body['username']}},
                         {upsert: true}
                     );
                 }
@@ -114,6 +130,35 @@ router.post('/adduser', function(req, res) {
         }
     });
 
+});
+
+router.post('/userinfo', function(req, res){
+    var db = req.db;
+    var userCollection = db.get('userlist');
+    var wordCollection = db.get('words');
+    var body = req.body;
+    var userInfo = [];
+
+    userCollection.find({'username' : body['username']}, {}, function(e, docs){
+        if(docs.length > 0) {
+            var user = {
+                'username' : docs[0]['username'],
+                'email' : docs[0]['email'],
+                'fullname' : docs[0]['fullname'],
+                'age' : docs[0]['age'],
+                'gender' : docs[0]['gender'],
+                'degree' : docs[0]['degree'],
+                'knowledge' : docs[0]['knowledge']
+            };
+            userInfo.push(user);
+        }
+
+        res.send(user);
+    });
+
+    wordCollection.find({'users' : {$in : [body['username']]}}, {}, function(e, docs){
+       console.log(docs);
+    });
 });
 
 /*

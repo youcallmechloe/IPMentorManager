@@ -34,6 +34,20 @@
                     <input type="text" class="myform" placeholder="Degree" ng-model="degree" required>
                 </md-input-container>
             </md-content>
+            <h3>Interests:</h3>
+            <md-content ng-repeat="item in interests" layout="row" layout-align="center">
+                <md-input-container layout-align="center">
+                    <label>Interest</label>
+                    <input type="text" placeholder="Interest" ng-model="item.word" required>
+                </md-input-container>
+                <md-input-container layout-align="center">
+                    <label>Category</label>
+                    <input type="text" placeholder="Category" ng-model="item.category" required>
+                </md-input-container>
+                <md-button class="md-icon-button md-primary" aria-label="Settings" ng-click="removeInterest(item)">
+                    <ng-md-icon icon="clear" style="fill: #636363" size="20"></ng-md-icon>
+                </md-button>
+            </md-content>
             <md-content id=dynamicInput layout="row" class="md-padding" layout-align="center">
             </md-content>
             <div layout="row" layout-align="center center" style="padding-top:20px;">
@@ -41,5 +55,6 @@
                 <md-button class="md-raised md-primary" ng-click="signup()">Create Account</md-button>
             <md-button class="md-raised" ng-click="goback()">Go Back</md-button>
             </div>
+
         </form>
 </div>

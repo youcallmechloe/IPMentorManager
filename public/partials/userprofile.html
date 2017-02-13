@@ -1,5 +1,14 @@
 <div id="wrap" ng-controller="UserprofileController" layout="row">
     <md-content id="groups" flex layout="column">
-        <h1>User Profile</h1>
+        <h1>User Profile {{username}}</h1>
+        <h3>{{user.email}}</h3>
+        <h3>{{user.fullname}}</h3>
+        <h3>{{user.age}}</h3>
+        <h3>{{user.gender}}</h3>
+        <h3>{{user.degree}}</h3>
+        <md-content ng-repeat="item in user.knowledge">
+            <h3>{{item.word}}</h3>
+            <h3>{{item.category}}</h3>
+        </md-content>
     </md-content>
 </div>
