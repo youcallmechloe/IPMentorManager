@@ -138,9 +138,13 @@ angular.module('app', ['ngRoute', 'ngResource', 'ngMaterial', 'ngCookies', 'ngMd
                     $scope.interests.push({word : '', category : ''});
                 };
 
-                // $scope.removeInterest = function(item){
-                //     $scope.interests.
-                // };
+                $scope.removeInterest = function(item){
+                    for(var i = 0; i < $scope.interests.length; i++){
+                        if(($scope.interests[i].word === item.word) && ($scope.interests[i].category === item.category)){
+                            $scope.interests.splice(i, 1);
+                        }
+                    }
+                };
 
 
                 $scope.getOptions = function () {
