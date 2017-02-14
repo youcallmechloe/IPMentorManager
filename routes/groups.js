@@ -80,7 +80,6 @@ router.get('/getgroups/:id', function (req, res) {
         for (var i = 0; i < docs.length; i++) {
             categories.push(docs[i]['groupname']);
         }
-        console.log(categories);
         res.json(categories);
     });
 });

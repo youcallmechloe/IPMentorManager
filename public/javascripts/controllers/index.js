@@ -128,14 +128,20 @@ angular.module('app', ['ngRoute', 'ngResource', 'ngMaterial', 'ngCookies', 'ngMd
                 $location.url('/home');
             }
                 var limit = 10;
-                var counter = 0;
+                var counter = 1;
+                $scope.categoryList = ['Chemistry', 'Computer Science'];
                 $scope.interests = [{
                     word : '',
                     category : ''
                 }];
 
                 $scope.addNew = function(){
-                    $scope.interests.push({word : '', category : ''});
+                    if(counter !== limit) {
+                        $scope.interests.push({word: '', category: ''});
+                        counter++;
+                    } else{
+                        alert("You've reached the limit on interest fields!")
+                    }
                 };
 
                 $scope.removeInterest = function(item){
@@ -146,6 +152,31 @@ angular.module('app', ['ngRoute', 'ngResource', 'ngMaterial', 'ngCookies', 'ngMd
                     }
                 };
 
+                $scope.getCategory = function(search){
+                    var newList = [];
+                    if(search !== '') {
+                        for(var i = 0; i < $scope.categoryList.length; i++){
+                            console.log($scope.categoryList[i]);
+                            console.log(search);
+                            if($scope.categoryList[i].indexOf(search) !== -1){
+                                newList.push($scope.categoryList[i]);
+                            }
+                        }
+
+                        return newList;
+
+                        // return $http.get('/users/databaseCategories')
+                        //     .then(function (response){
+                        //         for(var i = 0; i < response.data.length; i++){
+                        //             if(response.data[i].includes(search)){
+                        //                 console.log(response.data[i]);
+                        //                 newList.push(response.data[i]);
+                        //             }
+                        //         }
+                        //         return newList;
+                        //     });
+                    }
+                };
 
                 $scope.getOptions = function () {
                     var options = [];

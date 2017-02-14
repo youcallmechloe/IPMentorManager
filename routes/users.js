@@ -167,10 +167,14 @@ router.post('/userinfo', function(req, res){
 router.get('/databaseCategories', function(req, res){
     var db = req.db;
     var wordCollection = db.get('words');
-    wordCollection.find({},{_id: 0, 'category.name' : 1},function(e,docs){
+
+    wordCollection.find({},{},function(e,docs){
         var categories = [];
-        for(var i = 0; i < docs.length; i++){
-            categories.push(docs[i]['category']['name']);
+        console.log(docs);
+        if(docs !== undefined) {
+            for (var i = 0; i < docs.length; i++) {
+                categories.push(docs[i]['category']['name']);
+            }
         }
         res.json(categories);
     });

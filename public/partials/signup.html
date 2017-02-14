@@ -40,12 +40,12 @@
                     <label>Interest</label>
                     <input type="text" placeholder="Interest" ng-model="item.word" required>
                 </md-input-container>
-                <md-input-container layout-align="center">
-                    <label>Category</label>
-                    <input type="text" placeholder="Category" ng-model="item.category" required>
-                </md-input-container>
-                <md-button class="md-icon-button md-primary" aria-label="Settings" ng-click="removeInterest(item)">
-                    <ng-md-icon icon="clear" style="fill: #636363" size="20"></ng-md-icon>
+                <select style="height: 5%; padding-top:20px; display: block; margin: 3%;" ng-model="item.category">
+                    <option value="">---Please select---</option> <!-- not selected / blank option -->
+                    <option ng-repeat="option in categoryList" value="{{option}}">{{option}}</option>
+                </select>
+                <md-button class="md-icon-button md-primary" aria-label="Settings" ng-click="removeInterest(item)" style="display: block; margin: 1%;">
+                    <ng-md-icon icon="clear" style="fill: #636363;" size="20"></ng-md-icon>
                 </md-button>
             </md-content>
             <md-content id=dynamicInput layout="row" class="md-padding" layout-align="center">
