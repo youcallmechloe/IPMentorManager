@@ -7,7 +7,6 @@
 
 var express = require('express');
 var router = express.Router();
-//var request = require('request');
 var bcrypt = require('bcryptjs');
 
 /*
@@ -21,33 +20,6 @@ router.get('/userlist', function(req, res) {
     });
 });
 
-//TODO: actually write properly
-router.get('/matching', function(req, res) {
-    var db = req.db;
-    var collection = db.get('userlist');
-
-    var body = req.query;
-    var word = body.word;
-    var category = body.category;
-
-    if((word !== null) && (category !== null)){
-        request('http://api.datamuse.com/words?ml=' + word, function (error, response, body) {
-            if (!error && response.statusCode == 200) {
-                var body = JSON.parse(body).slice(0, 19);
-                var wordsList = [];
-                for(var i = 0; i < body.length; i++){
-                    var object = body[i];
-                    wordsList.push(object['word']);
-                }
-            }
-        })
-
-    }
-    res.status(400);
-    res.send();
-
-});
-
 /*
  * POST to adduser. Currently adds user's information and specified knowledge words to relevant databases
  * Hashes the password with a random salt which can be easily compared with the string password.
@@ -55,6 +27,7 @@ router.get('/matching', function(req, res) {
 router.post('/adduser', function(req, res) {
     var db = req.db;
     var collection = db.get('userlist');
+    var masterCollection = db.get('masterlist');
     var body = req.body;
     var error = '';
 
@@ -124,6 +97,8 @@ router.post('/adduser', function(req, res) {
                         {$push: {'category.words.$.users': body['username']}},
                         {upsert: true}
                     );
+
+                    masterCollection.update({ _id: 1 }, {$addToSet : {'words' : knowledge[i].word}}, {upsert: true});
                 }
             }
             res.send((error !== null) ? 'true' : error);

@@ -274,7 +274,7 @@ angular.module('app', ['ngRoute', 'ngResource', 'ngMaterial', 'ngCookies', 'ngMd
 
             if(userPersistence.getCookieData() === undefined){
                 $location.url('/');
-            }
+            };
 
     }])
 

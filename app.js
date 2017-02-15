@@ -8,6 +8,7 @@ var bodyParser = require('body-parser');
 var routes = require('./routes/index');
 var users = require('./routes/users');
 var groups = require('./routes/groups');
+var matching = require('./routes/matching')
 
 // load mongoose package
 var monk = require('monk');
@@ -36,6 +37,7 @@ app.use(function(req,res,next){
 app.use('/', routes);
 app.use('/users', users);
 app.use('/groups', groups);
+app.use('/matching', matching);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
