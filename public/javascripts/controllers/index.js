@@ -5,7 +5,7 @@
  * Created by root on 01/02/2017.
  */
 
-angular.module('app', ['ngRoute', 'ngResource', 'ngMaterial', 'ngCookies'])
+angular.module('app', ['ngRoute', 'ngResource', 'ngMaterial', 'ngCookies', 'ngMdIcons'])
 
 //---------------
 // Services
@@ -85,161 +85,205 @@ angular.module('app', ['ngRoute', 'ngResource', 'ngMaterial', 'ngCookies'])
     .controller('LoginController', ['$scope', '$location', '$http', 'userPersistence',
         function ($scope, $location, $http, userPersistence) {
 
-        $scope.login = function() {
-            var username = $scope.username;
-            var config = {
-                headers: {
-                    'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8;'
-                }
-            };
+        if(userPersistence.getCookieData() !== undefined){
+            $location.url('/home');
+        }
 
-            var loginData = {
-                'username' : username,
-                'password' : $scope.password
-            };
-
-            $http.post("/users/loginuser", loginData)
-                .then(function (response) {
-                    console.log(response.data);
-                    if(response.data === "true"){
-                        userPersistence.setCookieData(username);
-                        $location.url('/home')
-                    } else{
-                        alert("Login Failed. Please try again");
+            $scope.login = function () {
+                var username = $scope.username;
+                var config = {
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8;'
                     }
-                });
+                };
 
-        };
+                var loginData = {
+                    'username': username,
+                    'password': $scope.password
+                };
 
-        $scope.createAccount = function(){
-            $location.url('/signup');
-        };
+                $http.post("/users/loginuser", loginData)
+                    .then(function (response) {
+                        console.log(response.data);
+                        if (response.data === "true") {
+                            userPersistence.setCookieData(username);
+                            $location.url('/home')
+                        } else {
+                            alert("Login Failed. Please try again");
+                        }
+                    });
+
+            };
+
+            $scope.createAccount = function () {
+                $location.url('/signup');
+            };
+
     }])
 
     .controller('SignupController', ['$scope', '$location', '$http', 'userPersistence',
         function($scope, $location, $http, userPersistence) {
-        var limit = 10;
-        var counter = 0;
-        $scope.interests = [];
 
-        $scope.addNewInterest = function() {
-            var divName = 'dynamicInput';
-
-            if(limit === counter){
-                alert("You have reached the limit of adding " + counter + " inputs");
-            } else {
-                var newdiv = document.createElement('md-input-container');
-                newdiv.setAttribute('layout', 'row');
-                var options = "<option value=\"Chemistry\">Chemistry</option>";
-                $.getJSON('/users/databaseCategories', function (data) {
-                    $.each(data, function (index, value) {
-                        var line = "<option value=\"" + value + "\">" + value + "</option>";
-                        options += line;
-                    });
-                    console.log(counter);
-                    newdiv.innerHTML = "<label>Knowledge</label>" +
-                        "<input type='text' id='interestText" + counter + "' class='myform ng-pristine ng-untouched md-input ng-empty ng-invalid ng-invalid-required' placeholder='Knowledge' required>" +
-                        "<div class='md-errors-spacer'></div>" +
-                        "<select id='interestCategory" + counter + "'>" + options + "</select>";
-                    console.log(newdiv);
-                    $('#' + divName).append(newdiv);
-
-                    counter++;
-                });
+            if(userPersistence.getCookieData() !== undefined){
+                $location.url('/home');
             }
-        };
+                var limit = 10;
+                var counter = 1;
+                $scope.categoryList = ['Chemistry', 'Computer Science'];
+                $scope.interests = [{
+                    word : '',
+                    category : ''
+                }];
 
-        $scope.getOptions = function(){
-            var options = [];
-            $.getJSON('/users/databaseCategories', function (data) {
-                $.each(data, function(index, value){
-                    options.push(value);
-            })});
-            return options;
-        };
-
-        $scope.addNew = function(){
-
-            var options = "";
-
-            $.getJSON('/users/databaseCategories', function (data) {
-                $.each(data, function (index, value) {
-                    var line = "<option value=\"" + value + "\">" + value + "</option>";
-                    options += line;
-                });
-
-                var elem = {'word' : ''};
-                $scope.interests.push(elem);
-            });
-
-            console.log($scope.interests);
-        };
-
-        $scope.signup = function(){
-            var username = $scope.username;
-            var knowledgeList = [];
-            for(var i = 0; i < counter; i++){
-                var interest = {
-                    'category': $('#interestCategory' + i).find(":selected").text(),
-                    'word': $('#interestText' + i).val()
-                };
-                knowledgeList[i] = interest;
-            }
-            var newUser = {
-                'username': username,
-                'email': $scope.email,
-                'password': $scope.password,
-                'fullname': $scope.fullname,
-                'age': $scope.age,
-                'gender': $scope.gender,
-                'degree': $scope.degree,
-                'knowledge' : JSON.stringify(knowledgeList)
-            };
-            console.log(newUser);
-
-            $http.post("/users/addUser", newUser)
-                .then(function (response) {
-                    console.log(response.data);
-                    if(response.data === 'true'){
-                        userPersistence.setCookieData(username);
-                        console.log(username);
-                        $location.url('/home');
+                $scope.addNew = function(){
+                    if(counter !== limit) {
+                        $scope.interests.push({word: '', category: ''});
+                        counter++;
                     } else{
-                        alert('There has been a problem creating your account. Please try again.')
+                        alert("You've reached the limit on interest fields!")
                     }
-                });
-        };
+                };
 
-        //TODO: doesn't actually work needs to be looked at, think html needs to be moved out of md-input thingys to work?
-        function formIsEmpty() {
-            console.log('dsfsdf')
-            $('#form input').each(function(index, val) {
-                if($(this).val() === '') { return false; }
-            });
-        }
+                $scope.removeInterest = function(item){
+                    for(var i = 0; i < $scope.interests.length; i++){
+                        if(($scope.interests[i].word === item.word) && ($scope.interests[i].category === item.category)){
+                            $scope.interests.splice(i, 1);
+                        }
+                    }
+                };
 
-        $scope.goback = function(){
-            $location.url('/');
-        };
+                $scope.getCategory = function(search){
+                    var newList = [];
+                    if(search !== '') {
+                        for(var i = 0; i < $scope.categoryList.length; i++){
+                            console.log($scope.categoryList[i]);
+                            console.log(search);
+                            if($scope.categoryList[i].indexOf(search) !== -1){
+                                newList.push($scope.categoryList[i]);
+                            }
+                        }
+
+                        return newList;
+
+                        // return $http.get('/users/databaseCategories')
+                        //     .then(function (response){
+                        //         for(var i = 0; i < response.data.length; i++){
+                        //             if(response.data[i].includes(search)){
+                        //                 console.log(response.data[i]);
+                        //                 newList.push(response.data[i]);
+                        //             }
+                        //         }
+                        //         return newList;
+                        //     });
+                    }
+                };
+
+                $scope.getOptions = function () {
+                    var options = [];
+                    $.getJSON('/users/databaseCategories', function (data) {
+                        $.each(data, function (index, value) {
+                            options.push(value);
+                        })
+                    });
+                    return options;
+                };
+
+                $scope.signup = function () {
+                    var username = $scope.username;
+                    var knowledgeList = [];
+                    for (var i = 0; i < counter; i++) {
+                        var interest = {
+                            'category': $('#interestCategory' + i).find(":selected").text(),
+                            'word': $('#interestText' + i).val()
+                        };
+                        knowledgeList[i] = interest;
+                    }
+                    var newUser = {
+                        'username': username,
+                        'email': $scope.email,
+                        'password': $scope.password,
+                        'fullname': $scope.fullname,
+                        'age': $scope.age,
+                        'gender': $scope.gender,
+                        'degree': $scope.degree,
+                        'knowledge': JSON.stringify($scope.interests)
+                    };
+
+                    console.log(newUser);
+
+                    $http.post("/users/addUser", newUser)
+                        .then(function (response) {
+                            console.log(response.data);
+                            if (response.data === 'true') {
+                                userPersistence.setCookieData(username);
+                                console.log(username);
+                                $location.url('/home');
+                            } else {
+                                alert('There has been a problem creating your account. Please try again.')
+                            }
+                        });
+                };
+
+                //TODO: doesn't actually work needs to be looked at, think html needs to be moved out of md-input thingys to work?
+                function formIsEmpty() {
+                    console.log('dsfsdf')
+                    $('#form input').each(function (index, val) {
+                        if ($(this).val() === '') {
+                            return false;
+                        }
+                    });
+                }
+
+                $scope.goback = function () {
+                    $location.url('/');
+                };
+
     }])
 
     .controller('HomepageController', ['$scope', '$location', '$http', 'userPersistence',
         function($scope, $location, $http, userPersistence) {
+
+            if(userPersistence.getCookieData() === undefined){
+                $location.url('/');
+            }
 
     }])
 
     .controller('UserprofileController', ['$scope', '$location', '$http', 'userPersistence',
         function($scope, $location, $http, userPersistence) {
 
+            if(userPersistence.getCookieData() === undefined){
+                $location.url('/');
+            }
+
+        $scope.username = userPersistence.getCookieData();
+        $scope.user = [];
+
+        var getuserInfo = function(){
+            $http.post('/users/userinfo', {'username' : $scope.username})
+                .then(function(response){
+                    $scope.user = response.data;
+                   console.log(response.data);
+                });
+        };
+        getuserInfo();
     }])
 
     .controller('WorkpartnerController', ['$scope', '$location', '$http', 'userPersistence',
         function($scope, $location, $http, userPersistence) {
 
+            if(userPersistence.getCookieData() === undefined){
+                $location.url('/');
+            };
+
     }])
 
     .controller('GroupController', ['$scope', '$location', '$http', 'userPersistence',
         function($scope, $location, $http, userPersistence) {
+
+            if(userPersistence.getCookieData() === undefined){
+                $location.url('/');
+            }
         $scope.groups = false;
         $scope.searchList = [];
         $scope.selectedItem = '';

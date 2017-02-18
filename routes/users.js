@@ -7,7 +7,6 @@
 
 var express = require('express');
 var router = express.Router();
-//var request = require('request');
 var bcrypt = require('bcryptjs');
 
 /*
@@ -21,33 +20,6 @@ router.get('/userlist', function(req, res) {
     });
 });
 
-//TODO: actually write properly
-router.get('/matching', function(req, res) {
-    var db = req.db;
-    var collection = db.get('userlist');
-
-    var body = req.query;
-    var word = body.word;
-    var category = body.category;
-
-    if((word !== null) && (category !== null)){
-        request('http://api.datamuse.com/words?ml=' + word, function (error, response, body) {
-            if (!error && response.statusCode == 200) {
-                var body = JSON.parse(body).slice(0, 19);
-                var wordsList = [];
-                for(var i = 0; i < body.length; i++){
-                    var object = body[i];
-                    wordsList.push(object['word']);
-                }
-            }
-        })
-
-    }
-    res.status(400);
-    res.send();
-
-});
-
 /*
  * POST to adduser. Currently adds user's information and specified knowledge words to relevant databases
  * Hashes the password with a random salt which can be easily compared with the string password.
@@ -55,6 +27,7 @@ router.get('/matching', function(req, res) {
 router.post('/adduser', function(req, res) {
     var db = req.db;
     var collection = db.get('userlist');
+    var masterCollection = db.get('masterlist');
     var body = req.body;
     var error = '';
 
@@ -66,11 +39,28 @@ router.post('/adduser', function(req, res) {
 
             const saltRounds = 10;
             const myPlaintextPassword = body['password'];
+            var knowledge = JSON.parse(body['knowledge']);
+
+
+            var userKnowledge = [];
+
+            if (knowledge.length > 0) {
+                for (var i = 0; i < knowledge.length; i++) {
+                    var obj = {'word' : knowledge[i].word, 'category' : knowledge[i].category};
+                    userKnowledge.push(obj);
+                }
+            }
 
             bcrypt.hash(myPlaintextPassword, saltRounds).then(function (hash) {
                 var userInfo = {
-                    'username': body['username'], 'email': body['email'], 'password': hash,
-                    'fullname': body['fullname'], 'age': body['age'], 'gender': body['gender'], 'degree': body['gender']
+                    'username': body['username'],
+                    'email': body['email'],
+                    'password': hash,
+                    'fullname': body['fullname'],
+                    'age': body['age'],
+                    'gender': body['gender'],
+                    'degree': body['gender'],
+                    'knowledge' : userKnowledge
                 };
                 //TODO: why am i checking this twice???
                 collection.find({'username': body['username']}, {}, function (e, docs) {
@@ -87,7 +77,6 @@ router.post('/adduser', function(req, res) {
             });
 
             var wordCollection = db.get('words');
-            var knowledge = JSON.parse(body['knowledge']);
             console.log(knowledge);
 
             if (knowledge.length > 0) {
@@ -105,9 +94,11 @@ router.post('/adduser', function(req, res) {
                             'category.name': {$in: [knowledge[i].category]},
                             'category.words': {$elemMatch: {'name': knowledge[i].word}}
                         },
-                        {$push: {'category.words.$.users': req.body.username}},
+                        {$push: {'category.words.$.users': body['username']}},
                         {upsert: true}
                     );
+
+                    masterCollection.update({ _id: 1 }, {$addToSet : {'words' : knowledge[i].word}}, {upsert: true});
                 }
             }
             res.send((error !== null) ? 'true' : error);
@@ -116,16 +107,49 @@ router.post('/adduser', function(req, res) {
 
 });
 
+router.post('/userinfo', function(req, res){
+    var db = req.db;
+    var userCollection = db.get('userlist');
+    var wordCollection = db.get('words');
+    var body = req.body;
+    var userInfo = [];
+
+    userCollection.find({'username' : body['username']}, {}, function(e, docs){
+        if(docs.length > 0) {
+            var user = {
+                'username' : docs[0]['username'],
+                'email' : docs[0]['email'],
+                'fullname' : docs[0]['fullname'],
+                'age' : docs[0]['age'],
+                'gender' : docs[0]['gender'],
+                'degree' : docs[0]['degree'],
+                'knowledge' : docs[0]['knowledge']
+            };
+            userInfo.push(user);
+        }
+
+        res.send(user);
+    });
+
+    wordCollection.find({'users' : {$in : [body['username']]}}, {}, function(e, docs){
+       console.log(docs);
+    });
+});
+
 /*
  * Get the database categories and return to client.
  */
 router.get('/databaseCategories', function(req, res){
     var db = req.db;
     var wordCollection = db.get('words');
-    wordCollection.find({},{_id: 0, 'category.name' : 1},function(e,docs){
+
+    wordCollection.find({},{},function(e,docs){
         var categories = [];
-        for(var i = 0; i < docs.length; i++){
-            categories.push(docs[i]['category']['name']);
+        console.log(docs);
+        if(docs !== undefined) {
+            for (var i = 0; i < docs.length; i++) {
+                categories.push(docs[i]['category']['name']);
+            }
         }
         res.json(categories);
     });
