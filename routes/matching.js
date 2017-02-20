@@ -17,10 +17,10 @@ router.post('/getwords', function(req, res){
             var dbWord = docs[0]['words'][i].toUpperCase();
             var searchWord = body['word'].toUpperCase();
             if(dbWord.includes(searchWord)){
-                words.push(dbWord.toLowerCase());
+                console.log(dbWord);
+                words.push(docs[0]['words'][i]);
             }
         }
-
         res.send(words);
     });
 });

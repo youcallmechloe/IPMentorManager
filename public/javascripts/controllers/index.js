@@ -39,13 +39,6 @@ angular.module('app', ['ngRoute', 'ngResource', 'ngMaterial', 'ngCookies', 'ngMd
             return userPersistence.getCookieData();
         };
 
-        //TODO: need to change as when user creates account they cant go to create account page as this is stopping it which is wrong
-        // $scope.$on('$routeChangeStart', function (next, current) {
-        //     console.log(userPersistence.getCookieData());
-        //     if(userPersistence.getCookieData() === undefined){
-        //         $location.url('/');
-        //     }
-        // });
         $scope.DashboardClick = function(){
             $location.url('/dashboard');
         };
@@ -272,8 +265,32 @@ angular.module('app', ['ngRoute', 'ngResource', 'ngMaterial', 'ngCookies', 'ngMd
     .controller('WorkpartnerController', ['$scope', '$location', '$http', 'userPersistence',
         function($scope, $location, $http, userPersistence) {
 
+        $scope.interests = [];
+        $scope.age = ['18', '22', '26', '30'];
+
             if(userPersistence.getCookieData() === undefined){
                 $location.url('/');
+            };
+
+            $scope.getWords = function(search){
+                return $http.post('/matching/getwords', {'word' : search})
+                    .then( function (response){
+                        console.log(response.data);
+                        return response.data;
+                    });
+            };
+
+            $scope.addWord = function(word){
+                $scope.interests.push(word);
+                console.log(word);
+            }
+
+            $scope.removeInterest = function(item){
+                for(var i = 0; i < $scope.interests.length; i++){
+                    if(($scope.interests[i].word === item.word) && ($scope.interests[i].category === item.category)){
+                        $scope.interests.splice(i, 1);
+                    }
+                }
             };
 
     }])
