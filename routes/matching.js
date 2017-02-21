@@ -4,6 +4,8 @@
 
 var express = require('express');
 var router = express.Router();
+var async = require('async');
+var http = require('http');
 
 router.post('/getwords', function(req, res){
     var db = req.db;
@@ -25,34 +27,101 @@ router.post('/getwords', function(req, res){
     });
 });
 
-router.post('/createworkpartner', function(req, res){
-
-});
-
 //TODO: actually write properly
-router.get('/matching', function(req, res) {
+//expect JSON to come in as {'username':'', 'gender': '', 'age range': '', 'interests' : [{'word' : '', 'category' : ''}]} will probs add more fields
+router.post('/matching', function(req, res) {
     var db = req.db;
-    var collection = db.get('userlist');
+    var userCollection = db.get('userlist');
+    var wordColletion = db.get('words');
+    var masterlist = db.get('masterlist');
+    var body = req.body;
+    var interests = body['interests'];
+    var userGet = [];
 
-    var body = req.query;
-    var word = body.word;
-    var category = body.category;
 
-    if((word !== null) && (category !== null)){
-        request('http://api.datamuse.com/words?ml=' + word, function (error, response, body) {
-            if (!error && response.statusCode == 200) {
-                var body = JSON.parse(body).slice(0, 19);
-                var wordsList = [];
-                for(var i = 0; i < body.length; i++){
-                    var object = body[i];
-                    wordsList.push(object['word']);
+    userCollection.find({'age': {$lte: body['age']}}, {}, function (e, docs) {
+        for(var i = 0; i < docs.length; i++){
+            if(body['gender'] === 'none'){
+                var user = {
+                    'username' : docs[i]['username'],
+                    'email' : docs[i]['email'],
+                    'fullname' : docs[i]['fullname'],
+                    'age' : docs[i]['age'],
+                    'gender' : docs[i]['gender'],
+                    'degree' : docs[i]['degree'],
+                    'knowledge' : docs[i]['knowledge']
+                };
+            } else{
+                if(docs[i]['gender'] === body['gender']){
+                    var user = {
+                        'username' : docs[i]['username'],
+                        'email' : docs[i]['email'],
+                        'fullname' : docs[i]['fullname'],
+                        'age' : docs[i]['age'],
+                        'gender' : docs[i]['gender'],
+                        'degree' : docs[i]['degree'],
+                        'knowledge' : docs[i]['knowledge']
+                    };
                 }
             }
-        })
+            userGet.push(user);
+        }
+    });
 
+    //if statement doesnt work properly yet, some reason method doesnt actually return a bool
+    var wordUsers = [];
+    for(var i = 0; i < interests.length; i++) {
+        var bool =
+        if(existsInDB(masterlist, interests[i]['word'])) {
+            console.log('true');
+            wordUsers = getWordUsers(wordColletion, interests[i]['word'], interests[i]['category']);
+        } else{
+            var similar = getSimilarWords(interests[i]['word']);
+            for(var i = 0; i < similar.length; i++){
+                if(existsInDB(masterlist, similar[i])){
+                    wordUsers = getWordUsers(wordColletion, similar[i], interests[i]['category']);
+                }
+            }
+        }
     }
-    res.status(400);
-    res.send();
+
+    res.send(userGet);
 
 });
+
+var existsInDB = function(masterlist, word){
+    masterlist.find({'words': word}, function(e, docs){
+        if(docs.length > 0){
+            console.log(word);
+            return true;
+        } else{
+            return false;
+        }
+
+    });
+
+};
+
+var getSimilarWords = function(word){
+    var wordsList = [];
+
+    http.request('http://api.datamuse.com/words?ml=' + word, function (error, response, body) {
+        if (!error && response.statusCode == 200) {
+            var body = JSON.parse(body).slice(0, 19);
+            for(var i = 0; i < body.length; i++){
+                var object = body[i];
+                wordsList.push(object['word']);
+            }
+        }
+    });
+
+    return wordsList;
+};
+
+var getWordUsers = function(wordCollection, word, category){
+    wordCollection.find({'category.name' : category, 'category.words.name' : word}, function(e, docs){
+        console.log(docs);
+    });
+};
+
 module.exports = router;

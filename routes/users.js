@@ -59,7 +59,7 @@ router.post('/adduser', function(req, res) {
                     'fullname': body['fullname'],
                     'age': body['age'],
                     'gender': body['gender'],
-                    'degree': body['gender'],
+                    'degree': body['degree'],
                     'knowledge' : userKnowledge
                 };
                 //TODO: why am i checking this twice???

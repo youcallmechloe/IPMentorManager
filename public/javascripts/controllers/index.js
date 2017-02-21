@@ -157,17 +157,6 @@ angular.module('app', ['ngRoute', 'ngResource', 'ngMaterial', 'ngCookies', 'ngMd
                         }
 
                         return newList;
-
-                        // return $http.get('/users/databaseCategories')
-                        //     .then(function (response){
-                        //         for(var i = 0; i < response.data.length; i++){
-                        //             if(response.data[i].includes(search)){
-                        //                 console.log(response.data[i]);
-                        //                 newList.push(response.data[i]);
-                        //             }
-                        //         }
-                        //         return newList;
-                        //     });
                     }
                 };
 
