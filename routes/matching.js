@@ -71,9 +71,14 @@ router.post('/matching', function(req, res) {
     //if statement doesnt work properly yet, some reason method doesnt actually return a bool
     var wordUsers = [];
     for(var i = 0; i < interests.length; i++) {
-        var bool =
-        if(existsInDB(masterlist, interests[i]['word'])) {
-            console.log('true');
+        var bool = false;
+        masterlist.find({'words': interests[i]['word']}, function(e, docs) {
+            if (docs.length > 0) {
+                bool=true;
+            }
+        });
+        console.log(bool);
+        if(bool) {
             wordUsers = getWordUsers(wordColletion, interests[i]['word'], interests[i]['category']);
         } else{
             var similar = getSimilarWords(interests[i]['word']);
@@ -90,16 +95,14 @@ router.post('/matching', function(req, res) {
 });
 
 var existsInDB = function(masterlist, word){
+    var bool = false;
     masterlist.find({'words': word}, function(e, docs){
         if(docs.length > 0){
-            console.log(word);
-            return true;
-        } else{
-            return false;
+            bool = true;
+            console.log(word + bool);
         }
-
+        return bool;
     });
-
 };
 
 var getSimilarWords = function(word){
@@ -113,7 +116,7 @@ var getSimilarWords = function(word){
                 wordsList.push(object['word']);
             }
         }
-    });
+    }).end();
 
     return wordsList;
 };

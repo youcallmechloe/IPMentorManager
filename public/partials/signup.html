@@ -7,7 +7,7 @@
                 </md-input-container>
                 <md-input-container>
                     <label>Email</label>
-                    <input type="text" class="myform" placeholder="Email" ng-model="email" required>
+                    <input type="email" class="myform" placeholder="Email" ng-model="email" required ng-class="{ 'has-error': userForm.email.$invalid }">
                 </md-input-container>
                 <md-input-container>
                     <label>Password</label>
@@ -25,13 +25,17 @@
                 </md-input-container>
             </md-content>
             <md-content layout="row" class="md-padding" layout-align="center">
+                <md-radio-group ng-model="GenderRadio" style="padding-right:50px;">
+                    <md-radio-button value="Female" class="md-primary">Female</md-radio-button>
+                    <md-radio-button value="Male" class="md-primary">Male</md-radio-button>
+                </md-radio-group>
+                <select style="height: 5%; width:27%; padding-top:20px; display: block; margin: 3%;" ng-model="degree">
+                    <option value="">---Choose Degree---</option> <!-- not selected / blank option -->
+                    <option ng-repeat="option in categoryList" value="{{option}}">{{option}}</option>
+                </select>
                 <md-input-container>
-                    <label>Gender</label>
-                    <input type="text" class="myform" placeholder="Gender" ng-model="gender" required>
-                </md-input-container>
-                <md-input-container>
-                    <label>Degree</label>
-                    <input type="text" class="myform" placeholder="Degree" ng-model="degree" required>
+                    <label>Degree Title</label>
+                    <input type="text" class="myform" placeholder="Degree Title" ng-model="degreetitle" required>
                 </md-input-container>
             </md-content>
             <h3>Interests:</h3>
@@ -40,8 +44,8 @@
                     <label>Interest</label>
                     <input type="text" placeholder="Interest" ng-model="item.word" required>
                 </md-input-container>
-                <select style="height: 5%; padding-top:20px; display: block; margin: 3%;" ng-model="item.category">
-                    <option value="">---Please select---</option> <!-- not selected / blank option -->
+                <select style="height: 5%; width:27%; padding-top:20px; display: block; margin: 3%;" ng-model="item.category">
+                    <option value="">---Choose Category---</option> <!-- not selected / blank option -->
                     <option ng-repeat="option in categoryList" value="{{option}}">{{option}}</option>
                 </select>
                 <md-button class="md-icon-button md-primary" aria-label="Settings" ng-click="removeInterest(item)" style="display: block; margin: 1%;">

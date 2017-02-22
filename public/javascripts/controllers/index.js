@@ -29,6 +29,19 @@ angular.module('app', ['ngRoute', 'ngResource', 'ngMaterial', 'ngCookies', 'ngMd
         }
     }])
 
+    .directive("listValidator", function() {
+        return {
+            restrict: "A",
+            require: "ngModel",
+            link: function(scope, element, attributes, ngModel) {
+                var list = scope.$eval(attributes.listValidator);
+                ngModel.$validators.listValidator = function(modelValue, viewValue) {
+                    return list.indexOf(viewValue) !== -1;
+                }
+            },
+        };
+    })
+
     //---------------
     // Controllers
     //---------------
@@ -117,12 +130,20 @@ angular.module('app', ['ngRoute', 'ngResource', 'ngMaterial', 'ngCookies', 'ngMd
     .controller('SignupController', ['$scope', '$location', '$http', 'userPersistence',
         function($scope, $location, $http, userPersistence) {
 
+        $scope.GenderRadio = "Female";
+
             if(userPersistence.getCookieData() !== undefined){
                 $location.url('/home');
             }
                 var limit = 10;
                 var counter = 1;
-                $scope.categoryList = ['Chemistry', 'Computer Science'];
+                $scope.categoryList = ['Accounting and Finance', 'Anthropology', 'Archaeology', 'Art', 'Astronomy', 'Biochemistry', 'Biology',
+                    'Business', 'Chemistry', 'Computer Science', 'Criminology', 'Ecology', 'Economics', 'Education Studies', 'Engineering',
+                    'English', 'Environmental Science', 'Fashion', 'Film', 'French', 'Geography', 'Geology', 'Geophysics',
+                    'German', 'History', 'Information Technology', 'Language', 'Law', 'Management', 'Marketing', 'Mathematical Sciences',
+                    'Medicine', 'Midwifery', 'Music', 'Natural Sciences', 'Nursing', 'Oceanography', 'Pharmacology', 'Philosophy',
+                    'Physics', 'Physiotherapy', 'Politics and International Relations', 'Psychology', 'Ship Science', 'Sociology',
+                    'Spanish', 'Zoology', 'Other'];
                 $scope.interests = [{
                     word : '',
                     category : ''
@@ -170,6 +191,10 @@ angular.module('app', ['ngRoute', 'ngResource', 'ngMaterial', 'ngCookies', 'ngMd
                     return options;
                 };
 
+                var checkUserName = function(name){
+
+                }
+
                 $scope.signup = function () {
                     var username = $scope.username;
                     var knowledgeList = [];
@@ -186,22 +211,31 @@ angular.module('app', ['ngRoute', 'ngResource', 'ngMaterial', 'ngCookies', 'ngMd
                         'password': $scope.password,
                         'fullname': $scope.fullname,
                         'age': $scope.age,
-                        'gender': $scope.gender,
+                        'gender': $scope.GenderRadio,
                         'degree': $scope.degree,
+                        'degreetitle' : $scope.degreetitle,
                         'knowledge': JSON.stringify($scope.interests)
                     };
 
-                    console.log(newUser);
+                    console.log(username);
+                    $http.post("/users/checkusername", {'username' : name})
+                        .then(function(response){
+                            var bool = response.data;
 
-                    $http.post("/users/addUser", newUser)
-                        .then(function (response) {
-                            console.log(response.data);
-                            if (response.data === 'true') {
-                                userPersistence.setCookieData(username);
-                                console.log(username);
-                                $location.url('/home');
-                            } else {
-                                alert('There has been a problem creating your account. Please try again.')
+                            if(bool) {
+                                $http.post("/users/addUser", newUser)
+                                    .then(function (response) {
+                                        console.log(response.data);
+                                        if (response.data === 'true') {
+                                            userPersistence.setCookieData(username);
+                                            console.log(username);
+                                            $location.url('/home');
+                                        } else {
+                                            alert('There has been a problem creating your account. Please try again.')
+                                        }
+                                    });
+                            } else{
+                                alert('Username taken, please choose another');
                             }
                         });
                 };
