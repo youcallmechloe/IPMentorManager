@@ -1,7 +1,7 @@
 /**
  * Created by root on 01/02/2017.
  */
-var mongoose = requrie('mongoose');
+var mongoose = require('mongoose');
 
 var WordSchema = new mongoose.Schema({
     category : {
@@ -13,4 +13,4 @@ var WordSchema = new mongoose.Schema({
     }
 });
 
-module.exports = mongoose.model('words', WordSchema);
+module.exports = mongoose.model('words', WordSchema, 'words');
