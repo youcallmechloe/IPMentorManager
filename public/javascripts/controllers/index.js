@@ -288,8 +288,16 @@ angular.module('app', ['ngRoute', 'ngResource', 'ngMaterial', 'ngCookies', 'ngMd
     .controller('WorkpartnerController', ['$scope', '$location', '$http', 'userPersistence',
         function($scope, $location, $http, userPersistence) {
 
+            $scope.categoryList = ['Accounting and Finance', 'Anthropology', 'Archaeology', 'Art', 'Astronomy', 'Biochemistry', 'Biology',
+                'Business', 'Chemistry', 'Computer Science', 'Criminology', 'Ecology', 'Economics', 'Education Studies', 'Engineering',
+                'English', 'Environmental Science', 'Fashion', 'Film', 'French', 'Geography', 'Geology', 'Geophysics',
+                'German', 'History', 'Information Technology', 'Language', 'Law', 'Management', 'Marketing', 'Mathematical Sciences',
+                'Medicine', 'Midwifery', 'Music', 'Natural Sciences', 'Nursing', 'Oceanography', 'Pharmacology', 'Philosophy',
+                'Physics', 'Physiotherapy', 'Politics and International Relations', 'Psychology', 'Ship Science', 'Sociology',
+                'Spanish', 'Zoology', 'Other'];
         $scope.interests = [];
-        $scope.age = ['18', '22', '26', '30'];
+        $scope.age = [18, 22, 26, 30];
+        $scope.gender = ['Female', 'Male', 'None'];
 
             if(userPersistence.getCookieData() === undefined){
                 $location.url('/');
@@ -304,9 +312,9 @@ angular.module('app', ['ngRoute', 'ngResource', 'ngMaterial', 'ngCookies', 'ngMd
             };
 
             $scope.addWord = function(word){
-                $scope.interests.push(word);
+                $scope.interests.push({'word' : word, 'category' : $scope.itemCategory});
                 console.log(word);
-            }
+            };
 
             $scope.removeInterest = function(item){
                 for(var i = 0; i < $scope.interests.length; i++){
@@ -314,6 +322,15 @@ angular.module('app', ['ngRoute', 'ngResource', 'ngMaterial', 'ngCookies', 'ngMd
                         $scope.interests.splice(i, 1);
                     }
                 }
+            };
+            $scope.match = function(){
+                var data = {'gender' : $scope.Gender,
+                        'age' : $scope.Age,
+                        'interests' : $scope.interests};
+                $http.post('/matching/matching', data)
+                    .then(function(response){
+                        $scope.response = JSON.parse(response.data);
+                    });
             };
 
     }])

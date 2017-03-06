@@ -8,6 +8,8 @@
 var express = require('express');
 var router = express.Router();
 var bcrypt = require('bcryptjs');
+var UserSchema = require('../models/users');
+var WordSchema = require('../models/words');
 
 /*
  * GET userlist and returns in JSON to client
@@ -79,28 +81,13 @@ router.post('/adduser', function(req, res) {
             var wordCollection = db.get('words');
             console.log(knowledge);
 
-            if (knowledge.length > 0) {
+            if(knowledge.length > 0) {
                 for (var i = 0; i < knowledge.length; i++) {
-                    //updating the words within the database if a user has not used it before
-                    wordCollection.update(
-                        {'category.name': {$in: [knowledge[i].category]}},
-                        {$addToSet: {'category.words': {'name': knowledge[i].word}}},
-                        {upsert: true}
-                    );
-
-                    //updating the users within a word if the user has the word listed
-                    wordCollection.update(
-                        {
-                            'category.name': {$in: [knowledge[i].category]},
-                            'category.words': {$elemMatch: {'name': knowledge[i].word}}
-                        },
-                        {$push: {'category.words.$.users': body['username']}},
-                        {upsert: true}
-                    );
-
-                    masterCollection.update({ _id: 1 }, {$addToSet : {'words' : knowledge[i].word}}, {upsert: true});
+                    wordCollection.update({'word': knowledge[i]['word'], 'category': knowledge[i]['category']},
+                        {$push: {'users': body['username']}}, {upsert: true});
                 }
             }
+
             res.send((error !== null) ? 'true' : error);
         }
     });

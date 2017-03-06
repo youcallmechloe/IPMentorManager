@@ -9,7 +9,9 @@ var UserSchema = new mongoose.Schema({
     fullname : String,
     age : Number,
     gender : String,
-    degree : String
+    degree : String,
+    knowledge : Array,
+    workpartners : Array
 });
 
 module.exports = mongoose.model('userlist', UserSchema, 'userlist');

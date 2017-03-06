@@ -11,94 +11,27 @@ var _ = require('underscore');
 var mongoose = require('mongoose');
 mongoose.Promise = require('bluebird');
 var UserSchema = require('../models/users');
-var MasterList = require('../models/masterlist');
 var WordSchema = require('../models/words');
 
 router.post('/getwords', function(req, res){
-    var db = req.db;
-    var collection = db.get('masterlist');
     var body = req.body;
 
-    collection.find({}, function(e,docs){
+    WordSchema.find({}, function(e, docs){
         var words = [];
-
-        for(var i = 0; i < docs[0]['words'].length; i++){
-            var dbWord = docs[0]['words'][i].toUpperCase();
-            var searchWord = body['word'].toUpperCase();
-            if(dbWord.includes(searchWord)){
-                console.log(dbWord);
-                words.push(docs[0]['words'][i]);
+        for(var i = 0; i < docs.length; i++){
+            var dbword = docs[i]['word'].toUpperCase();
+            var searchword = body['word'].toUpperCase();
+            if(dbword.includes(searchword)){
+                words.push(docs[i]['word']);
             }
         }
         res.send(words);
     });
 });
 
-//TODO: actually write properly
-//expect JSON to come in as {'username':'', 'gender': '', 'age range': '', 'interests' : [{'word' : '', 'category' : ''}]} will probs add more fields
+//TODO: make more efficient!! & make more readable
+//matching algorithm to be used by a user with search requirements
 router.post('/matching', function(req, res){
-    var body = req.body;
-    var interests = body['interests'];
-    global.userGet = [];
-
-    async.series([
-        function(callback){
-        console.log('starting');
-        UserSchema.find({'age': {$lte: body['age']}}, function (e, userlist) {
-            global.users = userlist;
-            for(var i = 0; i < users.length; i++) {
-                global.user = users[i];
-                if ((users[i]['gender'] === body['gender']) || (body['gender'] === 'none')) {
-                    // console.log(user);
-
-                    for(var j = 0; j < interests.length; j++){
-                        global.category = interests[j]['category'];
-                        global.word = interests[j]['word'];
-
-                        MasterList.find({'words' : interests[j]['word']}, function(e, docs){
-                            if(docs !== undefined){
-                                WordSchema.find({'category.name' : category, 'category.words.name' : word}, function(e, docs){
-                                    global.user = {
-                                        'username' : user['username'],
-                                        'email' : user['email'],
-                                        'fullname' : user['fullname'],
-                                        'age' : user['age'],
-                                        'gender' : user['gender'],
-                                        'degree' : user['degree'],
-                                        'knowledge' : user['knowledge'],
-                                        'score' : 1
-                                    };
-
-                                    if(userGet.length === 0){
-                                        userGet.push(user);
-                                    } else {
-                                        for (var u = 0; u < userGet.length; u++) {
-                                            if (userGet[u]['username'] === user['username']) {
-                                                userGet[u]['score'] = userGet[u]['score'] + 1;
-                                            } else {
-                                                userGet.push(user);
-                                            }
-                                        }
-                                        console.log("sdfss")
-                                    }
-                                    console.log(userGet);
-                                });
-                            }
-                        })
-                    }
-                }
-            }
-            console.log(userGet);
-            callback(null, userGet);
-        });
-    }], function(err, result){
-        console.log(result);
-        res.send(userGet);
-    });
-
-});
-
-router.post('/matchingnew', function(req, res){
     var body = req.body;
     var interests = body['interests'];
     async.waterfall([
@@ -129,13 +62,30 @@ router.post('/matchingnew', function(req, res){
         function(userlist, body, cb2){
             global.wordList = [];
             var interests = body['interests'];
-            MasterList.find(function(e, docs) {
-                for(var j = 0; j < interests.length; j++){
-                    if(_.contains(docs[0]['words'], interests[j]['word'])){
-                        wordList.push({'word' : interests[j]['word'], 'category' : interests[j]['category'], 'bool' : true});
-                    } else{
-                        wordList.push({'word' : interests[j]['word'], 'category' : interests[j]['category'], 'bool' : false});
+
+            WordSchema.find(function (e, docs) {
+                var dbList = [];
+                for (var i = 0; i < docs.length; i++) {
+                    dbList.push(docs[i]['word']);
+                }
+
+                for (var j = 0; j < interests.length; j++) {
+                    if (_.contains(dbList, interests[j]['word'])) {
+                        wordList.push({
+                            'word': interests[j]['word'],
+                            'category': interests[j]['category'],
+                            'score' : 1,
+                            'bool': true
+                        });
+                    } else {
+                        wordList.push({
+                            'word': interests[j]['word'],
+                            'category': interests[j]['category'],
+                            'score' : 1,
+                            'bool': false
+                        });
                     }
+
                 }
                 cb2(null, userlist, wordList, body);
             });
@@ -145,24 +95,25 @@ router.post('/matchingnew', function(req, res){
                 if(i < wordlist.length){
                     global.category = wordlist[i]['category'];
                     if(wordlist[i]['bool'] === false){
-                        var similarWords = [];
                         datamuse.words({
                             ml : wordlist[i]['word']
                         }).then( function(response){
                             var body = response.slice(0,19);
+                            var highestScore = body[0]['score'];
                             for(var j = 0; j < body.length; j++){
-                                wordlist.push({'word' : body[j]['word'], 'category' : category, 'bool' : true})
+                                wordlist.push({'word' : body[j]['word'], 'category' : category, 'score' : 0.5*(body[j]['score']/highestScore), 'bool' : true})
                             }
                             asyncLoop(i+1, cb4);
                         });
                     } else{
                         asyncLoop(i+1, cb4);
                     }
-                } else{
+                } else {
+                    console.log(wordlist);
                     cb4(wordlist);
                 }
-            }
-            asyncLoop(0, function(res){
+            };
+            asyncLoop(0, function (res) {
                 cb3(null, users, res, body);
             });
         },
@@ -170,28 +121,33 @@ router.post('/matchingnew', function(req, res){
             WordSchema.find(function (e, docs) {
                 for (var j = 0; j < wordlist.length; j++) {
                     for (var i = 0; i < docs.length; i++) {
-                        if ((docs[i]['category']['name'] === wordlist[j]['category'])) {
-                            for(var c = 0; c < docs[i]['category']['words'].length; c++){
-                                if(docs[i]['category']['words'][c]['name'] === wordlist[j]['word']){
-                                    for(var u = 0; u < docs[i]['category']['words'][c]['users'].length; u++) {
-                                        for(var v = 0; v < users.length; v++){
-                                            if(docs[i]['category']['words'][c]['users'][u] === users[v]['username']){
-                                                users[v]['score'] = users[v]['score'] + 1;
-                                            }
-                                        }
-                                        //find users then append score in userlist
-                                        //if using datamuse generated word then times score given by certain number to obtain lower score!
-                                    }
+                        if ((docs[i]['word'] === wordlist[j]['word']) && (docs[i]['category'] === wordlist[j]['category'])) {
+                            for (var v = 0; v < users.length; v++) {
+                                if (_.contains(docs[i]['users'], users[v]['username'])) {
+                                    users[v]['score'] = users[v]['score'] + 1;
                                 }
                             }
+                            //if using datamuse generated word then times score given by certain number to obtain lower score!
                         }
+
                     }
                 }
                 cb5(null, users);
             });
         }
     ], function (err, result) {
-        res.send(result);
+        //TODO: sort users by score and only send top 5?
+
+        function compare(a, b){
+            if (a.score > b.score)
+                return -1;
+            if (a.score < b.score)
+                return 1;
+            return 0;
+        }
+        result.sort(compare);
+        var finalresult = result.splice(0,5);
+        res.send(finalresult);
     });
 });
 

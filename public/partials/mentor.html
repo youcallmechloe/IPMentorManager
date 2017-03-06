@@ -5,24 +5,22 @@
             <md-content layout="column">
                 <md-button class="sideButton" ng-click="find = true" ng-hide="find">Find a new Partner</md-button>
                 <div ng-show="find">
-                    <select>
+                    <select ng-model="Gender">
                         <option value="female">Female</option>
                         <option value="male">Male</option>
                         <option value="none">No Preference</option>
                     </select>
-                    <select>
-                        <option value="18">Under 18</option>
-                        <option value="22">18-22</option>
-                        <option value="26">Under 18</option>
-                        <option value="18">Under 18</option>
-                        <option value="none">No Preference</option>
+                    <select ng-model="Age">
+                        <option ng-repeat="option in age" value="{{option}}">Under {{option}}</option>
                     </select>
                     <br>
-                    <h4>I'd like to find a...</h4>
-                    <select>
-                        <option value="mentor">Mentor</option>
-                        <option value="mentee">Mentee</option>
-                    </select>
+                    <md-content layout="row" style="padding-top: 20px; padding-bottom:20px;">
+                        <h4>I'd like to find a...</h4>
+                        <select ng-model="MentorType" style="height:4%; vertical-align: bottom;">
+                            <option value="mentor">Mentor</option>
+                            <option value="mentee">Mentee</option>
+                        </select>
+                    </md-content>
                     <br>
                     <md-content layout="row">
                         <md-autocomplete md-selected-item="selectedItem" md-search-text="searchText"
@@ -33,6 +31,10 @@
                                 No matches found.
                             </md-not-found>
                         </md-autocomplete>
+                        <select style="height: 5%; width:27%; padding-top:20px; display: block; margin: 3%;" ng-model="itemCategory">
+                            <option value="">---Choose Category---</option> <!-- not selected / blank option -->
+                            <option ng-repeat="option in categoryList" value="{{option}}">{{option}}</option>
+                        </select>
                         <md-button class="md-raised md-primary" ng-click="addWord(searchText)">Add Interest</md-button>
                     </md-content>
                     <md-content ng-repeat="item in interests" layout="row">
@@ -43,8 +45,10 @@
                         </md-button>
                     </md-content>
                     <md-button class="sideButton" ng-click="find = false">Go Back</md-button>
+                    <md-button class="md-icon-button md-primary" ng-click="match()">Find Partner</md-button>
                 </div>
 
+                {{response}}
             </md-content>
         </md-content>
     </md-content>
