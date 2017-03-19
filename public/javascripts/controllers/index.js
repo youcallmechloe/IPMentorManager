@@ -329,8 +329,10 @@ angular.module('app', ['ngRoute', 'ngResource', 'ngMaterial', 'ngCookies', 'ngMd
             $scope.match = function(){
                 var data = {'gender' : $scope.Gender,
                         'age' : $scope.Age,
-                        'interests' : $scope.interests};
-                $http.post('/matching/matching', data)
+                        'interests' : $scope.interests,
+                        'sessionID' : userPersistenceSession.getCookieData(),
+                        'username' : userPersistenceUsername.getCookieData()};
+                $http.post('/matching/matching1', data)
                     .then(function(response){
                         $scope.find = false;
                         $scope.fullresponse = true;
@@ -355,7 +357,8 @@ angular.module('app', ['ngRoute', 'ngResource', 'ngMaterial', 'ngCookies', 'ngMd
         $scope.post = false;
 
         var getGroups = function() {
-            $http.post('/groups/groupsmemberof', {'username' : userPersistenceUsername.getCookieData()})
+            $http.post('/groups/groupsmemberof', {'username' : userPersistenceUsername.getCookieData(),
+                'sessionID' : userPersistenceSession.getCookieData()})
                 .then(function (response){
                     $scope.memberList = response.data;
                 });
@@ -377,7 +380,9 @@ angular.module('app', ['ngRoute', 'ngResource', 'ngMaterial', 'ngCookies', 'ngMd
                 'description' : $scope.groupdescription,
                 'admin' : userPersistenceUsername.getCookieData(),
                 'members' : [userPersistenceUsername.getCookieData()],
-                'posts' : []
+                'posts' : [],
+                'username' : userPersistenceUsername.getCookieData(),
+                'sessionID' : userPersistenceSession.getCookieData()
             };
 
             $http.post("/groups/creategroup", groupJSON)
@@ -397,7 +402,8 @@ angular.module('app', ['ngRoute', 'ngResource', 'ngMaterial', 'ngCookies', 'ngMd
         $scope.joinGroup = function(groupName){
             var joinJSON = {
                 'username' : userPersistenceUsername.getCookieData(),
-                'groupname' : groupName
+                'groupname' : groupName,
+                'sessionID' : userPersistenceSession.getCookieData()
             }
 
             $http.post('/groups/joingroup', joinJSON)
@@ -413,7 +419,8 @@ angular.module('app', ['ngRoute', 'ngResource', 'ngMaterial', 'ngCookies', 'ngMd
             var postJSON = {
                 'username' : userPersistenceUsername.getCookieData(),
                 'groupname' : groupName,
-                'post' : $scope.grouppost
+                'post' : $scope.grouppost,
+                'sessionID' : userPersistenceSession.getCookieData()
             };
 
             $http.post('/groups/postingroup', postJSON)

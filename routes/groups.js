@@ -3,6 +3,7 @@
  */
 var express = require('express');
 var router = express.Router();
+var Cookie = require('../models/cookies');
 
 //TODO: on front end!!! do the group name thingy so user gets told straight away of a taken group name!
 /*
@@ -13,16 +14,24 @@ router.post('/creategroup', function(req, res){
     var collection = db.get('groups');
     var body = req.body;
 
-    collection.find({'groupname': body['groupname']}, {}, function(e, docs) {
-
+    Cookie.find({'username' : body['username'], 'sessionID' : body['sessionID']}, function(e, docs) {
         console.log(docs);
-
         if (docs.length > 0) {
-            res.send('false');
-        } else {
-            collection.insert(body, function (err, result) {
-                res.send((err === null) ? '' : {msg: 'error: ' + err});
-            })
+
+            collection.find({'groupname': body['groupname']}, {}, function (e, docs) {
+
+                console.log(docs);
+
+                if (docs.length > 0) {
+                    res.send('false');
+                } else {
+                    collection.insert(body, function (err, result) {
+                        res.send((err === null) ? '' : {msg: 'error: ' + err});
+                    })
+                }
+            });
+        } else{
+            res.send("not allowed");
         }
     });
 });
@@ -36,7 +45,12 @@ router.post('/joingroup', function(req, res){
     var collection = db.get('groups');
     var body = req.body;
 
-    collection.update({'groupname' : body['groupname']}, {$addToSet : {'members': body['username']}});
+    Cookie.find({'username' : body['username'], 'sessionID' : body['sessionID']}, function(e, docs) {
+        console.log(docs);
+        if (docs.length > 0) {
+            collection.update({'groupname': body['groupname']}, {$addToSet: {'members': body['username']}});
+        }
+    });
 
     res.send({msg: ''});
 });
@@ -64,8 +78,13 @@ router.post('/postingroup', function(req, res){
     var collection = db.get('groups');
     var body = req.body;
 
-    collection.update({'groupname' : body['groupname']},
-        {$push : {'posts': {$each: [{'post' : body['post'], 'username' : body['username']}], $position : 0}}});
+    Cookie.find({'username' : body['username'], 'sessionID' : body['sessionID']}, function(e, docs) {
+        console.log(docs);
+        if (docs.length > 0) {
+            collection.update({'groupname': body['groupname']},
+                {$push: {'posts': {$each: [{'post': body['post'], 'username': body['username']}], $position: 0}}});
+        }
+    });
 
     res.send({msg: ''});
 });
@@ -103,14 +122,20 @@ router.post('/groupsmemberof', function(req, res){
     var collection = db.get('groups');
     var body = req.body;
 
-    collection.find({'members': {$in : [body['username']]}}, {}, function(e, docs){
-        console.log(docs['groupname']);
-        var names = [];
+    Cookie.find({'username' : body['username'], 'sessionID' : body['sessionID']}, function(e, docs){
+        console.log(docs);
+        if(docs.length > 0) {
+            collection.find({'members': {$in: [body['username']]}}, {}, function (e, docs) {
+                var names = [];
 
-        for(var i = 0; i < docs.length; i++){
-            names.push(docs[i]);
+                for (var i = 0; i < docs.length; i++) {
+                    names.push(docs[i]);
+                }
+                res.send(names);
+            });
+        } else{
+            res.send([]);
         }
-        res.send(names);
     });
 });
 

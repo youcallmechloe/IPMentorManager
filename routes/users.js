@@ -101,28 +101,31 @@ router.post('/userinfo', function(req, res){
     var userInfo = [];
 
     Cookie.find({'username' : body['username'], 'sessionID' : body['sessionID']}, function(e, docs){
-        console.log(docs);
-    });
+        if(docs.length > 0){
+            userCollection.find({'username' : body['username']}, {}, function(e, docs){
+                if(docs.length > 0) {
+                    var user = {
+                        'username' : docs[0]['username'],
+                        'email' : docs[0]['email'],
+                        'fullname' : docs[0]['fullname'],
+                        'age' : docs[0]['age'],
+                        'gender' : docs[0]['gender'],
+                        'degree' : docs[0]['degree'],
+                        'degreetitle': docs[0]['degreetitle'],
+                        'userscore' : docs[0]['userscore'],
+                        'knowledge' : docs[0]['knowledge']
+                    };
+                    userInfo.push(user);
+                    console.log(user);
+                }
 
-    userCollection.find({'username' : body['username']}, {}, function(e, docs){
-        if(docs.length > 0) {
-            var user = {
-                'username' : docs[0]['username'],
-                'email' : docs[0]['email'],
-                'fullname' : docs[0]['fullname'],
-                'age' : docs[0]['age'],
-                'gender' : docs[0]['gender'],
-                'degree' : docs[0]['degree'],
-                'degreetitle': docs[0]['degreetitle'],
-                'userscore' : docs[0]['userscore'],
-                'knowledge' : docs[0]['knowledge']
-            };
-            userInfo.push(user);
-            console.log(user);
+                res.send(user);
+            });
+        } else{
+            res.send("");
         }
-
-        res.send(user);
     });
+
 });
 
 /*
