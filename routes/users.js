@@ -31,6 +31,7 @@ router.get('/userlist', function(req, res) {
 router.post('/adduser', function(req, res) {
     var db = req.db;
     var collection = db.get('userlist');
+    var cookies = db.get('cookies');
     var body = req.body;
     var error = '';
 
@@ -72,17 +73,20 @@ router.post('/adduser', function(req, res) {
                     error = err;
                 });
 
+                var session = randomstring.generate();
+                cookies.update({'username' : body['username']}, {'username' : body['username'], 'sessionID' : session}, {upsert: true});
+
                 var wordCollection = db.get('words');
                 console.log(knowledge);
 
-                if (knowledge.length > 0) {
+                if (knowledge.length !== undefined) {
                     for (var i = 0; i < knowledge.length; i++) {
                         wordCollection.update({'word': knowledge[i]['word'], 'category': knowledge[i]['category']},
                             {$push: {'users': body['username']}}, {upsert: true});
                     }
                 }
 
-                res.send((error !== null) ? 'true' : error);
+                res.send((error !== null) ? session : error);
             }
         });
 
@@ -95,6 +99,10 @@ router.post('/userinfo', function(req, res){
     var userCollection = db.get('userlist');
     var body = req.body;
     var userInfo = [];
+
+    Cookie.find({'username' : body['username'], 'sessionID' : body['sessionID']}, function(e, docs){
+        console.log(docs);
+    });
 
     userCollection.find({'username' : body['username']}, {}, function(e, docs){
         if(docs.length > 0) {
@@ -186,7 +194,7 @@ router.post('/loginuser', function(req, res){
                 if (result) {
                     var session = randomstring.generate();
                     console.log(session);
-                    cookies.update({'username' : body['username']}, {'sessionID' : session}, {upsert: true});
+                    cookies.update({'username' : body['username']}, {'username' : body['username'], 'sessionID' : session}, {upsert: true});
                     res.send(session);
                 } else {
                     res.send('false');

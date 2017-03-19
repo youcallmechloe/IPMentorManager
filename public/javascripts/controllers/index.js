@@ -94,10 +94,10 @@ angular.module('app', ['ngRoute', 'ngResource', 'ngMaterial', 'ngCookies', 'ngMd
 
     }])
 
-    .controller('LoginController', ['$scope', '$location', '$http', 'userPersistenceSession', 'userPersistenceUsername'
+    .controller('LoginController', ['$scope', '$location', '$http', 'userPersistenceSession', 'userPersistenceUsername',
         function ($scope, $location, $http, userPersistenceSession, userPersistenceUsername) {
 
-        if(userPersistence.getCookieData() !== undefined){
+        if(userPersistenceSession.getCookieData() !== undefined){
             $location.url('/home');
         }
 
@@ -130,134 +130,131 @@ angular.module('app', ['ngRoute', 'ngResource', 'ngMaterial', 'ngCookies', 'ngMd
 
     }])
 
-    .controller('SignupController', ['$scope', '$location', '$http', 'userPersistence',
-        function($scope, $location, $http, userPersistence) {
+    .controller('SignupController', ['$scope', '$location', '$http', 'userPersistenceSession', 'userPersistenceUsername',
+        function($scope, $location, $http, userPersistenceSession, userPersistenceUsername) {
 
-        $scope.GenderRadio = "Female";
 
-            if(userPersistence.getCookieData() !== undefined){
+            if(userPersistenceSession.getCookieData() !== undefined){
                 $location.url('/home');
             }
-                var limit = 10;
-                var counter = 1;
-                $scope.categoryList = ['Accounting and Finance', 'Anthropology', 'Archaeology', 'Art', 'Astronomy', 'Biochemistry', 'Biology',
+            var limit = 10;
+            var counter = 1;
+            $scope.GenderRadio = "Female";
+            $scope.categoryList = ['Accounting and Finance', 'Anthropology', 'Archaeology', 'Art', 'Astronomy', 'Biochemistry', 'Biology',
                     'Business', 'Chemistry', 'Computer Science', 'Criminology', 'Ecology', 'Economics', 'Education Studies', 'Engineering',
                     'English', 'Environmental Science', 'Fashion', 'Film', 'French', 'Geography', 'Geology', 'Geophysics',
                     'German', 'History', 'Information Technology', 'Language', 'Law', 'Management', 'Marketing', 'Mathematical Sciences',
                     'Medicine', 'Midwifery', 'Music', 'Natural Sciences', 'Nursing', 'Oceanography', 'Pharmacology', 'Philosophy',
                     'Physics', 'Physiotherapy', 'Politics and International Relations', 'Psychology', 'Ship Science', 'Sociology',
                     'Spanish', 'Zoology', 'Other'];
-                $scope.interests = [{
-                    word : '',
-                    category : ''
-                }];
+            $scope.interests = [{
+                word : '',
+                category: ''
+            }];
 
-                $scope.addNew = function(){
-                    if(counter !== limit) {
-                        $scope.interests.push({word: '', category: ''});
-                        counter++;
-                    } else{
-                        alert("You've reached the limit on interest fields!")
-                    }
-                };
-
-                $scope.removeInterest = function(item){
-                    for(var i = 0; i < $scope.interests.length; i++){
-                        if(($scope.interests[i].word === item.word) && ($scope.interests[i].category === item.category)){
-                            $scope.interests.splice(i, 1);
-                        }
-                    }
-                };
-
-                $scope.getCategory = function(search){
-                    var newList = [];
-                    if(search !== '') {
-                        for(var i = 0; i < $scope.categoryList.length; i++){
-                            console.log($scope.categoryList[i]);
-                            console.log(search);
-                            if($scope.categoryList[i].indexOf(search) !== -1){
-                                newList.push($scope.categoryList[i]);
-                            }
-                        }
-
-                        return newList;
-                    }
-                };
-
-                $scope.getOptions = function () {
-                    var options = [];
-                    $.getJSON('/users/databaseCategories', function (data) {
-                        $.each(data, function (index, value) {
-                            options.push(value);
-                        })
-                    });
-                    return options;
-                };
-
-                var checkUserName = function(name){
-
+            $scope.addNew = function () {
+                if (counter !== limit) {
+                    $scope.interests.push({word: '', category: ''});
+                    counter++;
+                } else {
+                    alert("You've reached the limit on interest fields!")
                 }
+            };
 
-                $scope.signup = function () {
-                    var username = $scope.username;
-                    var knowledgeList = [];
-                    for (var i = 0; i < counter; i++) {
-                        var interest = {
-                            'category': $('#interestCategory' + i).find(":selected").text(),
-                            'word': $('#interestText' + i).val()
-                        };
-                        knowledgeList[i] = interest;
+            $scope.removeInterest = function (item) {
+                for (var i = 0; i < $scope.interests.length; i++) {
+                    if (($scope.interests[i].word === item.word) && ($scope.interests[i].category === item.category)) {
+                        $scope.interests.splice(i, 1);
                     }
-                    var newUser = {
-                        'username': username,
-                        'email': $scope.email,
-                        'password': $scope.password,
-                        'fullname': $scope.fullname,
-                        'age': $scope.age,
-                        'gender': $scope.GenderRadio,
-                        'degree': $scope.degree,
-                        'degreetitle' : $scope.degreetitle,
-                        'knowledge': JSON.stringify($scope.interests)
+                }
+            };
+
+            $scope.getCategory = function (search) {
+                var newList = [];
+                if (search !== '') {
+                    for (var i = 0; i < $scope.categoryList.length; i++) {
+                        console.log($scope.categoryList[i]);
+                        console.log(search);
+                        if ($scope.categoryList[i].indexOf(search) !== -1) {
+                            newList.push($scope.categoryList[i]);
+                        }
+                    }
+
+                    return newList;
+                }
+            };
+
+            $scope.getOptions = function () {
+                var options = [];
+                $.getJSON('/users/databaseCategories', function (data) {
+                    $.each(data, function (index, value) {
+                        options.push(value);
+                    })
+                });
+                return options;
+            };
+
+            $scope.signup = function () {
+                var username = $scope.username;
+                var knowledgeList = [];
+                for (var i = 0; i < counter; i++) {
+                    var interest = {
+                        'category': $('#interestCategory' + i).find(":selected").text(),
+                        'word': $('#interestText' + i).val()
                     };
-
-                    console.log(username);
-                    $http.post("/users/checkusername", {'username' : name})
-                        .then(function(response){
-                            var bool = response.data;
-
-                            if(bool) {
-                                $http.post("/users/addUser", newUser)
-                                    .then(function (response) {
-                                        console.log(response.data);
-                                        if (response.data === 'true') {
-                                            userPersistence.setCookieData(username);
-                                            console.log(username);
-                                            $location.url('/home');
-                                        } else {
-                                            alert('There has been a problem creating your account. Please try again.')
-                                        }
-                                    });
-                            } else{
-                                alert('Username taken, please choose another');
-                            }
-                        });
+                    knowledgeList[i] = interest;
+                }
+                var newUser = {
+                    'username': username,
+                    'email': $scope.email,
+                    'password': $scope.password,
+                    'fullname': $scope.fullname,
+                    'age': $scope.age,
+                    'gender': $scope.GenderRadio,
+                    'degree': $scope.degree,
+                    'degreetitle': $scope.degreetitle,
+                    'knowledge': JSON.stringify($scope.interests)
                 };
 
-                //TODO: doesn't actually work needs to be looked at, think html needs to be moved out of md-input thingys to work?
-                function formIsEmpty() {
-                    console.log('dsfsdf')
-                    $('#form input').each(function (index, val) {
-                        if ($(this).val() === '') {
-                            return false;
+                console.log(username);
+                $http.post("/users/checkusername", {'username': name})
+                    .then(function (response) {
+                        var bool = response.data;
+
+                        if (bool) {
+                            $http.post("/users/addUser", newUser)
+                                .then(function (response) {
+                                    console.log(response.data);
+                                    if (response.data !== 'false') {
+                                        userPersistenceUsername.setCookieData(username);
+                                        userPersistenceSession.setCookieData(response.data);
+                                        console.log(username);
+                                        $location.url('/home');
+                                    } else {
+                                        alert('There has been a problem creating your account. Please try again.')
+                                    }
+                                });
+                        } else {
+                            alert('Username taken, please choose another');
                         }
                     });
-                }
+            };
 
-                $scope.goback = function () {
-                    $location.url('/');
-                };
+            //TODO: doesn't actually work needs to be looked at, think html needs to be moved out of md-input thingys to work?
+            function formIsEmpty() {
+                console.log('dsfsdf')
+                $('#form input').each(function (index, val) {
+                    if ($(this).val() === '') {
+                        return false;
+                    }
+                });
+            }
 
-    }])
+            $scope.goback = function () {
+                $location.url('/');
+            };
+
+        }])
 
     .controller('HomepageController', ['$scope', '$location', '$http', 'userPersistenceSession',
         function($scope, $location, $http, userPersistenceSession) {
@@ -279,7 +276,7 @@ angular.module('app', ['ngRoute', 'ngResource', 'ngMaterial', 'ngCookies', 'ngMd
         $scope.user = [];
 
         var getuserInfo = function(){
-            $http.post('/users/userinfo', {'username' : $scope.username})
+            $http.post('/users/userinfo', {'username' : $scope.username, 'sessionID' : userPersistenceSession.getCookieData()})
                 .then(function(response){
                     $scope.user = response.data;
                    console.log(response.data);
