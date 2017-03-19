@@ -38,7 +38,7 @@
                         <md-button class="md-raised md-primary" ng-click="addWord(searchText)">Add Interest</md-button>
                     </md-content>
                     <md-content ng-repeat="item in interests" layout="row">
-                        <h4>{{item}}</h4>
+                        <h4>{{item.word}} in {{item.category}}</h4>
                         <md-button class="md-icon-button md-primary" aria-label="Settings"
                                    ng-click="removeInterest(item)" style="display: block; margin: 1%;">
                             <ng-md-icon icon="clear" style="fill: #636363;" size="20"></ng-md-icon>
@@ -47,8 +47,14 @@
                     <md-button class="sideButton" ng-click="find = false">Go Back</md-button>
                     <md-button class="md-icon-button md-primary" ng-click="match()">Find Partner</md-button>
                 </div>
-
-                {{response}}
+            </md-content>
+            <md-content>
+                <div ng-show="fullresponse === true">
+                    <md-conten ng-repeat="item in matches">
+                        <h3>{{item.username}}</h3>
+                        <h4>Contact: {{item.email}}</h4>
+                    </md-content>
+                </div>
             </md-content>
         </md-content>
     </md-content>

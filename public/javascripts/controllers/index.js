@@ -11,45 +11,51 @@ angular.module('app', ['ngRoute', 'ngResource', 'ngMaterial', 'ngCookies', 'ngMd
 // Services
 //---------------
 //
-    .factory('userPersistence', ['$cookies', function($cookies){
-        var userName = "";
+    .factory('userPersistenceSession', ['$cookies', function($cookies){
+        var session = "";
         return {
             setCookieData: function(username){
-                userName = username;
-                $cookies.put("userName", username);
+                session = username;
+                $cookies.put("session", username);
             },
             getCookieData: function() {
-                userName = $cookies.get("userName");
-                return userName;
+                session = $cookies.get("session");
+                return session;
             },
             clearCookieData: function() {
-                userName = "";
-                $cookies.remove("userName");
+                session = "";
+                $cookies.remove("session");
             }
         }
     }])
 
-    .directive("listValidator", function() {
+    .factory('userPersistenceUsername', ['$cookies', function($cookies){
+        var userName = "";
         return {
-            restrict: "A",
-            require: "ngModel",
-            link: function(scope, element, attributes, ngModel) {
-                var list = scope.$eval(attributes.listValidator);
-                ngModel.$validators.listValidator = function(modelValue, viewValue) {
-                    return list.indexOf(viewValue) !== -1;
-                }
+            setCookieData: function(username){
+                userName = username;
+                $cookies.put("username", username);
             },
-        };
-    })
+            getCookieData: function() {
+                userName = $cookies.get("username");
+                return userName;
+            },
+            clearCookieData: function() {
+                userName = "";
+                $cookies.remove("username");
+            }
+        }
+    }])
 
     //---------------
     // Controllers
     //---------------
 
-    .controller('HeaderController', ['$scope', 'userPersistence', '$location', function($scope, userPersistence, $location){
+    .controller('HeaderController', ['$scope', 'userPersistenceSession', 'userPersistenceUsername', '$location',
+        function($scope, userPersistenceSession, userPersistenceUsername, $location){
 
         $scope.getUsername = function(){
-            return userPersistence.getCookieData();
+            return userPersistenceUsername.getCookieData();
         };
 
         $scope.DashboardClick = function(){
@@ -67,7 +73,7 @@ angular.module('app', ['ngRoute', 'ngResource', 'ngMaterial', 'ngCookies', 'ngMd
         };
 
         $scope.isLoggedIn = function(){
-            if(userPersistence.getCookieData() !== undefined){
+            if(userPersistenceSession.getCookieData() !== undefined){
                 return true;
             } else{
                 return false;
@@ -77,7 +83,7 @@ angular.module('app', ['ngRoute', 'ngResource', 'ngMaterial', 'ngCookies', 'ngMd
         $scope.userLogout = function(){
             var logged = confirm("Do you want to log out?");
             if(logged === true){
-                userPersistence.clearCookieData();
+                userPersistenceSession.clearCookieData();
                 $location.url('/');
             }
         };
@@ -88,8 +94,8 @@ angular.module('app', ['ngRoute', 'ngResource', 'ngMaterial', 'ngCookies', 'ngMd
 
     }])
 
-    .controller('LoginController', ['$scope', '$location', '$http', 'userPersistence',
-        function ($scope, $location, $http, userPersistence) {
+    .controller('LoginController', ['$scope', '$location', '$http', 'userPersistenceSession', 'userPersistenceUsername'
+        function ($scope, $location, $http, userPersistenceSession, userPersistenceUsername) {
 
         if(userPersistence.getCookieData() !== undefined){
             $location.url('/home');
@@ -97,11 +103,6 @@ angular.module('app', ['ngRoute', 'ngResource', 'ngMaterial', 'ngCookies', 'ngMd
 
             $scope.login = function () {
                 var username = $scope.username;
-                var config = {
-                    headers: {
-                        'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8;'
-                    }
-                };
 
                 var loginData = {
                     'username': username,
@@ -111,8 +112,10 @@ angular.module('app', ['ngRoute', 'ngResource', 'ngMaterial', 'ngCookies', 'ngMd
                 $http.post("/users/loginuser", loginData)
                     .then(function (response) {
                         console.log(response.data);
-                        if (response.data === "true") {
-                            userPersistence.setCookieData(username);
+                        if (response.data !== "false") {
+                            userPersistenceSession.setCookieData(response.data);
+                            userPersistenceUsername.setCookieData(username);
+                            console.log(response.data);
                             $location.url('/home')
                         } else {
                             alert("Login Failed. Please try again");
@@ -256,23 +259,23 @@ angular.module('app', ['ngRoute', 'ngResource', 'ngMaterial', 'ngCookies', 'ngMd
 
     }])
 
-    .controller('HomepageController', ['$scope', '$location', '$http', 'userPersistence',
-        function($scope, $location, $http, userPersistence) {
+    .controller('HomepageController', ['$scope', '$location', '$http', 'userPersistenceSession',
+        function($scope, $location, $http, userPersistenceSession) {
 
-            if(userPersistence.getCookieData() === undefined){
+            if(userPersistenceSession.getCookieData() === undefined){
                 $location.url('/');
             }
 
     }])
 
-    .controller('UserprofileController', ['$scope', '$location', '$http', 'userPersistence',
-        function($scope, $location, $http, userPersistence) {
+    .controller('UserprofileController', ['$scope', '$location', '$http', 'userPersistenceSession', 'userPersistenceUsername',
+        function($scope, $location, $http, userPersistenceSession, userPersistenceUsername) {
 
-            if(userPersistence.getCookieData() === undefined){
+            if(userPersistenceSession.getCookieData() === undefined){
                 $location.url('/');
             }
 
-        $scope.username = userPersistence.getCookieData();
+        $scope.username = userPersistenceUsername.getCookieData();
         $scope.user = [];
 
         var getuserInfo = function(){
@@ -285,8 +288,8 @@ angular.module('app', ['ngRoute', 'ngResource', 'ngMaterial', 'ngCookies', 'ngMd
         getuserInfo();
     }])
 
-    .controller('WorkpartnerController', ['$scope', '$location', '$http', 'userPersistence',
-        function($scope, $location, $http, userPersistence) {
+    .controller('WorkpartnerController', ['$scope', '$location', '$http', 'userPersistenceSession',
+        function($scope, $location, $http, userPersistenceSession) {
 
             $scope.categoryList = ['Accounting and Finance', 'Anthropology', 'Archaeology', 'Art', 'Astronomy', 'Biochemistry', 'Biology',
                 'Business', 'Chemistry', 'Computer Science', 'Criminology', 'Ecology', 'Economics', 'Education Studies', 'Engineering',
@@ -298,22 +301,25 @@ angular.module('app', ['ngRoute', 'ngResource', 'ngMaterial', 'ngCookies', 'ngMd
         $scope.interests = [];
         $scope.age = [18, 22, 26, 30];
         $scope.gender = ['Female', 'Male', 'None'];
+        $scope.matches = [];
 
-            if(userPersistence.getCookieData() === undefined){
+            if(userPersistenceSession.getCookieData() === undefined){
                 $location.url('/');
             };
 
             $scope.getWords = function(search){
                 return $http.post('/matching/getwords', {'word' : search})
                     .then( function (response){
-                        console.log(response.data);
                         return response.data;
                     });
             };
 
             $scope.addWord = function(word){
-                $scope.interests.push({'word' : word, 'category' : $scope.itemCategory});
-                console.log(word);
+                var exists = false;
+                if($scope.selectedItem !== null){
+                    exists = true;
+                }
+                $scope.interests.push({'word' : word, 'category' : $scope.itemCategory, 'bool' : exists, 'score' : 1});
             };
 
             $scope.removeInterest = function(item){
@@ -329,16 +335,19 @@ angular.module('app', ['ngRoute', 'ngResource', 'ngMaterial', 'ngCookies', 'ngMd
                         'interests' : $scope.interests};
                 $http.post('/matching/matching', data)
                     .then(function(response){
-                        $scope.response = JSON.parse(response.data);
+                        $scope.find = false;
+                        $scope.fullresponse = true;
+                        console.log(response.data);
+                        $scope.matches = response.data;
                     });
             };
 
     }])
 
-    .controller('GroupController', ['$scope', '$location', '$http', 'userPersistence',
-        function($scope, $location, $http, userPersistence) {
+    .controller('GroupController', ['$scope', '$location', '$http', 'userPersistenceSession', 'userPersistenceUsername',
+        function($scope, $location, $http, userPersistenceSession, userPersistenceUsername) {
 
-            if(userPersistence.getCookieData() === undefined){
+            if(userPersistenceSession.getCookieData() === undefined){
                 $location.url('/');
             }
         $scope.groups = false;
@@ -349,7 +358,7 @@ angular.module('app', ['ngRoute', 'ngResource', 'ngMaterial', 'ngCookies', 'ngMd
         $scope.post = false;
 
         var getGroups = function() {
-            $http.post('/groups/groupsmemberof', {'username' : userPersistence.getCookieData()})
+            $http.post('/groups/groupsmemberof', {'username' : userPersistenceUsername.getCookieData()})
                 .then(function (response){
                     $scope.memberList = response.data;
                 });
@@ -369,8 +378,8 @@ angular.module('app', ['ngRoute', 'ngResource', 'ngMaterial', 'ngCookies', 'ngMd
             var groupJSON = {
                 'groupname' : groupName,
                 'description' : $scope.groupdescription,
-                'admin' : userPersistence.getCookieData(),
-                'members' : [userPersistence.getCookieData()],
+                'admin' : userPersistenceUsername.getCookieData(),
+                'members' : [userPersistenceUsername.getCookieData()],
                 'posts' : []
             };
 
@@ -388,13 +397,9 @@ angular.module('app', ['ngRoute', 'ngResource', 'ngMaterial', 'ngCookies', 'ngMd
 
         };
 
-        $scope.canJoin = function(groupName){
-
-        };
-
         $scope.joinGroup = function(groupName){
             var joinJSON = {
-                'username' : userPersistence.getCookieData(),
+                'username' : userPersistenceUsername.getCookieData(),
                 'groupname' : groupName
             }
 
@@ -409,7 +414,7 @@ angular.module('app', ['ngRoute', 'ngResource', 'ngMaterial', 'ngCookies', 'ngMd
 
         $scope.postGroup = function(groupName){
             var postJSON = {
-                'username' : userPersistence.getCookieData(),
+                'username' : userPersistenceUsername.getCookieData(),
                 'groupname' : groupName,
                 'post' : $scope.grouppost
             };
