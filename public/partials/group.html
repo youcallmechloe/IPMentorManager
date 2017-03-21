@@ -47,10 +47,10 @@
                     <md-button ng-hide="post" class="md-raised md-primary" ng-click="post=true">Create Post</md-button>
                     <div ng-show="post">
                         <textarea type="text" placeholder="Write your post..." ng-model="$parent.grouppost" required></textarea>
-                        <md-button class="md-raised md-primary" ng-click="postGroup(selectedGroup.groupname)">Post</md-button>
+                        <md-button class="md-raised md-primary" ng-click="postGroup(selectedGroup)">Post</md-button>
                         <md-button class="sideButton" ng-click="post=false">Cancel</md-button>
                     </div>
-                    <div ng-repeat="post in selectedGroup.posts" style="border-style:solid;">
+                    <div ng-repeat="post in selectedGroup.posts">
                         <h3>{{post.username}}</h3>
                         <h4>{{post.post}}</h4>
                     </div>

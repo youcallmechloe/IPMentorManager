@@ -6,9 +6,11 @@
             </md-toolbar>
             <md-content layout="column" class="md-padding">
                 <md-input-container>
+                    <label>Username</label>
                     <input type="text" placeholder="Username" ng-model="username" required>
                 </md-input-container>
                 <md-input-container>
+                    <label>Password</label>
                     <input type="password" placeholder="Password" ng-model="password" required>
                 </md-input-container>
                 <div layout="row" layout-align="center center" style="padding-top:20px;">
@@ -19,7 +21,7 @@
                         <md-button ng-disabled="true" class="md-raised md-primary" ng-click="login()">Login</md-button>
                     </div>
                     <div flex="flex"></div>
-                    <md-button href="" md-no-ink="md-no-ink">Forgot Password</md-button>
+                    <md-button href="" ng-disabled="true" md-no-ink="md-no-ink">Forgot Password</md-button>
                 </div>
                 <div layout="column" layout-align="center center" style="padding-top:20px">
                     Don't have an account?

@@ -1,5 +1,7 @@
 <html ng-app="app">
 <head>
+  <link  ng-href="/favicon-32.png" rel="icon" type="image/png">
+
   <!-- Libraries -->
   <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.1/angular.min.js"></script>
   <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.1/angular-route.min.js"></script>
@@ -10,11 +12,14 @@
   <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.5/angular-messages.min.js"></script>
   <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.6.1/angular-cookies.js"></script>
   <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/angular_material/1.1.0/angular-material.min.css">
+  <script src="https://cdn.rawgit.com/riggerthegeek/ng-page-title/master/dist/ng-page-title.min.js"></script>
 
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.0/jquery.js"></script>
   <script src="https://ajax.googleapis.com/ajax/libs/angular_material/1.0.7/angular-material.min.js"></script>
   <script src="//cdnjs.cloudflare.com/ajax/libs/angular-material-icons/0.7.1/angular-material-icons.min.js"></script>
+
+  <title page-title></title>
 
   <!--My code-->
   <script src="javascripts/controllers/index.js"></script>
@@ -28,7 +33,7 @@
   <md-button ng-show="isLoggedIn()" ng-click="ProfileClick()" style=" height: 1%; margin-top: 20px;">
     {{getUsername()}}
   </md-button>
-  <md-button ng-show="isLoggedIn()" class="md-raised md-primary" style="float: right; margin-right:50px; height: 1%; margin-top: 20px" ng-click="userLogout()">Logout</md-button>
+  <md-button ng-show="isLoggedIn()" class="md-raised md-primary" style="float: right; margin-right:50px; height: 1%; margin-top: 20px;" ng-click="userLogout()">Logout</md-button>
 </div>
 <div ng-controller="HeaderController" class="ng-cloak" layout="row" ng-show="isLoggedIn()">
   <md-button ng-click="GroupsClick()">

@@ -5,14 +5,17 @@ var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 
-var routes = require('./routes/index');
-var users = require('./routes/users');
-var groups = require('./routes/groups');
-var matching = require('./routes/matching')
 
 // load mongoose package
 var monk = require('monk');
+var mongoose = require('mongoose');
 var db = monk('localhost:27017/mentormanager');
+mongoose.connect('localhost:27017/mentormanager');
+
+var routes = require('./routes/index');
+var users = require('./routes/users');
+var groups = require('./routes/groups');
+var matching = require('./routes/matching');
 
 var app = express();
 
