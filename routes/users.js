@@ -94,6 +94,11 @@ router.post('/adduser', function(req, res) {
 
 });
 
+var addMultiUsers = function(){
+    var choosing = Math.random();
+
+};
+
 router.post('/userinfo', function(req, res){
     var db = req.db;
     var userCollection = db.get('userlist');
@@ -211,6 +216,7 @@ router.post('/loginuser', function(req, res){
 
 /*
  * DELETE to deleteuser.
+ * TODO: write properly
  */
 router.delete('/deleteuser/:id', function(req, res) {
     var db = req.db;
@@ -219,6 +225,17 @@ router.delete('/deleteuser/:id', function(req, res) {
     collection.remove({ '_id' : userToDelete }, function(err) {
         res.send((err === null) ? { msg: '' } : { msg:'error: ' + err });
     });
+});
+
+router.post('/logoutuser', function(req, res){
+    var body = req.body;
+    Cookie.remove({ 'username' : body['username'], 'sessionID' : body['sessionID']}, function(err){
+        res.send((err === null) ? "true" : err);
+    });
+
+    // Cookie.find({ 'username' : body['username'], 'sessionID' : body['sessionID']}).remove( function(err){
+    //
+    // });
 });
 
 module.exports = router;

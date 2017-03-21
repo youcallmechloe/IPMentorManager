@@ -5,7 +5,7 @@
  * Created by root on 01/02/2017.
  */
 
-angular.module('app', ['ngRoute', 'ngResource', 'ngMaterial', 'ngCookies', 'ngMdIcons'])
+angular.module('app', ['ngRoute', 'ngResource', 'ngMaterial', 'ngCookies', 'ngMdIcons', 'ngPageTitle'])
 
 //---------------
 // Services
@@ -51,8 +51,8 @@ angular.module('app', ['ngRoute', 'ngResource', 'ngMaterial', 'ngCookies', 'ngMd
     // Controllers
     //---------------
 
-    .controller('HeaderController', ['$scope', 'userPersistenceSession', 'userPersistenceUsername', '$location',
-        function($scope, userPersistenceSession, userPersistenceUsername, $location){
+    .controller('HeaderController', ['$scope', 'userPersistenceSession', 'userPersistenceUsername', '$location', '$http',
+        function($scope, userPersistenceSession, userPersistenceUsername, $location, $http){
 
         $scope.getUsername = function(){
             return userPersistenceUsername.getCookieData();
@@ -83,8 +83,16 @@ angular.module('app', ['ngRoute', 'ngResource', 'ngMaterial', 'ngCookies', 'ngMd
         $scope.userLogout = function(){
             var logged = confirm("Do you want to log out?");
             if(logged === true){
-                userPersistenceSession.clearCookieData();
-                $location.url('/');
+                $http.post('/users/logoutuser', {'username' : userPersistenceUsername.getCookieData(), 'sessionID' : userPersistenceSession.getCookieData()})
+                    .then(function(response){
+                        if(response.data === "true"){
+                            userPersistenceSession.clearCookieData();
+                            userPersistenceUsername.clearCookieData();
+                            $location.url('/');
+                        } else{
+                            alert('Something went wrong, please try again');
+                        }
+                    });
             }
         };
 
@@ -418,16 +426,18 @@ angular.module('app', ['ngRoute', 'ngResource', 'ngMaterial', 'ngCookies', 'ngMd
         $scope.postGroup = function(groupName){
             var postJSON = {
                 'username' : userPersistenceUsername.getCookieData(),
-                'groupname' : groupName,
+                'groupname' : groupName['groupname'],
                 'post' : $scope.grouppost,
                 'sessionID' : userPersistenceSession.getCookieData()
             };
 
             $http.post('/groups/postingroup', postJSON)
                 .then(function(response){
-                   $scope.$parent.grouppost = '';
-                   $scope.post = false;
-                   getGroups();
+                    $scope.$parent.grouppost = '';
+                    $scope.post = false;
+                    $scope.memberList = [];
+                    getGroups();
+                    $scope.chooseGroup(response.data);
                 });
         };
 
@@ -481,26 +491,44 @@ angular.module('app', ['ngRoute', 'ngResource', 'ngMaterial', 'ngCookies', 'ngMd
     .config(['$routeProvider', function ($routeProvider) {
         $routeProvider
             .when('/', {
+                data: {
+                    pageTitle : "Mentor Manager"
+                },
                 templateUrl: 'partials/login.html',
                 controller: 'LoginController'
             })
             .when('/signup', {
+                data: {
+                    pageTitle : "Create Account - Mentor Manager"
+                },
                 templateUrl: 'partials/signup.html',
                 controller: 'SignupController'
             })
             .when('/home', {
+                data: {
+                    pageTitle : "Home - Mentor Manager"
+                },
                 templateUrl: 'partials/homepage.html',
                 controller: 'HomepageController'
             })
             .when('/profile', {
+                data: {
+                    pageTitle : "Profile - Mentor Manager"
+                },
                 templateUrl: 'partials/userprofile.html',
                 controller: 'UserprofileController'
             })
             .when('/mentor', {
+                data: {
+                    pageTitle : "Mentoring - Mentor Manager"
+                },
                 templateUrl: 'partials/mentor.html',
                 controller: 'WorkpartnerController'
             })
             .when('/group',  {
+                data: {
+                    pageTitle : "Groups - Mentor Manager"
+                },
                 templateUrl: 'partials/group.html',
                 controller: 'GroupController'
             })

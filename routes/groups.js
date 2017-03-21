@@ -4,6 +4,7 @@
 var express = require('express');
 var router = express.Router();
 var Cookie = require('../models/cookies');
+var Groups = require('../models/groups');
 
 //TODO: on front end!!! do the group name thingy so user gets told straight away of a taken group name!
 /*
@@ -81,12 +82,13 @@ router.post('/postingroup', function(req, res){
     Cookie.find({'username' : body['username'], 'sessionID' : body['sessionID']}, function(e, docs) {
         console.log(docs);
         if (docs.length > 0) {
-            collection.update({'groupname': body['groupname']},
-                {$push: {'posts': {$each: [{'post': body['post'], 'username': body['username']}], $position: 0}}});
+            Groups.findOneAndUpdate({'groupname': body['groupname']}, {$push: {'posts': {$each: [{'post': body['post'], 'username': body['username']}], $position: 0}}},
+            {new: true}, function(err, doc){
+                console.log(doc);
+                res.send(doc);
+            });
         }
     });
-
-    res.send({msg: ''});
 });
 
 router.get('/getgroups/:id', function (req, res) {
