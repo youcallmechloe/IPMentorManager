@@ -334,6 +334,8 @@ angular.module('app', ['ngRoute', 'ngResource', 'ngMaterial', 'ngCookies', 'ngMd
                     }
                 }
             };
+
+            //TODO: add in degree choice
             $scope.match = function(){
                 var data = {'gender' : $scope.Gender,
                         'age' : $scope.Age,
@@ -364,6 +366,7 @@ angular.module('app', ['ngRoute', 'ngResource', 'ngMaterial', 'ngCookies', 'ngMd
         $scope.selectedGroup = '';
         $scope.post = false;
 
+        //TODO: search in descriptions too for more accurate searches
         var getGroups = function() {
             $http.post('/groups/groupsmemberof', {'username' : userPersistenceUsername.getCookieData(),
                 'sessionID' : userPersistenceSession.getCookieData()})
