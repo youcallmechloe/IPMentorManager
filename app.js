@@ -9,8 +9,11 @@ var bodyParser = require('body-parser');
 // load mongoose package
 var monk = require('monk');
 var mongoose = require('mongoose');
-var db = monk('localhost:27017/mentormanager');
-mongoose.connect('localhost:27017/mentormanager');
+// var db = monk('localhost:27017/mentormanager');
+// mongoose.connect('localhost:27017/mentormanager');
+
+var db = monk('mentormanager:27017/mentormanager');
+mongoose.connect('mentormanager:27017/mentormanager');
 
 var routes = require('./routes/index');
 var users = require('./routes/users');
