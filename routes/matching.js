@@ -37,7 +37,6 @@ router.post('/matching1', function(req, res){
     var interests = body['interests'];
 
     Cookie.find({'username' : body['username'], 'sessionID' : body['sessionID']}, function(e, docs){
-        console.log(docs);
         if(docs.length > 0){
             async.waterfall([
                 function(cb1){
@@ -128,10 +127,9 @@ router.post('/matching1', function(req, res){
                                 if ((docs[i]['word'] === wordlist[j]['word']) && (docs[i]['category'] === wordlist[j]['category'])) {
                                     for (var v = 0; v < users.length; v++) {
                                         if (_.contains(docs[i]['users'], users[v]['username'])) {
-                                            users[v]['score'] = users[v]['score'] + 1;
+                                            users[v]['score'] = users[v]['score'] + wordlist[j]['score'];
                                         }
                                     }
-                                    //if using datamuse generated word then times score given by certain number to obtain lower score!
                                 }
 
                             }
@@ -162,7 +160,106 @@ router.post('/matching1', function(req, res){
     so gets rid of another db call
  */
 //TODO: add in cookie check
-router.post('/matching2', function(req, res){
+router.post('/matching2', function(req, res) {
+    var body = req.body;
+    var interests = body['interests'];
+    Cookie.find({'username': body['username'], 'sessionID': body['sessionID']}, function (e, docs) {
+        if (docs.length > 0) {
+            async.waterfall([
+                function (cb1) {
+                    global.userList = [];
+                    UserSchema.find({'age': {$lte: body['age']}}, function (e, users) {
+                        if (users !== undefined) {
+                            for (var i = 0; i < users.length; i++) {
+                                if ((users[i]['gender'] === body['gender']) || (body['gender'] === 'none')) {
+                                    var user = {
+                                        'username': users[i]['username'],
+                                        'email': users[i]['email'],
+                                        'fullname': users[i]['fullname'],
+                                        'age': users[i]['age'],
+                                        'gender': users[i]['gender'],
+                                        'degree': users[i]['degree'],
+                                        'knowledge': users[i]['knowledge'],
+                                        'score': 0
+                                    };
+                                    userList.push(user);
+                                }
+                            }
+                        }
+                        cb1(null, userList, body['interests'], body);
+                    });
+
+                },
+                function (users, wordlist, body, cb3) {
+                    var asyncLoop = function (i, cb4) {
+                        if (i < wordlist.length) {
+                            global.category = wordlist[i]['category'];
+                            if (wordlist[i]['bool'] === false) {
+                                datamuse.words({
+                                    ml: wordlist[i]['word']
+                                }).then(function (response) {
+                                    var body = response.slice(0, 19);
+                                    var highestScore = body[0]['score'];
+                                    for (var j = 0; j < body.length; j++) {
+                                        wordlist.push({
+                                            'word': body[j]['word'],
+                                            'category': category,
+                                            'score': 0.5 * (body[j]['score'] / highestScore),
+                                            'bool': true
+                                        })
+                                    }
+                                    asyncLoop(i + 1, cb4);
+                                });
+                            } else {
+                                asyncLoop(i + 1, cb4);
+                            }
+                        } else {
+                            cb4(wordlist);
+                        }
+                    };
+                    asyncLoop(0, function (res) {
+                        console.log(wordlist);
+                        cb3(null, users, res, body);
+                    });
+                },
+                function (users, wordlist, body, cb5) {
+                    for (var j = 0; j < wordlist.length; j++) {
+                        for (var v = 0; v < users.length; v++) {
+                            for (var i = 0; i < users[v]['knowledge'].length; i++) {
+                                if (users[v]['knowledge'][i]['word'] === wordlist[j]['word'] &&
+                                    users[v]['knowledge'][i]['category'] === wordlist[j]['category']) {
+                                    users[v]['score'] = users[v]['score'] + wordlist[j]['score'];
+                                }
+                            }
+                        }
+                    }
+
+                    cb5(null, users);
+                }
+            ], function (err, result) {
+                function compare(a, b) {
+                    if (a.score > b.score)
+                        return -1;
+                    if (a.score < b.score)
+                        return 1;
+                    return 0;
+                }
+
+                result.sort(compare);
+                var finalresult = result.splice(0, 5);
+                res.send(finalresult);
+            });
+        } else {
+            res.send("");
+        }
+    });
+});
+
+/** matching algorithm incorporating the Jaccard coefficient as the users score (final function), if using the datamuse part (function2)
+ * the coefficient will be tiny as there will be many many words that users do not have
+ */
+//TODO: add in cookie check
+router.post('/matching3', function(req, res){
     var body = req.body;
     var interests = body['interests'];
     async.waterfall([
@@ -213,96 +310,9 @@ router.post('/matching2', function(req, res){
                 }
             };
             asyncLoop(0, function (res) {
-                console.log(wordlist);
                 cb3(null, users, res, body);
             });
         },
-        function (users, wordlist, body, cb5) {
-            for (var j = 0; j < wordlist.length; j++) {
-                for (var v = 0; v < users.length; v++) {
-                    for(var i = 0; i < users[v]['knowledge'].length; i++){
-                        if(users[v]['knowledge'][i]['word'] === wordlist[j]['word'] &&
-                            users[v]['knowledge'][i]['category'] === wordlist[j]['category']){
-                            users[v]['score'] = users[v]['score'] + wordlist[j]['score'];
-                        }
-                    }
-                }
-            }
-
-            cb5(null, users);
-        }
-    ], function (err, result) {
-        function compare(a, b){
-            if (a.score > b.score)
-                return -1;
-            if (a.score < b.score)
-                return 1;
-            return 0;
-        }
-        result.sort(compare);
-        var finalresult = result.splice(0,5);
-        res.send(finalresult);
-    });
-});
-
-/** matching algorithm incorporating the Jaccard coefficient as the users score (final function), if using the datamuse part (function2)
- * the coefficient will be tiny as there will be many many words that users do not have
- */
-//TODO: add in cookie check
-router.post('/matching3', function(req, res){
-    var body = req.body;
-    var interests = body['interests'];
-    async.waterfall([
-        function(cb1){
-            global.userList = [];
-            UserSchema.find({'age': {$lte: body['age']}}, function (e, users) {
-                if(users !== undefined) {
-                    for (var i = 0; i < users.length; i++) {
-                        if ((users[i]['gender'] === body['gender']) || (body['gender'] === 'none')) {
-                            var user = {
-                                'username': users[i]['username'],
-                                'email': users[i]['email'],
-                                'fullname': users[i]['fullname'],
-                                'age': users[i]['age'],
-                                'gender': users[i]['gender'],
-                                'degree': users[i]['degree'],
-                                'knowledge': users[i]['knowledge'],
-                                'score': 0
-                            };
-                            userList.push(user);
-                        }
-                    }
-                }
-                cb1(null, userList, body['interests'], body);
-            });
-
-        },
-        // function(users, wordlist, body, cb3){
-        //     var asyncLoop = function(i, cb4){
-        //         if(i < wordlist.length){
-        //             global.category = wordlist[i]['category'];
-        //             if(wordlist[i]['bool'] === false){
-        //                 datamuse.words({
-        //                     ml : wordlist[i]['word']
-        //                 }).then( function(response){
-        //                     var body = response.slice(0,19);
-        //                     var highestScore = body[0]['score'];
-        //                     for(var j = 0; j < body.length; j++){
-        //                         wordlist.push({'word' : body[j]['word'], 'category' : category, 'score' : 0.5*(body[j]['score']/highestScore), 'bool' : true})
-        //                     }
-        //                     asyncLoop(i+1, cb4);
-        //                 });
-        //             } else{
-        //                 asyncLoop(i+1, cb4);
-        //             }
-        //         } else {
-        //             cb4(wordlist);
-        //         }
-        //     };
-        //     asyncLoop(0, function (res) {
-        //         cb3(null, users, res, body);
-        //     });
-        // },
         function (users, wordlist, body, cb5) {
             for (var v = 0; v < users.length; v++) {
                 var intersection = [];
@@ -323,7 +333,7 @@ router.post('/matching3', function(req, res){
                         }
                     }
                 }
-                console.log(users[v]['username'] + " " + intersection.length + " " + union.length)
+                console.log(users[v]['username'] + " " + intersection.length + " " + union.length);
                 users[v]['score'] = ((intersection.length)/(union.length));
                 console.log(((intersection.length)/(union.length)))
             }

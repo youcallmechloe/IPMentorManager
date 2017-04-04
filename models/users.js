@@ -10,8 +10,8 @@ var UserSchema = new mongoose.Schema({
     age : Number,
     gender : String,
     degree : String,
-    knowledge : Array,
-    workpartners : Array
+    knowledge : [],
+    workpartners : []
 });
 
 module.exports = mongoose.model('userlist', UserSchema, 'userlist');

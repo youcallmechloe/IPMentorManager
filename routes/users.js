@@ -38,9 +38,10 @@ router.post('/adduser', function(req, res) {
 
     const saltRounds = 10;
     const myPlaintextPassword = body['password'];
-    var knowledge = JSON.parse(body['knowledge']);
-
-
+    var knowledge = [];
+    if(body['knowledge'].length > 0){
+        knowledge = JSON.parse(body['knowledge']);
+    }
     var userKnowledge = [];
 
     if (knowledge.length > 0) {
@@ -51,6 +52,7 @@ router.post('/adduser', function(req, res) {
     }
 
     bcrypt.hash(myPlaintextPassword, saltRounds).then(function (hash) {
+        console.log(body['username']);
         var userInfo = {
             'username': body['username'],
             'email': body['email'],
@@ -59,9 +61,9 @@ router.post('/adduser', function(req, res) {
             'age': body['age'],
             'gender': body['gender'],
             'degree': body['degree'],
-            'degreetitle': body['degreetitle'],
             'userscore' : 0,
-            'knowledge': userKnowledge
+            'knowledge': userKnowledge,
+            'workpartners' : []
         };
         //TODO: why am i checking this twice???
         collection.find({'username': body['username']}, {}, function (e, docs) {
@@ -103,6 +105,7 @@ router.post('/userinfo', function(req, res){
     var db = req.db;
     var userCollection = db.get('userlist');
     var body = req.body;
+    console.log(body);
     var userInfo = [];
 
     Cookie.find({'username' : body['username'], 'sessionID' : body['sessionID']}, function(e, docs){
@@ -127,7 +130,7 @@ router.post('/userinfo', function(req, res){
                 res.send(user);
             });
         } else{
-            res.send("");
+            res.send("false");
         }
     });
 
@@ -161,9 +164,15 @@ router.post('/addtoscore', function(req, res){
     var body = req.body;
     console.log(body['amount']);
 
-    collection.update({'username': body['username']}, {$inc : {'userscore' : body['amount']}})
+    collection.update({'username': body['username']}, {$inc : {'userscore' : body['amount']}}, function(e, docs){
+        if(docs !== undefined) {
+            console.log(docs);
+            res.send(String(docs["nModified"]));
+        } else{
+            res.send("");
+        }
+    });
 
-    res.send("");
 });
 
 /*
@@ -218,12 +227,20 @@ router.post('/loginuser', function(req, res){
  * DELETE to deleteuser.
  * TODO: write properly
  */
-router.delete('/deleteuser/:id', function(req, res) {
+router.post('/deleteuser', function(req, res) {
     var db = req.db;
     var collection = db.get('userlist');
-    var userToDelete = req.params.id;
-    collection.remove({ '_id' : userToDelete }, function(err) {
-        res.send((err === null) ? { msg: '' } : { msg:'error: ' + err });
+    var cookies = db.get('cookies');
+    var body = req.body;
+
+    Cookie.find({'username' : body['username'], 'sessionID' : body['sessionID']}, function(e, docs){
+        if(docs.length > 0) {
+            collection.remove({ 'username' : body['username'] }, function(err) {
+                res.send((err === null) ? '' : { msg:'error: ' + err });
+            });
+        } else{
+            res.send("false");
+        }
     });
 });
 

@@ -4,9 +4,9 @@
 var mongoose = require('mongoose');
 
 var WordSchema = new mongoose.Schema({
-    word : '',
-    category : '',
+    word : String,
+    category : String,
     users : []
 });
 
-module.exports = mongoose.model('words', WordSchema);
+module.exports = mongoose.model('words', WordSchema, 'words');
