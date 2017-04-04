@@ -145,6 +145,140 @@ angular.module('app', ['ngRoute', 'ngResource', 'ngMaterial', 'ngCookies', 'ngMd
             if(userPersistenceSession.getCookieData() !== undefined){
                 $location.url('/home');
             }
+
+            var CSinterestWords = [{'word' : 'Algorithm', 'category' : 'Computer Science'},
+                {'word' : 'Programming', 'category' : 'Computer Science'},
+                {'word' : 'Database', 'category' : 'Computer Science'},
+                {'word' : 'Web Development', 'category' : 'Computer Science'},
+                {'word' : 'Javascript', 'category' : 'Computer Science'},
+                {'word' : 'Python', 'category' : 'Computer Science'},
+                {'word' : 'Java', 'category' : 'Computer Science'},
+                {'word' : 'HTML', 'category' : 'Computer Science'},
+                {'word' : 'SQL', 'category' : 'Computer Science'},
+                {'word' : 'Networking', 'category' : 'Computer Science'}
+            ];
+
+            var BinterestWords = [{'word' : 'Anaesthetics', 'category' : 'Biology'},
+                {'word' : 'Asexual reproduction', 'category' : 'Biology'},
+                {'word' : 'Capillaries', 'category' : 'Biology'},
+                {'word' : 'Diffusion', 'category' : 'Biology'},
+                {'word' : 'Digestion', 'category' : 'Biology'},
+                {'word' : 'Ecosystem', 'category' : 'Biology'},
+                {'word' : 'Enzymes', 'category' : 'Biology'},
+                {'word' : 'Fertilisation', 'category' : 'Biology'},
+                {'word' : 'Homeostasis', 'category' : 'Biology'},
+                {'word' : 'Hormone', 'category' : 'Biology'}
+            ];
+
+            var PinterestWords = [{'word' : 'Amplitude', 'category' : 'Physics'},
+                {'word' : 'Conduction', 'category' : 'Physics'},
+                {'word' : 'Energy', 'category' : 'Physics'},
+                {'word' : 'Matter', 'category' : 'Physics'},
+                {'word' : 'Electricity', 'category' : 'Physics'},
+                {'word' : 'Astronomy', 'category' : 'Physics'},
+                {'word' : 'Quantum', 'category' : 'Physics'},
+                {'word' : 'Galaxy', 'category' : 'Physics'},
+                {'word' : 'Particles', 'category' : 'Physics'},
+                {'word' : 'Cosmology', 'category' : 'Physics'}
+            ];
+
+            var GinterestWords = [{'word' : 'Earth', 'category' : 'Geography'},
+                {'word' : 'Culture', 'category' : 'Geography'},
+                {'word' : 'GIS', 'category' : 'Geography'},
+                {'word' : 'Environment', 'category' : 'Geography'},
+                {'word' : 'Climate', 'category' : 'Geography'},
+                {'word' : 'Landscape', 'category' : 'Geography'},
+                {'word' : 'River', 'category' : 'Geography'},
+                {'word' : 'Social', 'category' : 'Geography'},
+                {'word' : 'Weather Hazards', 'category' : 'Geography'},
+                {'word' : 'Economy', 'category' : 'Geography'}
+            ];
+
+            var EinterestWords = [{'word' : 'Markets', 'category' : 'Economics'},
+                {'word' : 'Strategy', 'category' : 'Economics'},
+                {'word' : 'Trade', 'category' : 'Economics'},
+                {'word' : 'Finance', 'category' : 'Economics'},
+                {'word' : 'Bootstrapping', 'category' : 'Economics'},
+                {'word' : 'Calculus', 'category' : 'Economics'},
+                {'word' : 'Costs and Efficiency', 'category' : 'Economics'},
+                {'word' : 'Covariance', 'category' : 'Economics'},
+                {'word' : 'Least squares', 'category' : 'Economics'},
+                {'word' : 'Microeconomics', 'category' : 'Economics'}
+            ];
+
+            var degreeList = ['Computer Science', 'Biology', 'Physics', 'Geography', 'Economics'];
+
+            $scope.addUsers = function(counter) {
+                if (counter > 100) {
+                    return;
+                } else {
+                    var gender;
+                    if (Math.random() > 0.5) {
+                        gender = "Female";
+                    } else {
+                        gender = "Male";
+                    }
+
+                    var degree = degreeList[Math.floor(Math.random() * degreeList.length)];
+                    var knowledge = [];
+                    for (var j = 0; j < Math.floor((Math.random() * 10) + 1); j++) {
+                        var interest;
+                        switch (degree) {
+                            case "Computer Science":
+                                interest = CSinterestWords[Math.floor(Math.random() * CSinterestWords.length)];
+                                break;
+                            case "Biology":
+                                interest = BinterestWords[Math.floor(Math.random() * BinterestWords.length)];
+                                break;
+                            case "Physics":
+                                interest = PinterestWords[Math.floor(Math.random() * PinterestWords.length)];
+                                break;
+                            case "Geography":
+                                interest = GinterestWords[Math.floor(Math.random() * GinterestWords.length)];
+                                break;
+                            case "Economics":
+                                interest = EinterestWords[Math.floor(Math.random() * EinterestWords.length)];
+                                break;
+                        }
+                        if (knowledge.indexOf(interest) === -1) {
+                            knowledge.push(interest);
+                        }
+                    }
+
+                    var exampleUser = {
+                        'username': "user" + counter,
+                        'email': "user" + counter + "@example.com",
+                        'password': "user" + counter,
+                        'fullname': "User" + counter + " Example",
+                        'age': Math.floor((Math.random() * 100) + 1),
+                        'gender': gender,
+                        'degree': degree,
+                        'knowledge': JSON.stringify(knowledge)
+                    };
+
+                    $http.post("/users/checkusername", {'username': name})
+                        .then(function (response) {
+                            var bool = response.data;
+
+                            if (bool) {
+                                $http.post("/users/addUser", exampleUser)
+                                    .then(function (response) {
+                                        console.log(response.data);
+                                        if (response.data !== 'false') {
+                                        } else {
+                                            alert('There has been a problem creating your account. Please try again.')
+                                        }
+                                    });
+                            } else {
+                                alert('Username taken, please choose another');
+                            }
+                            counter++;
+                            $scope.addUsers(counter);
+                        });
+
+                }
+            };
+
             var limit = 10;
             var counter = 1;
             $scope.GenderRadio = "Female";
@@ -204,14 +338,15 @@ angular.module('app', ['ngRoute', 'ngResource', 'ngMaterial', 'ngCookies', 'ngMd
 
             $scope.signup = function () {
                 var username = $scope.username;
-                var knowledgeList = [];
-                for (var i = 0; i < counter; i++) {
-                    var interest = {
-                        'category': $('#interestCategory' + i).find(":selected").text(),
-                        'word': $('#interestText' + i).val()
-                    };
-                    knowledgeList[i] = interest;
-                }
+                // var knowledgeList = [];
+                // for (var i = 0; i < counter; i++) {
+                //     var interest = {
+                //         'category': $('#interestCategory' + i).find(":selected").text(),
+                //         'word': $('#interestText' + i).val()
+                //     };
+                //     knowledgeList[i] = interest;
+                // }
+                console.log($scope.interests);
                 var newUser = {
                     'username': username,
                     'email': $scope.email,
@@ -220,11 +355,10 @@ angular.module('app', ['ngRoute', 'ngResource', 'ngMaterial', 'ngCookies', 'ngMd
                     'age': $scope.age,
                     'gender': $scope.GenderRadio,
                     'degree': $scope.degree,
-                    'degreetitle': $scope.degreetitle,
                     'knowledge': JSON.stringify($scope.interests)
                 };
 
-                console.log(username);
+                console.log(newUser);
                 $http.post("/users/checkusername", {'username': name})
                     .then(function (response) {
                         var bool = response.data;
@@ -353,6 +487,7 @@ angular.module('app', ['ngRoute', 'ngResource', 'ngMaterial', 'ngCookies', 'ngMd
 
     }])
 
+    //TODO: put text boxes for age so user can choose min and max age, makes it much easier
     .controller('GroupController', ['$scope', '$location', '$http', 'userPersistenceSession', 'userPersistenceUsername',
         function($scope, $location, $http, userPersistenceSession, userPersistenceUsername) {
 
