@@ -698,9 +698,29 @@ angular.module('app', ['ngRoute', 'ngResource', 'ngMaterial', 'ngCookies', 'ngMd
                     .then(function(response){
                         $scope.partners = response.data;
                     });
-            }
-
+            };
             getPartners();
+
+            $scope.accept = function(item){
+                var userrelation;
+                if(item.relation === 'mentor'){
+                    userrelation = 'mentee';
+                } else{
+                    userrelation = 'mentor';
+                }
+
+                var data = {'username' : userPersistenceUsername.getCookieData(),
+                    'sessionID' : userPersistenceSession.getCookieData(),
+                    'partnername' : item.username,
+                    'relation' : item.relation,
+                    'partnerrelation' : userrelation};
+
+                $http.post('/matching/acceptpartner', data)
+                    .then(function(response){
+                        getPartners();
+                    });
+            };
+
     }])
 
     .controller('UserprofileController', ['$scope', '$location', '$http', 'userPersistenceSession', 'userPersistenceUsername',
@@ -791,6 +811,7 @@ angular.module('app', ['ngRoute', 'ngResource', 'ngMaterial', 'ngCookies', 'ngMd
                 } else{
                     theirstatus = 'mentor';
                 }
+                console.log(item);
                 var data = {
                     'username': userPersistenceUsername.getCookieData(),
                     'sessionID': userPersistenceSession.getCookieData(),

@@ -36,16 +36,64 @@ router.post('/requestpartner', function(req, res){
 
     Cookie.find({'username' : body['username'], 'sessionid' : body['sessionID']}, function(e, docs) {
         if(docs.length > 0) {
-            UserSchema.update({'username': body['username']}, {$push : {'workpartners' : {'username' : body['partner'], 'status' : 2, 'relation' : body['partnerstatus']}}}, function (e, docs) {
-                UserSchema.update({'username' : body['partner']}, {$push : {'workpartner' : {$each : [{'username' : body['username'], 'status' : 1, 'relation' : body['theirstatus']}], $position : 0}}}, function(e, docs){
-                    res.send("");
-                });
+            async.waterfall([
+                function(cb1){
+                    UserSchema.update({'username': body['username']}, {$push : {'workpartners' : {'username' : body['partner'], 'status' : 'pending', 'relation' : body['partnerstatus']}}}, function(e, docs){
+                        cb1(null, body);
+                    });
+                },
+                function(body, cb2){
+                    console.log(body['partner']);
+                    UserSchema.update({'username' : body['partner']}, {$push : {'workpartners' : {'username' : body['username'], 'status' : 'requested', 'relation' : body['theirstatus']}}}, function(e, docs){
+                        cb2(null);
+                    });
+                }
+            ], function (err, result) {
+                res.send("");
             });
         } else{
             res.send("");
         }
     });
 
+});
+
+//TODO: not accepting properly figure out why, maybe use async?
+router.post('/acceptpartner', function(req, res){
+    var body = req.body;
+    Cookie.find({'username' : body['username'], 'sessionid' : body['sessionID']}, function(e, docs) {
+        if(docs.length > 0) {
+
+            async.waterfall([
+                function(cb1){
+                    UserSchema.update({'username': body['username']}, {$push : {'workpartners' : {'username' : body['partnername'], 'status' : 'current', 'relation' : body['relation']}}},  function(e, docs){
+                        cb1(null, body);
+                    });
+                },
+                function(body, cb2){
+                    UserSchema.update({'username' : body['partnername']}, {$push : {'workpartners' : {'username' : body['username'], 'status' : 'current', 'relation' : body['partnerrelation']}}}, function(e, docs){
+                        cb2(null, body);
+                    });
+                },
+                function(body, cb3){
+                    console.log(body['partnername'] + " " + body['partnerrelation']);
+                    UserSchema.update({'username' : body['partnername']}, {$pull : {'workpartners' : {'username' : body['username'], 'status' : 'pending', 'relation' : body['partnerrelation']}}}, function(e, docs){
+                        cb3(null, body);
+                    });
+                },
+                function(body, cb4){
+                    console.log(body['username'] + " " + body['relation']);
+                    UserSchema.update({'username' : body['username']}, {$pull : {'workpartners' : {'username' : body['partnername'], 'status' : 'requested', 'relation' : body['relation']}}}, function(e, docs){
+                        cb4(null);
+                    });
+                }
+            ], function (err, result) {
+                res.send("");
+            });
+        } else{
+            res.send("");
+        }
+    });
 });
 
 router.post('/getpartners', function(req, res){
@@ -406,7 +454,7 @@ router.post('/matching3', function(req, res){
         result.sort(compare);
         var finalresult = result.splice(0,10);
         var newfinal = [];
-        for(var i = 0; i < 10; i++){
+        for(var i = 0; i < finalresult.length; i++){
             if(finalresult[i]['score'] !== 0){
                 newfinal.push(finalresult[i]);
             }

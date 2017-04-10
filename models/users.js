@@ -16,7 +16,8 @@ var UserSchema = new mongoose.Schema({
     }],
     workpartners : [{
         username: String,
-        status: String
+        status: String,
+        relation : String
     }]
 });
 

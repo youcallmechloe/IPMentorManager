@@ -5,6 +5,10 @@
             <md-content ng-repeat="item in partners">
                 <h3>{{item.username}}</h3>
                 <h4>{{item.status}}</h4>
+                <h4>My {{item.relation}}</h4>
+                <md-content ng-show="item.status === 'requested'">
+                    <md-button class="md-raised md-primary" ng-click="accept(item)" style="height: 35px;">Accept Partner</md-button>
+                </md-content>
             </md-content>
         </md-content>
     </md-content>
