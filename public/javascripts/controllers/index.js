@@ -155,7 +155,19 @@ angular.module('app', ['ngRoute', 'ngResource', 'ngMaterial', 'ngCookies', 'ngMd
                 {'word' : 'Java', 'category' : 'Computer Science'},
                 {'word' : 'HTML', 'category' : 'Computer Science'},
                 {'word' : 'SQL', 'category' : 'Computer Science'},
-                {'word' : 'Networking', 'category' : 'Computer Science'}
+                {'word' : 'Language', 'category' : 'Computer Science'}
+                // ,
+                // //10
+                // {'word' : 'Simulation', 'category' : 'Computer Science'},
+                // {'word' : 'Virtual', 'category' : 'Computer Science'},
+                // {'word' : 'Systems', 'category' : 'Computer Science'},
+                // {'word' : 'Sorting', 'category' : 'Computer Science'},
+                // {'word' : 'Logic', 'category' : 'Computer Science'},
+                // {'word' : 'Boolean', 'category' : 'Computer Science'},
+                // {'word' : 'Array', 'category' : 'Computer Science'},
+                // {'word' : 'String', 'category' : 'Computer Science'},
+                // {'word' : 'Integer', 'category' : 'Computer Science'},
+                // {'word' : 'Software', 'category' : 'Computer Science'}
             ];
 
             var BinterestWords = [{'word' : 'Anaesthetics', 'category' : 'Biology'},
@@ -168,6 +180,18 @@ angular.module('app', ['ngRoute', 'ngResource', 'ngMaterial', 'ngCookies', 'ngMd
                 {'word' : 'Fertilisation', 'category' : 'Biology'},
                 {'word' : 'Homeostasis', 'category' : 'Biology'},
                 {'word' : 'Hormone', 'category' : 'Biology'}
+                // ,
+                // //10
+                // {'word' : 'Meiosis', 'category' : 'Biology'},
+                // {'word' : 'Mitosis', 'category' : 'Biology'},
+                // {'word' : 'Mutation', 'category' : 'Biology'},
+                // {'word' : 'Nerve', 'category' : 'Biology'},
+                // {'word' : 'Osmosis', 'category' : 'Biology'},
+                // {'word' : 'Photosynthesis', 'category' : 'Biology'},
+                // {'word' : 'Pollination', 'category' : 'Biology'},
+                // {'word' : 'Respiration', 'category' : 'Biology'},
+                // {'word' : 'Transpiration', 'category' : 'Biology'},
+                // {'word' : 'Variation', 'category' : 'Biology'}
             ];
 
             var PinterestWords = [{'word' : 'Amplitude', 'category' : 'Physics'},
@@ -180,6 +204,18 @@ angular.module('app', ['ngRoute', 'ngResource', 'ngMaterial', 'ngCookies', 'ngMd
                 {'word' : 'Galaxy', 'category' : 'Physics'},
                 {'word' : 'Particles', 'category' : 'Physics'},
                 {'word' : 'Cosmology', 'category' : 'Physics'}
+                // ,
+                // //10
+                // {'word' : 'Accelerometer', 'category' : 'Physics'},
+                // {'word' : 'Atomic mass', 'category' : 'Physics'},
+                // {'word' : 'Battery', 'category' : 'Physics'},
+                // {'word' : 'Black hole', 'category' : 'Physics'},
+                // {'word' : 'Boson', 'category' : 'Physics'},
+                // {'word' : 'Electric field', 'category' : 'Physics'},
+                // {'word' : 'Fusion', 'category' : 'Physics'},
+                // {'word' : 'Gamma ray', 'category' : 'Physics'},
+                // {'word' : 'Kelvin', 'category' : 'Physics'},
+                // {'word' : 'Mass number', 'category' : 'Physics'}
             ];
 
             var GinterestWords = [{'word' : 'Earth', 'category' : 'Geography'},
@@ -192,6 +228,18 @@ angular.module('app', ['ngRoute', 'ngResource', 'ngMaterial', 'ngCookies', 'ngMd
                 {'word' : 'Social', 'category' : 'Geography'},
                 {'word' : 'Weather Hazards', 'category' : 'Geography'},
                 {'word' : 'Economy', 'category' : 'Geography'}
+                // ,
+                // //10
+                // {'word' : 'Abrasion', 'category' : 'Geography'},
+                // {'word' : 'Climate Change', 'category' : 'Geography'},
+                // {'word' : 'Core region', 'category' : 'Geography'},
+                // {'word' : 'Deregulation', 'category' : 'Geography'},
+                // {'word' : 'Extinction', 'category' : 'Geography'},
+                // {'word' : 'Globalisation', 'category' : 'Geography'},
+                // {'word' : 'Hydropower', 'category' : 'Geography'},
+                // {'word' : 'Infrastructure', 'category' : 'Geography'},
+                // {'word' : 'Migration', 'category' : 'Geography'},
+                // {'word' : 'Polar', 'category' : 'Geography'}
             ];
 
             var EinterestWords = [{'word' : 'Markets', 'category' : 'Economics'},
@@ -204,12 +252,207 @@ angular.module('app', ['ngRoute', 'ngResource', 'ngMaterial', 'ngCookies', 'ngMd
                 {'word' : 'Covariance', 'category' : 'Economics'},
                 {'word' : 'Least squares', 'category' : 'Economics'},
                 {'word' : 'Microeconomics', 'category' : 'Economics'}
+                // ,
+                // //10
+                // {'word' : 'Demand', 'category' : 'Economics'},
+                // {'word' : 'Discrete', 'category' : 'Economics'},
+                // {'word' : 'Equilibrium', 'category' : 'Economics'},
+                // {'word' : 'Hedging', 'category' : 'Economics'},
+                // {'word' : 'Identification', 'category' : 'Economics'},
+                // {'word' : 'Monopoly', 'category' : 'Economics'},
+                // {'word' : 'Profit', 'category' : 'Economics'},
+                // {'word' : 'Slope', 'category' : 'Economics'},
+                // {'word' : 'Supply', 'category' : 'Economics'},
+                // {'word' : 'Utility', 'category' : 'Economics'}
             ];
 
-            var degreeList = ['Computer Science', 'Biology', 'Physics', 'Geography', 'Economics'];
+            var EnginterestWords = [{'word' : 'Alliteration', 'category' : 'English'},
+                {'word' : 'Imperative', 'category' : 'English'},
+                {'word' : 'Metaphor', 'category' : 'English'},
+                {'word' : 'Oxymoron', 'category' : 'English'},
+                {'word' : 'Personification', 'category' : 'English'},
+                {'word' : 'Rhyme', 'category' : 'English'},
+                {'word' : 'Simile', 'category' : 'English'},
+                {'word' : 'Narcissistic', 'category' : 'English'},
+                {'word' : 'Enjambment', 'category' : 'English'},
+                {'word' : 'Colloquial', 'category' : 'English'}
+            ];
+
+            var PsycinterestWords = [{'word' : 'Addiction', 'category' : 'Psychology'},
+                {'word' : 'Aggression', 'category' : 'Psychology'},
+                {'word' : 'Altruism', 'category' : 'Psychology'},
+                {'word' : 'Behavioral', 'category' : 'Psychology'},
+                {'word' : 'Egocentrism', 'category' : 'Psychology'},
+                {'word' : 'Encoding', 'category' : 'Psychology'},
+                {'word' : 'Estrogen', 'category' : 'Psychology'},
+                {'word' : 'Schizophrenic', 'category' : 'Psychology'},
+                {'word' : 'Occipital lobe', 'category' : 'Psychology'},
+                {'word' : 'Receptive', 'category' : 'Psychology'}
+            ];
+
+            var CinterestWords = [{'word' : 'Addiction', 'category' : 'Chemistry'},
+                {'word' : 'Addiction', 'category' : 'Chemistry'},
+                {'word' : 'Addiction', 'category' : 'Chemistry'},
+                {'word' : 'Addiction', 'category' : 'Chemistry'},
+                {'word' : 'Addiction', 'category' : 'Chemistry'},
+                {'word' : 'Addiction', 'category' : 'Chemistry'},
+                {'word' : 'Addiction', 'category' : 'Chemistry'},
+                {'word' : 'Addiction', 'category' : 'Chemistry'},
+                {'word' : 'Addiction', 'category' : 'Chemistry'},
+                {'word' : 'Addiction', 'category' : 'Chemistry'}
+            ];
+
+            var FinterestWords = [{'word' : 'Addiction', 'category' : 'Fashion'},
+                {'word' : 'Addiction', 'category' : 'Fashion'},
+                {'word' : 'Addiction', 'category' : 'Fashion'},
+                {'word' : 'Addiction', 'category' : 'Fashion'},
+                {'word' : 'Addiction', 'category' : 'Fashion'},
+                {'word' : 'Addiction', 'category' : 'Fashion'},
+                {'word' : 'Addiction', 'category' : 'Fashion'},
+                {'word' : 'Addiction', 'category' : 'Fashion'},
+                {'word' : 'Addiction', 'category' : 'Fashion'},
+                {'word' : 'Addiction', 'category' : 'Fashion'}
+            ];
+
+            var NinterestWords = [{'word' : 'Addiction', 'category' : 'Nursing'},
+                {'word' : 'Addiction', 'category' : 'Nursing'},
+                {'word' : 'Addiction', 'category' : 'Nursing'},
+                {'word' : 'Addiction', 'category' : 'Nursing'},
+                {'word' : 'Addiction', 'category' : 'Nursing'},
+                {'word' : 'Addiction', 'category' : 'Nursing'},
+                {'word' : 'Addiction', 'category' : 'Nursing'},
+                {'word' : 'Addiction', 'category' : 'Nursing'},
+                {'word' : 'Addiction', 'category' : 'Nursing'},
+                {'word' : 'Addiction', 'category' : 'Nursing'}
+            ];
+
+            var LinterestWords = [{'word' : 'Addiction', 'category' : 'Law'},
+                {'word' : 'Addiction', 'category' : 'Law'},
+                {'word' : 'Addiction', 'category' : 'Law'},
+                {'word' : 'Addiction', 'category' : 'Law'},
+                {'word' : 'Addiction', 'category' : 'Law'},
+                {'word' : 'Addiction', 'category' : 'Law'},
+                {'word' : 'Addiction', 'category' : 'Law'},
+                {'word' : 'Addiction', 'category' : 'Law'},
+                {'word' : 'Addiction', 'category' : 'Law'},
+                {'word' : 'Addiction', 'category' : 'Law'}
+            ];
+
+            var MinterestWords = [{'word' : 'Addiction', 'category' : 'Maths'},
+                {'word' : 'Addiction', 'category' : 'Maths'},
+                {'word' : 'Addiction', 'category' : 'Maths'},
+                {'word' : 'Addiction', 'category' : 'Maths'},
+                {'word' : 'Addiction', 'category' : 'Maths'},
+                {'word' : 'Addiction', 'category' : 'Maths'},
+                {'word' : 'Addiction', 'category' : 'Maths'},
+                {'word' : 'Addiction', 'category' : 'Maths'},
+                {'word' : 'Addiction', 'category' : 'Maths'},
+                {'word' : 'Addiction', 'category' : 'Maths'}
+            ];
+
+            var MuinterestWords = [{'word' : 'Addiction', 'category' : 'Music'},
+                {'word' : 'Addiction', 'category' : 'Music'},
+                {'word' : 'Addiction', 'category' : 'Music'},
+                {'word' : 'Addiction', 'category' : 'Music'},
+                {'word' : 'Addiction', 'category' : 'Music'},
+                {'word' : 'Addiction', 'category' : 'Music'},
+                {'word' : 'Addiction', 'category' : 'Music'},
+                {'word' : 'Addiction', 'category' : 'Music'},
+                {'word' : 'Addiction', 'category' : 'Music'},
+                {'word' : 'Addiction', 'category' : 'Music'}
+            ];
+
+            var SinterestWords = [{'word' : 'Addiction', 'category' : 'Sociology'},
+                {'word' : 'Addiction', 'category' : 'Sociology'},
+                {'word' : 'Addiction', 'category' : 'Sociology'},
+                {'word' : 'Addiction', 'category' : 'Sociology'},
+                {'word' : 'Addiction', 'category' : 'Sociology'},
+                {'word' : 'Addiction', 'category' : 'Sociology'},
+                {'word' : 'Addiction', 'category' : 'Sociology'},
+                {'word' : 'Addiction', 'category' : 'Sociology'},
+                {'word' : 'Addiction', 'category' : 'Sociology'},
+                {'word' : 'Addiction', 'category' : 'Sociology'}
+            ];
+
+            var HinterestWords = [{'word' : 'Addiction', 'category' : 'History'},
+                {'word' : 'Addiction', 'category' : 'History'},
+                {'word' : 'Addiction', 'category' : 'History'},
+                {'word' : 'Addiction', 'category' : 'History'},
+                {'word' : 'Addiction', 'category' : 'History'},
+                {'word' : 'Addiction', 'category' : 'History'},
+                {'word' : 'Addiction', 'category' : 'History'},
+                {'word' : 'Addiction', 'category' : 'History'},
+                {'word' : 'Addiction', 'category' : 'History'},
+                {'word' : 'Addiction', 'category' : 'History'}
+            ];
+
+            var FiinterestWords = [{'word' : 'Addiction', 'category' : 'Film'},
+                {'word' : 'Addiction', 'category' : 'Film'},
+                {'word' : 'Addiction', 'category' : 'Film'},
+                {'word' : 'Addiction', 'category' : 'Film'},
+                {'word' : 'Addiction', 'category' : 'Film'},
+                {'word' : 'Addiction', 'category' : 'Film'},
+                {'word' : 'Addiction', 'category' : 'Film'},
+                {'word' : 'Addiction', 'category' : 'Film'},
+                {'word' : 'Addiction', 'category' : 'Film'},
+                {'word' : 'Addiction', 'category' : 'Film'}
+            ];
+
+            var LaninterestWords = [{'word' : 'Addiction', 'category' : 'Language'},
+                {'word' : 'Addiction', 'category' : 'Language'},
+                {'word' : 'Addiction', 'category' : 'Language'},
+                {'word' : 'Addiction', 'category' : 'Language'},
+                {'word' : 'Addiction', 'category' : 'Language'},
+                {'word' : 'Addiction', 'category' : 'Language'},
+                {'word' : 'Addiction', 'category' : 'Language'},
+                {'word' : 'Addiction', 'category' : 'Language'},
+                {'word' : 'Addiction', 'category' : 'Language'},
+                {'word' : 'Addiction', 'category' : 'Language'}
+            ];
+
+            var PhinterestWords = [{'word' : 'Addiction', 'category' : 'Pharmacology'},
+                {'word' : 'Addiction', 'category' : 'Pharmacology'},
+                {'word' : 'Addiction', 'category' : 'Pharmacology'},
+                {'word' : 'Addiction', 'category' : 'Pharmacology'},
+                {'word' : 'Addiction', 'category' : 'Pharmacology'},
+                {'word' : 'Addiction', 'category' : 'Pharmacology'},
+                {'word' : 'Addiction', 'category' : 'Pharmacology'},
+                {'word' : 'Addiction', 'category' : 'Pharmacology'},
+                {'word' : 'Addiction', 'category' : 'Pharmacology'},
+                {'word' : 'Addiction', 'category' : 'Pharmacology'}
+            ];
+
+            var PhyinterestWords = [{'word' : 'Addiction', 'category' : 'Physiotherapy'},
+                {'word' : 'Addiction', 'category' : 'Physiotherapy'},
+                {'word' : 'Addiction', 'category' : 'Physiotherapy'},
+                {'word' : 'Addiction', 'category' : 'Physiotherapy'},
+                {'word' : 'Addiction', 'category' : 'Physiotherapy'},
+                {'word' : 'Addiction', 'category' : 'Physiotherapy'},
+                {'word' : 'Addiction', 'category' : 'Physiotherapy'},
+                {'word' : 'Addiction', 'category' : 'Physiotherapy'},
+                {'word' : 'Addiction', 'category' : 'Physiotherapy'},
+                {'word' : 'Addiction', 'category' : 'Physiotherapy'}
+            ];
+
+            var SpinterestWords = [{'word' : 'Addiction', 'category' : 'Spanish'},
+                {'word' : 'Addiction', 'category' : 'Spanish'},
+                {'word' : 'Addiction', 'category' : 'Spanish'},
+                {'word' : 'Addiction', 'category' : 'Spanish'},
+                {'word' : 'Addiction', 'category' : 'Spanish'},
+                {'word' : 'Addiction', 'category' : 'Spanish'},
+                {'word' : 'Addiction', 'category' : 'Spanish'},
+                {'word' : 'Addiction', 'category' : 'Spanish'},
+                {'word' : 'Addiction', 'category' : 'Spanish'},
+                {'word' : 'Addiction', 'category' : 'Spanish'}
+            ];
+
+
+            var degreeList = ['Computer Science', 'Biology', 'Physics', 'Geography', 'Economics', 'Psychology', 'English',
+                                'Chemistry', 'Fashion', 'Nursing', 'Law', 'Maths', 'Music', 'Sociology', 'History', 'Film',
+                                'Language', 'Pharmacology', 'Physiotherapy', 'Spanish'];
 
             $scope.addUsers = function(counter) {
-                if (counter > 100) {
+                if (counter > 99) {
                     return;
                 } else {
                     var gender;
@@ -221,7 +464,7 @@ angular.module('app', ['ngRoute', 'ngResource', 'ngMaterial', 'ngCookies', 'ngMd
 
                     var degree = degreeList[Math.floor(Math.random() * degreeList.length)];
                     var knowledge = [];
-                    for (var j = 0; j < Math.floor((Math.random() * 10) + 1); j++) {
+                    for (var j = 0; j < Math.floor((Math.random() * 20) + 1); j++) {
                         var interest;
                         switch (degree) {
                             case "Computer Science":
@@ -236,21 +479,69 @@ angular.module('app', ['ngRoute', 'ngResource', 'ngMaterial', 'ngCookies', 'ngMd
                             case "Geography":
                                 interest = GinterestWords[Math.floor(Math.random() * GinterestWords.length)];
                                 break;
+                            case "Psychology":
+                                interest = PsycinterestWords[Math.floor(Math.random() * PsycinterestWords.length)];
+                                break;
+                            case "Chemistry":
+                                interest = CinterestWords[Math.floor(Math.random() * CinterestWords.length)];
+                                break;
+                            case "Fashion":
+                                interest = FinterestWords[Math.floor(Math.random() * FinterestWords.length)];
+                                break;
+                            case "Nursing":
+                                interest = NinterestWords[Math.floor(Math.random() * NinterestWords.length)];
+                                break;
+                            case "Law":
+                                interest = LinterestWords[Math.floor(Math.random() * LinterestWords.length)];
+                                break;
+                            case "Maths":
+                                interest = MinterestWords[Math.floor(Math.random() * MinterestWords.length)];
+                                break;
+                            case "Music":
+                                interest = MuinterestWords[Math.floor(Math.random() * MuinterestWords.length)];
+                                break;
+                            case "Sociology":
+                                interest = SinterestWords[Math.floor(Math.random() * SinterestWords.length)];
+                                break;
+                            case "History":
+                                interest = HinterestWords[Math.floor(Math.random() * HinterestWords.length)];
+                                break;
+                            case "Film":
+                                interest = FiinterestWords[Math.floor(Math.random() * FiinterestWords.length)];
+                                break;
+                            case "Language":
+                                interest = LaninterestWords[Math.floor(Math.random() * LaninterestWords.length)];
+                                break;
+                            case "Pharmacology":
+                                interest = PhinterestWords[Math.floor(Math.random() * PhinterestWords.length)];
+                                break;
+                            case "Physiotherapy":
+                                interest = PhyinterestWords[Math.floor(Math.random() * PhyinterestWords.length)];
+                                break;
+                            case "Spanish":
+                                interest = SpinterestWords[Math.floor(Math.random() * SpinterestWords.length)];
+                                break;
+                            case "English":
+                                interest = EnginterestWords[Math.floor(Math.random() * EnginterestWords.length)];
+                                break;
                             case "Economics":
                                 interest = EinterestWords[Math.floor(Math.random() * EinterestWords.length)];
                                 break;
+
                         }
                         if (knowledge.indexOf(interest) === -1) {
                             knowledge.push(interest);
                         }
                     }
 
+                    var userID = Math.random();
+
                     var exampleUser = {
-                        'username': "user" + counter,
-                        'email': "user" + counter + "@example.com",
-                        'password': "user" + counter,
-                        'fullname': "User" + counter + " Example",
-                        'age': Math.floor((Math.random() * 100) + 1),
+                        'username': "user" + userID,
+                        'email': "user" + userID + "@example.com",
+                        'password': "user" + userID,
+                        'fullname': "User" + userID + " Example",
+                        'age': Math.floor((Math.random() * 30) + 10),
                         'gender': gender,
                         'degree': degree,
                         'knowledge': JSON.stringify(knowledge)
@@ -263,8 +554,8 @@ angular.module('app', ['ngRoute', 'ngResource', 'ngMaterial', 'ngCookies', 'ngMd
                             if (bool) {
                                 $http.post("/users/addUser", exampleUser)
                                     .then(function (response) {
-                                        console.log(response.data);
                                         if (response.data !== 'false') {
+                                            console.log("user" + counter);
                                         } else {
                                             alert('There has been a problem creating your account. Please try again.')
                                         }
@@ -336,16 +627,10 @@ angular.module('app', ['ngRoute', 'ngResource', 'ngMaterial', 'ngCookies', 'ngMd
                 return options;
             };
 
+            //TODO: check that boxes are filled before posting!!
             $scope.signup = function () {
                 var username = $scope.username;
-                // var knowledgeList = [];
-                // for (var i = 0; i < counter; i++) {
-                //     var interest = {
-                //         'category': $('#interestCategory' + i).find(":selected").text(),
-                //         'word': $('#interestText' + i).val()
-                //     };
-                //     knowledgeList[i] = interest;
-                // }
+
                 console.log($scope.interests);
                 var newUser = {
                     'username': username,
@@ -398,13 +683,24 @@ angular.module('app', ['ngRoute', 'ngResource', 'ngMaterial', 'ngCookies', 'ngMd
 
         }])
 
-    .controller('HomepageController', ['$scope', '$location', '$http', 'userPersistenceSession',
-        function($scope, $location, $http, userPersistenceSession) {
+    .controller('HomepageController', ['$scope', '$location', '$http', 'userPersistenceSession', 'userPersistenceUsername',
+        function($scope, $location, $http, userPersistenceSession, userPersistenceUsername) {
 
             if(userPersistenceSession.getCookieData() === undefined){
                 $location.url('/');
             }
 
+            $scope.partners = [];
+
+            var getPartners = function(){
+                $http.post('/matching/getpartners', {'username' : userPersistenceUsername.getCookieData(),
+                                                        'sessionID' : userPersistenceSession.getCookieData()})
+                    .then(function(response){
+                        $scope.partners = response.data;
+                    });
+            }
+
+            getPartners();
     }])
 
     .controller('UserprofileController', ['$scope', '$location', '$http', 'userPersistenceSession', 'userPersistenceUsername',
@@ -427,8 +723,8 @@ angular.module('app', ['ngRoute', 'ngResource', 'ngMaterial', 'ngCookies', 'ngMd
         getuserInfo();
     }])
 
-    .controller('WorkpartnerController', ['$scope', '$location', '$http', 'userPersistenceSession',
-        function($scope, $location, $http, userPersistenceSession) {
+    .controller('WorkpartnerController', ['$scope', '$location', '$http', 'userPersistenceSession','userPersistenceUsername',
+        function($scope, $location, $http, userPersistenceSession, userPersistenceUsername) {
 
             $scope.categoryList = ['Accounting and Finance', 'Anthropology', 'Archaeology', 'Art', 'Astronomy', 'Biochemistry', 'Biology',
                 'Business', 'Chemistry', 'Computer Science', 'Criminology', 'Ecology', 'Economics', 'Education Studies', 'Engineering',
@@ -469,19 +765,42 @@ angular.module('app', ['ngRoute', 'ngResource', 'ngMaterial', 'ngCookies', 'ngMd
                 }
             };
 
-            //TODO: add in degree choice
+
+            //TODO: add in degree choice?
             $scope.match = function(){
                 var data = {'gender' : $scope.Gender,
-                        'age' : $scope.Age,
+                        'minAge' : $scope.minAge,
+                        'maxAge' : $scope.maxAge,
                         'interests' : $scope.interests,
                         'sessionID' : userPersistenceSession.getCookieData(),
-                        'username' : userPersistenceUsername.getCookieData()};
-                $http.post('/matching/matching1', data)
+                        'username' : userPersistenceUsername.getCookieData(),
+                        'similar' : $scope.similar};
+                $http.post('/matching/matching3', data)
                     .then(function(response){
                         $scope.find = false;
                         $scope.fullresponse = true;
-                        console.log(response.data);
                         $scope.matches = response.data;
+                        $scope.partner = $scope.MentorType;
+                    });
+            };
+
+            $scope.request = function(item) {
+                var theirstatus;
+                if($scope.partner === 'mentor'){
+                    theirstatus = 'mentee';
+                } else{
+                    theirstatus = 'mentor';
+                }
+                var data = {
+                    'username': userPersistenceUsername.getCookieData(),
+                    'sessionID': userPersistenceSession.getCookieData(),
+                    'partner': item,
+                    'partnerstatus' : $scope.partner,
+                    'theirstatus' : theirstatus
+                };
+                $http.post('/matching/requestpartner', data)
+                    .then(function(response){
+
                     });
             };
 

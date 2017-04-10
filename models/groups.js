@@ -9,7 +9,8 @@ var GroupSchema = new mongoose.Schema({
     members : [],
     posts : [{
         post: String,
-        username: String
+        username: String,
+        replies : []
     }]
 });
 

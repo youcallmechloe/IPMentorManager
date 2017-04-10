@@ -18,7 +18,7 @@
     "debug": "~2.2.0",
     "ejs": "~2.5.2",
     "email-verification": "^0.4.5",
-    "express": "~4.14.0",
+    "express": "^4.14.1",
     "mongodb": "^2.2.19",
     "mongoose": "^4.8.1",
     "monk": "^3.1.4",

@@ -6,13 +6,18 @@
                 <md-button class="sideButton" ng-click="find = true" ng-hide="find">Find a new Partner</md-button>
                 <div ng-show="find">
                     <select ng-model="Gender">
-                        <option value="female">Female</option>
-                        <option value="male">Male</option>
+                        <option value="Female">Female</option>
+                        <option value="Male">Male</option>
                         <option value="none">No Preference</option>
                     </select>
-                    <select ng-model="Age">
-                        <option ng-repeat="option in age" value="{{option}}">Under {{option}}</option>
-                    </select>
+                    <md-input-container>
+                        <label>Minimum Age</label>
+                        <input type="number" placeholder="Minimum Age" ng-model="minAge" required>
+                    </md-input-container>
+                    <md-input-container>
+                        <label>Maximum Age</label>
+                        <input type="number" placeholder="Maximum Age" ng-model="maxAge" required>
+                    </md-input-container>
                     <br>
                     <md-content layout="row" style="padding-top: 20px; padding-bottom:20px;">
                         <h4>I'd like to find a...</h4>
@@ -35,8 +40,11 @@
                             <option value="">---Choose Category---</option> <!-- not selected / blank option -->
                             <option ng-repeat="option in categoryList" value="{{option}}">{{option}}</option>
                         </select>
-                        <md-button class="md-raised md-primary" ng-click="addWord(searchText)">Add Interest</md-button>
+                        <md-button class="md-raised md-primary" ng-click="addWord(searchText)" style="height:35px;">Add Interest</md-button>
                     </md-content>
+                    <md-checkbox md-no-ink aria-label="Checkbox No Ink" ng-model="similar" class="md-primary">
+                        Would you like the site to look for similar words to your required interests?
+                    </md-checkbox>
                     <md-content ng-repeat="item in interests" layout="row">
                         <h4>{{item.word}} in {{item.category}}</h4>
                         <md-button class="md-icon-button md-primary" aria-label="Settings"
@@ -45,14 +53,19 @@
                         </md-button>
                     </md-content>
                     <md-button class="sideButton" ng-click="find = false">Go Back</md-button>
-                    <md-button class="md-icon-button md-primary" ng-click="match()">Find Partner</md-button>
+                    <md-button class="md-raised md-primary" ng-click="match()" style="">Find Partner</md-button>
                 </div>
             </md-content>
             <md-content>
                 <div ng-show="fullresponse === true">
-                    <md-conten ng-repeat="item in matches">
-                        <h3>{{item.username}}</h3>
-                        <h4>Contact: {{item.email}}</h4>
+                    <h2>Results for a {{partner}}</h2>
+                    <md-content ng-repeat="item in matches" layout="row">
+                        <md-content>
+                            <h3>{{item.username}}</h3>
+                            <h4>Score : {{item.score}}</h4>
+                            <h4>Contact: {{item.email}}</h4>
+                        </md-content>
+                        <md-button class="md-raised md-primary" ng-click="request(item.username)" style="height: 35px;">Request Partner</md-button>
                     </md-content>
                 </div>
             </md-content>

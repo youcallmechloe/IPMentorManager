@@ -20,6 +20,7 @@ router.post('/getwords', function(req, res){
     WordSchema.find({}, function(e, docs){
         var words = [];
         for(var i = 0; i < docs.length; i++){
+            console.log(docs[i]['word']);
             var dbword = docs[i]['word'].toUpperCase();
             var searchword = body['word'].toUpperCase();
             if(dbword.includes(searchword)){
@@ -30,18 +31,49 @@ router.post('/getwords', function(req, res){
     });
 });
 
+router.post('/requestpartner', function(req, res){
+    var body = req.body;
+
+    Cookie.find({'username' : body['username'], 'sessionid' : body['sessionID']}, function(e, docs) {
+        if(docs.length > 0) {
+            UserSchema.update({'username': body['username']}, {$push : {'workpartners' : {'username' : body['partner'], 'status' : 2, 'relation' : body['partnerstatus']}}}, function (e, docs) {
+                UserSchema.update({'username' : body['partner']}, {$push : {'workpartner' : {$each : [{'username' : body['username'], 'status' : 1, 'relation' : body['theirstatus']}], $position : 0}}}, function(e, docs){
+                    res.send("");
+                });
+            });
+        } else{
+            res.send("");
+        }
+    });
+
+});
+
+router.post('/getpartners', function(req, res){
+    var body = req.body;
+
+    Cookie.find({'username' : body['username'], 'sessionid' : body['sessionID']}, function(e, docs) {
+        if(docs.length > 0) {
+            UserSchema.find({'username' : body['username']}, function(e, docs){
+                res.send(docs[0]['workpartners']);
+            })
+        } else{
+            res.send("");
+        }
+    });
+});
+
 /** matching algorithm to be used by a user with search requirements - first implementation, basic and very slow, not scalable
  */
 router.post('/matching1', function(req, res){
     var body = req.body;
     var interests = body['interests'];
 
-    Cookie.find({'username' : body['username'], 'sessionID' : body['sessionID']}, function(e, docs){
+    Cookie.find({'username' : body['username'], 'sessionid' : body['sessionID']}, function(e, docs){
         if(docs.length > 0){
             async.waterfall([
                 function(cb1){
                     global.userList = [];
-                    UserSchema.find({'age': {$lte: body['age']}}, function (e, users) {
+                    UserSchema.find({'age': {$lte: body['maxAge'], $gte: body['minAge']}}, function (e, users) {
                         if(users !== undefined) {
                             for (var i = 0; i < users.length; i++) {
                                 if ((users[i]['gender'] === body['gender']) || (body['gender'] === 'none')) {
@@ -53,6 +85,7 @@ router.post('/matching1', function(req, res){
                                         'gender': users[i]['gender'],
                                         'degree': users[i]['degree'],
                                         'knowledge': users[i]['knowledge'],
+                                        'wordpartners' : user[i]['workpartners'],
                                         'score': 0
                                     };
                                     userList.push(user);
@@ -92,33 +125,43 @@ router.post('/matching1', function(req, res){
 
                         }
                         cb2(null, userlist, wordList, body);
+
                     });
                 },
                 function(users, wordlist, body, cb3){
-                    var asyncLoop = function(i, cb4){
-                        if(i < wordlist.length){
-                            global.category = wordlist[i]['category'];
-                            if(wordlist[i]['bool'] === false){
-                                datamuse.words({
-                                    ml : wordlist[i]['word']
-                                }).then( function(response){
-                                    var body = response.slice(0,19);
-                                    var highestScore = body[0]['score'];
-                                    for(var j = 0; j < body.length; j++){
-                                        wordlist.push({'word' : body[j]['word'], 'category' : category, 'score' : 0.5*(body[j]['score']/highestScore), 'bool' : true})
-                                    }
-                                    asyncLoop(i+1, cb4);
-                                });
-                            } else{
-                                asyncLoop(i+1, cb4);
+                    if(body['similar'] === true) {
+                        var asyncLoop = function (i, cb4) {
+                            if (i < wordlist.length) {
+                                global.category = wordlist[i]['category'];
+                                if (wordlist[i]['bool'] === false) {
+                                    datamuse.words({
+                                        ml: wordlist[i]['word']
+                                    }).then(function (response) {
+                                        var body = response.slice(0, 19);
+                                        var highestScore = body[0]['score'];
+                                        for (var j = 0; j < body.length; j++) {
+                                            wordlist.push({
+                                                'word': body[j]['word'],
+                                                'category': category,
+                                                'score': 0.5 * (body[j]['score'] / highestScore),
+                                                'bool': true
+                                            })
+                                        }
+                                        asyncLoop(i + 1, cb4);
+                                    });
+                                } else {
+                                    asyncLoop(i + 1, cb4);
+                                }
+                            } else {
+                                cb4(wordlist);
                             }
-                        } else {
-                            cb4(wordlist);
-                        }
-                    };
-                    asyncLoop(0, function (res) {
-                        cb3(null, users, res, body);
-                    });
+                        };
+                        asyncLoop(0, function (res) {
+                            cb3(null, users, res, body);
+                        });
+                    } else{
+                        cb3(null, users, wordlist, body);
+                    }
                 },
                 function (users, wordlist, body, cb5) {
                     WordSchema.find(function (e, docs) {
@@ -163,22 +206,22 @@ router.post('/matching1', function(req, res){
 router.post('/matching2', function(req, res) {
     var body = req.body;
     var interests = body['interests'];
-    Cookie.find({'username': body['username'], 'sessionID': body['sessionID']}, function (e, docs) {
+    Cookie.find({'username': body['username'], 'sessionid': body['sessionID']}, function (e, docs) {
         if (docs.length > 0) {
             async.waterfall([
                 function (cb1) {
                     global.userList = [];
-                    UserSchema.find({'age': {$lte: body['age']}}, function (e, users) {
+                    UserSchema.find({'age': {$lte: body['maxAge'], $gte: body['minAge']}}, function (e, users) {
                         if (users !== undefined) {
                             for (var i = 0; i < users.length; i++) {
                                 if ((users[i]['gender'] === body['gender']) || (body['gender'] === 'none')) {
                                     var user = {
                                         'username': users[i]['username'],
-                                        'email': users[i]['email'],
-                                        'fullname': users[i]['fullname'],
-                                        'age': users[i]['age'],
-                                        'gender': users[i]['gender'],
-                                        'degree': users[i]['degree'],
+                                        // 'email': users[i]['email'],
+                                        // 'fullname': users[i]['fullname'],
+                                        // 'age': users[i]['age'],
+                                        // 'gender': users[i]['gender'],
+                                        // 'degree': users[i]['degree'],
                                         'knowledge': users[i]['knowledge'],
                                         'score': 0
                                     };
@@ -191,7 +234,8 @@ router.post('/matching2', function(req, res) {
 
                 },
                 function (users, wordlist, body, cb3) {
-                    var asyncLoop = function (i, cb4) {
+                    if(body['similar'] === true) {
+                        var asyncLoop = function (i, cb4) {
                         if (i < wordlist.length) {
                             global.category = wordlist[i]['category'];
                             if (wordlist[i]['bool'] === false) {
@@ -218,9 +262,11 @@ router.post('/matching2', function(req, res) {
                         }
                     };
                     asyncLoop(0, function (res) {
-                        console.log(wordlist);
                         cb3(null, users, res, body);
                     });
+                    } else{
+                        cb3(null, users, wordlist, body);
+                    }
                 },
                 function (users, wordlist, body, cb5) {
                     for (var j = 0; j < wordlist.length; j++) {
@@ -246,8 +292,14 @@ router.post('/matching2', function(req, res) {
                 }
 
                 result.sort(compare);
-                var finalresult = result.splice(0, 5);
-                res.send(finalresult);
+                var finalresult = result.splice(0, 10);
+                var newfinal = [];
+                for(var i = 0; i < 10; i++){
+                    if(finalresult[i]['score'] !== 0){
+                        newfinal.push(finalresult[i]);
+                    }
+                }
+                res.send(newfinal);
             });
         } else {
             res.send("");
@@ -265,7 +317,7 @@ router.post('/matching3', function(req, res){
     async.waterfall([
         function(cb1){
             global.userList = [];
-            UserSchema.find({'age': {$lte: body['age']}}, function (e, users) {
+            UserSchema.find({'age': {$lte: body['maxAge'], $gte: body['minAge']}}, function (e, users) {
                 if(users !== undefined) {
                     for (var i = 0; i < users.length; i++) {
                         if ((users[i]['gender'] === body['gender']) || (body['gender'] === 'none')) {
@@ -288,6 +340,7 @@ router.post('/matching3', function(req, res){
 
         },
         function(users, wordlist, body, cb3){
+            if(body['similar'] === true) {
             var asyncLoop = function(i, cb4){
                 if(i < wordlist.length){
                     global.category = wordlist[i]['category'];
@@ -312,6 +365,9 @@ router.post('/matching3', function(req, res){
             asyncLoop(0, function (res) {
                 cb3(null, users, res, body);
             });
+            } else{
+                cb3(null, users, wordlist, body);
+            }
         },
         function (users, wordlist, body, cb5) {
             for (var v = 0; v < users.length; v++) {
@@ -348,8 +404,14 @@ router.post('/matching3', function(req, res){
             return 0;
         }
         result.sort(compare);
-        var finalresult = result.splice(0,5);
-        res.send(finalresult);
+        var finalresult = result.splice(0,10);
+        var newfinal = [];
+        for(var i = 0; i < 10; i++){
+            if(finalresult[i]['score'] !== 0){
+                newfinal.push(finalresult[i]);
+            }
+        }
+        res.send(newfinal);
     });
 });
 

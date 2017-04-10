@@ -2,7 +2,10 @@
     <md-content id="groups" flex layout="column">
         <h1>Home</h1>
         <md-content id="findGroup">
-            <h3>Probably try and display something here</h3>
+            <md-content ng-repeat="item in partners">
+                <h3>{{item.username}}</h3>
+                <h4>{{item.status}}</h4>
+            </md-content>
         </md-content>
     </md-content>
 </div>
