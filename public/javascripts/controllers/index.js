@@ -691,6 +691,7 @@ angular.module('app', ['ngRoute', 'ngResource', 'ngMaterial', 'ngCookies', 'ngMd
             }
 
             $scope.partners = [];
+            $scope.pointvalue = 10;
 
             var getPartners = function(){
                 $http.post('/matching/getpartners', {'username' : userPersistenceUsername.getCookieData(),
@@ -721,6 +722,18 @@ angular.module('app', ['ngRoute', 'ngResource', 'ngMaterial', 'ngCookies', 'ngMd
                     });
             };
 
+            $scope.addPoints = function(username, point){
+                var data = {'username' : username,
+                            'amount' : point};
+                console.log(data);
+                $http.post('/users/addtoscore', data)
+                    .then(function(response){
+                        console.log(response);
+                        if(response.data === ""){
+                            alert("Points added to " + username + "'s score!")
+                        }
+                    });
+            }
     }])
 
     .controller('UserprofileController', ['$scope', '$location', '$http', 'userPersistenceSession', 'userPersistenceUsername',

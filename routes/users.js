@@ -155,14 +155,13 @@ router.post('/addtoscore', function(req, res){
     var db = req.db;
     var collection = db.get('userlist');
     var body = req.body;
-    console.log(body['amount']);
 
-    collection.update({'username': body['username']}, {$inc : {'userscore' : body['amount']}}, function(e, docs){
-        if(docs !== undefined) {
-            console.log(docs);
-            res.send(string(docs["nmodified"]));
-        } else{
+    collection.update({'username': body['username']}, {$inc : {'userscore' : parseInt(body['amount'])}}, function(e, docs){
+        console.log(docs);
+        if(!e) {
             res.send("");
+        } else{
+            res.send(e);
         }
     });
 
