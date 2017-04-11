@@ -724,7 +724,8 @@ angular.module('app', ['ngRoute', 'ngResource', 'ngMaterial', 'ngCookies', 'ngMd
 
             $scope.addPoints = function(username, point){
                 var data = {'username' : username,
-                            'amount' : point};
+                            'amount' : point,
+                            'madeusername' : userPersistenceUsername.getCookieData()};
                 console.log(data);
                 $http.post('/users/addtoscore', data)
                     .then(function(response){
@@ -747,10 +748,9 @@ angular.module('app', ['ngRoute', 'ngResource', 'ngMaterial', 'ngCookies', 'ngMd
         $scope.user = [];
 
         var getuserInfo = function(){
-            $http.post('/users/userinfo', {'username' : $scope.username, 'sessionID' : userPersistenceSession.getCookieData()})
+            $http.post('/users/userinfo', {'username' : $scope.username, 'sessionid' : userPersistenceSession.getCookieData()})
                 .then(function(response){
                     $scope.user = response.data;
-                   console.log(response.data);
                 });
         };
         getuserInfo();
@@ -773,6 +773,18 @@ angular.module('app', ['ngRoute', 'ngResource', 'ngMaterial', 'ngCookies', 'ngMd
 
             if(userPersistenceSession.getCookieData() === undefined){
                 $location.url('/');
+            };
+
+            $scope.clear = function(){
+                $scope.matches = [];
+                $scope.interests= [];
+                $scope.Gender = "";
+                $scope.minAge = "";
+                $scope.maxAge = "";
+                $scope.MentorType = "";
+                $scope.searchText = "";
+                $scope.itemCategory = "";
+                $similar = null;
             };
 
             $scope.getWords = function(search){

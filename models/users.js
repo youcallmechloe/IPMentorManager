@@ -10,6 +10,12 @@ var UserSchema = new mongoose.Schema({
     age : Number,
     gender : String,
     degree : String,
+    userscore: Number,
+    scoresmade : [{
+        username: String,
+        score : Number
+    }],
+    level : String,
     knowledge : [{
         word : String,
         category : String

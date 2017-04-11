@@ -15,10 +15,8 @@ router.post('/creategroup', function(req, res){
     var collection = db.get('groups');
     var body = req.body;
 
-    Cookie.find({'username' : body['username'], 'sessionID' : body['sessionID']}, function(e, docs) {
-        console.log(docs);
+    Cookie.find({'username' : body['username'], 'sessionid' : body['sessionID']}, function(e, docs) {
         if (docs.length > 0) {
-
             collection.find({'groupname': body['groupname']}, {}, function (e, docs) {
 
                 console.log(docs);
@@ -124,7 +122,7 @@ router.post('/groupsmemberof', function(req, res){
     var collection = db.get('groups');
     var body = req.body;
 
-    Cookie.find({'username' : body['username'], 'sessionID' : body['sessionID']}, function(e, docs){
+    Cookie.find({'username' : body['username'], 'sessionid' : body['sessionID']}, function(e, docs){
         console.log(docs);
         if(docs.length > 0) {
             collection.find({'members': {$in: [body['username']]}}, {}, function (e, docs) {

@@ -61,6 +61,8 @@ router.post('/adduser', function(req, res) {
             'gender': body['gender'],
             'degree': body['degree'],
             'userscore' : 0,
+            'scoresmade' : [],
+            'level' : 'New User',
             'knowledge': userknowledge,
             'workpartners' : []
         };
@@ -101,7 +103,7 @@ router.post('/userinfo', function(req, res){
     console.log(body);
     var userinfo = [];
 
-    cookie.find({'username' : body['username'], 'sessionid' : body['sessionid']}, function(e, docs){
+    cookie.find({'username' : body['username'], 'sessionid' : body['sessionID']}, function(e, docs){
         if(docs.length > 0){
             usercollection.find({'username' : body['username']}, {}, function(e, docs){
                 if(docs.length > 0) {
@@ -114,6 +116,7 @@ router.post('/userinfo', function(req, res){
                         'degree' : docs[0]['degree'],
                         'degreetitle': docs[0]['degreetitle'],
                         'userscore' : docs[0]['userscore'],
+                        'level' : docs[0]['level'],
                         'knowledge' : docs[0]['knowledge']
                     };
                     userinfo.push(user);
@@ -151,20 +154,61 @@ router.get('/databasecategories', function(req, res){
 /*
  * post request to add a specified amount to a users score - can be used to update
  */
+//TODO: change level based on point score!!
 router.post('/addtoscore', function(req, res){
     var db = req.db;
     var collection = db.get('userlist');
     var body = req.body;
 
-    collection.update({'username': body['username']}, {$inc : {'userscore' : parseInt(body['amount'])}}, function(e, docs){
-        console.log(docs);
-        if(!e) {
-            res.send("");
-        } else{
+    collection.find({'username' : body['username']}, {}, function(e, docs){
+        if(!e){
+            var newscore = docs[0]['userscore'] + parseInt(body['amount']);
+            var level;
+            if(newscore < 50){
+                level = 'New User';
+            } else if(newscore < 200){
+                level = 'Beginner';
+            } else if(newscore < 500){
+                level = 'Novice';
+            } else if(newscore < 1000){
+                level = 'Intermediate';
+            } else if(newscore < 2000){
+                level = 'Advanced';
+            } else if(newscore < 5000){
+                level = 'Expert';
+            } else if(newscore < 10000){
+                level = 'Professional';
+            } else {
+                level = 'Guru';
+            }
+            userschema.update({'username': body['username']}, {
+                $set : {'userscore': newscore,
+                'level': level}
+            }, function (e, docs) {
+                if (!e) {
+                    userschema.update({'username': body['madeusername']}, {
+                            $push: {
+                                'scoresmade': {
+                                    'username': body['username'],
+                                    'score': body['amount']
+                                }
+                            }
+                        },
+                        function (e, docs) {
+                            if (!e) {
+                                res.send("");
+                            } else {
+                                res.send(e)
+                            }
+                        });
+                } else {
+                    res.send(e);
+                }
+            })
+        } else {
             res.send(e);
         }
     });
-
 });
 
 /*

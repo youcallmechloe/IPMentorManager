@@ -28,15 +28,25 @@
                 <md-content ng-show="selectedGroup === ''" layout-align="center" style="height: 50%">
                     <md-button class="sideButton" ng-click="creatingGroup()">Create a Group</md-button>
                     <div class="createGroupDiv" ng-show="groups" layout="column">
-                        <md-input-container>
-                            <label>Group Name</label>
-                            <input type="text" placeholder="Group Name" ng-model="groupname" required>
-                        </md-input-container>
-                        <textarea type="text" placeholder="Description" ng-model="$parent.groupdescription" required></textarea>
-                        <div layout="row" layout-align="center">
-                            <md-button class="md-raised md-primary" ng-click="createGroup()">Create</md-button>
-                            <md-button class="sideButton" ng-click="cancelGroup()">Cancel</md-button>
-                        </div>
+                        <md-content>
+                            <md-input-container>
+                                <label>Group Names</label>
+                                <input type="text" class="myform" placeholder="Group Name" ng-model="groupname" required>
+                            </md-input-container>
+                            <md-input-container class="md-block">
+                                <label for="desc">Description</label>
+                                <textarea id="desc" ng-model="$parent.groupdescription" placeholder="Description"  md-maxlength="150" rows="5" md-select-on-focus></textarea>
+                            </md-input-container>
+                            <md-input-container class="md-block">
+                                <label>Address</label>
+                                <input ng-model="user.address">
+                            </md-input-container>
+
+                            <div layout="row" layout-align="center">
+                                <md-button class="md-raised md-primary" ng-click="createGroup()">Create</md-button>
+                                <md-button class="sideButton" ng-click="cancelGroup()">Cancel</md-button>
+                            </div>
+                        </md-content>
                     </div>
                 </md-content>
                 <md-content ng-show="selectedGroup !== ''" layout-align="center" style="height: 50%">

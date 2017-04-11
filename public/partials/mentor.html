@@ -1,33 +1,43 @@
 <div id="wrap" ng-controller="WorkpartnerController" flex layout="row">
     <md-content id="groups" flex layout="column" style="width:40%">
         <h1>Find a Work Partner</h1>
-        <md-content flex layout="row">
-            <md-content layout="column">
-                <md-button class="sideButton" ng-click="find = true" ng-hide="find">Find a new Partner</md-button>
-                <div ng-show="find">
-                    <select ng-model="Gender">
-                        <option value="Female">Female</option>
-                        <option value="Male">Male</option>
-                        <option value="none">No Preference</option>
-                    </select>
+        <div style="text-align: center;">
+            <md-button class="md-raised md-primary" ng-click="clear()" align="center" style="width:125px;">Clear Search</md-button>
+        </div>
+        <md-content flex layout="row" layout-padding>
+            <md-content layout="column" style="width:60%">
+                <div>
+                    <br>
+                    <md-input-container flex="50">
+                        <label>Gender</label>
+                        <md-select aria-label="Gender" ng-model="Gender">
+                            <md-option value="Female">Female</md-option>
+                            <md-option value="Male">Male</md-option>
+                            <md-option value="none">No Preference</md-option>
+                        </md-select>
+                    </md-input-container>
+                    <br>
                     <md-input-container>
                         <label>Minimum Age</label>
-                        <input type="number" placeholder="Minimum Age" ng-model="minAge" required>
+                        <input type="number" placeholder="Minimum Age" ng-model="minAge">
                     </md-input-container>
                     <md-input-container>
                         <label>Maximum Age</label>
-                        <input type="number" placeholder="Maximum Age" ng-model="maxAge" required>
+                        <input type="number" placeholder="Maximum Age" ng-model="maxAge">
                     </md-input-container>
                     <br>
-                    <md-content layout="row" style="padding-top: 20px; padding-bottom:20px;">
+                    <md-content layout="row" style="padding-top: 20px; padding-bottom:20px;" layout-align="left center">
                         <h4>I'd like to find a...</h4>
-                        <select ng-model="MentorType" style="height:4%; vertical-align: bottom;">
-                            <option value="mentor">Mentor</option>
-                            <option value="mentee">Mentee</option>
-                        </select>
+                        <md-input-container flex="1">
+                            <label>Partner Type</label>
+                            <md-select aria-label="MentorType" ng-model="MentorType">
+                                <md-option value="mentor">Mentor</md-option>
+                                <md-option value="mentee">Mentee</md-option>
+                            </md-select>
+                        </md-input-container>
                     </md-content>
                     <br>
-                    <md-content layout="row">
+                    <md-content layout="row" layout-align="left center">
                         <md-autocomplete md-selected-item="selectedItem" md-search-text="searchText"
                                          md-items="item in getWords(searchText)" md-item-text="item.display"
                                          style="width:100px;">
@@ -36,10 +46,12 @@
                                 No matches found.
                             </md-not-found>
                         </md-autocomplete>
-                        <select style="height: 5%; width:27%; padding-top:20px; display: block; margin: 3%;" ng-model="itemCategory">
-                            <option value="">---Choose Category---</option> <!-- not selected / blank option -->
-                            <option ng-repeat="option in categoryList" value="{{option}}">{{option}}</option>
-                        </select>
+                        <md-input-container flex="25">
+                            <label>Category</label>
+                            <md-select aria-label="Category" ng-model="itemCategory">
+                                <md-option ng-repeat="option in categoryList" value="{{option}}">{{option}}</md-option>
+                            </md-select>
+                        </md-input-container>
                         <md-button class="md-raised md-primary" ng-click="addWord(searchText)" style="height:35px;">Add Interest</md-button>
                     </md-content>
                     <md-checkbox md-no-ink aria-label="Checkbox No Ink" ng-model="similar" class="md-primary">
@@ -56,7 +68,7 @@
                     <md-button class="md-raised md-primary" ng-click="match()" style="">Find Partner</md-button>
                 </div>
             </md-content>
-            <md-content>
+            <md-content style="width:40%">
                 <div ng-show="fullresponse === true">
                     <h2>Results for a {{partner}}</h2>
                     <md-content ng-repeat="item in matches" layout="row">
