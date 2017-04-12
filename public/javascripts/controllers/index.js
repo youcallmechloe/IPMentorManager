@@ -224,8 +224,13 @@ angular.module('app', ['ngRoute', 'ngResource', 'ngMaterial', 'ngCookies', 'ngMd
             //TODO: check that boxes are filled before posting!!
             $scope.signup = function () {
                 var username = $scope.username;
+                var degree;
+                if($scope.degree === 'Other'){
+                    degree = $scope.degreetitle;
+                } else{
+                    degree = $scope.degree;
+                }
 
-                console.log($scope.interests);
                 var newUser = {
                     'username': username,
                     'email': $scope.email,
@@ -233,7 +238,7 @@ angular.module('app', ['ngRoute', 'ngResource', 'ngMaterial', 'ngCookies', 'ngMd
                     'fullname': $scope.fullname,
                     'age': $scope.age,
                     'gender': $scope.GenderRadio,
-                    'degree': $scope.degree,
+                    'degree': degree,
                     'knowledge': JSON.stringify($scope.interests)
                 };
 

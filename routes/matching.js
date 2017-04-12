@@ -441,9 +441,9 @@ router.post('/matching3', function(req, res){
                 users[v]['score'] = ((intersection.length)/(union.length));
                 console.log(((intersection.length)/(union.length)))
             }
-            cb5(null, users);
+            cb5(null, users, body);
         }
-    ], function (err, result) {
+    ], function (err, result, body) {
         function compare(a, b){
             if (a.score > b.score)
                 return -1;
@@ -454,9 +454,11 @@ router.post('/matching3', function(req, res){
         result.sort(compare);
         var finalresult = result.splice(0,10);
         var newfinal = [];
-        for(var i = 0; i < finalresult.length; i++){
-            if(finalresult[i]['score'] !== 0){
-                newfinal.push(finalresult[i]);
+        for(var i = 0; i < finalresult.length; i++) {
+            if (finalresult[i]['username'] !== body['username']) {
+                if (finalresult[i]['score'] !== 0) {
+                    newfinal.push(finalresult[i]);
+                }
             }
         }
         res.send(newfinal);

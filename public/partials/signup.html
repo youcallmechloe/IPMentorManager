@@ -35,6 +35,10 @@
                         <md-option ng-repeat="option in categoryList" value="{{option}}">{{option}}</md-option>
                     </md-select>
                 </md-input-container>
+                <md-input-container ng-show="degree === 'Other'">
+                    <label>Degree</label>
+                    <input type="text" class="myform" placeholder="Degree" ng-model="degreetitle" required>
+                </md-input-container>
             </md-content>
             <h3>Interests:</h3>
             <md-content ng-repeat="item in interests" layout="row" layout-align="center">
