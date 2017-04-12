@@ -26,8 +26,8 @@
                     </div>
                 </div>
                 <br>
-                <div ng-show="selectedGroup === ''" layout="column" style=" padding-left:50px;">
-                    <div class="createGroupDiv" ng-show="groups" layout="column" >
+                <div ng-show="selectedGroup === ''" layout="column" style=" padding-right:50px; padding-top: 50px;">
+                    <div class="createGroupDiv" ng-show="groups" layout="column" layout-align="center center" >
                         <div>
                             <md-input-container>
                                 <label>Group Names</label>
@@ -37,10 +37,6 @@
                                 <label for="desc">Description</label>
                                 <textarea id="desc" ng-model="$parent.groupdescription" placeholder="Description"  md-maxlength="150" rows="5" md-select-on-focus></textarea>
                             </md-input-container>
-                            <md-input-container class="md-block">
-                                <label>Address</label>
-                                <input ng-model="user.address">
-                            </md-input-container>
                             <div layout="row" layout-align="center">
                                 <md-button class="md-raised md-primary" ng-click="createGroup()">Create</md-button>
                                 <md-button class="sideButton" ng-click="cancelGroup()">Cancel</md-button>
@@ -48,11 +44,9 @@
                         </div>
                     </div>
                 </div>
-                <div ng-show="selectedGroup !== ''" layout-align="center" >
-                    <div layout="row" align="center">
-                        <md-button class="sideButton" ng-click="goBack()">Go Back</md-button>
-                        <h3>{{selectedGroup.groupname}}</h3>
-                    </div>
+                <div ng-show="selectedGroup !== ''" layout="column" layout-align="center center" flex style="width: 60%" >
+                    <h3>{{selectedGroup.groupname}}</h3>
+                    <h4>{{selectedGroup.description}}</h4>
                     <md-button ng-hide="post" class="md-raised md-primary" ng-click="post=true">Create Post</md-button>
                     <div ng-show="post">
                         <md-input-container class="md-block">

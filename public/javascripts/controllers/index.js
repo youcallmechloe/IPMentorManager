@@ -190,6 +190,8 @@ angular.module('app', ['ngRoute', 'ngResource', 'ngMaterial', 'ngCookies', 'ngMd
                 for (var i = 0; i < $scope.interests.length; i++) {
                     if (($scope.interests[i].word === item.word) && ($scope.interests[i].category === item.category)) {
                         $scope.interests.splice(i, 1);
+                        counter--;
+                        break;
                     }
                 }
             };
@@ -385,6 +387,8 @@ angular.module('app', ['ngRoute', 'ngResource', 'ngMaterial', 'ngCookies', 'ngMd
                 for (var i = 0; i < $scope.interests.length; i++) {
                     if (($scope.interests[i].word === item.word) && ($scope.interests[i].category === item.category)) {
                         $scope.interests.splice(i, 1);
+                        counter--;
+                        break;
                     }
                 }
             };
@@ -520,7 +524,7 @@ angular.module('app', ['ngRoute', 'ngResource', 'ngMaterial', 'ngCookies', 'ngMd
             if(userPersistenceSession.getCookieData() === undefined){
                 $location.url('/');
             }
-        $scope.groups = false;
+        $scope.groups = true;
         $scope.searchList = [];
         $scope.selectedItem = '';
         $scope.memberList = [];
