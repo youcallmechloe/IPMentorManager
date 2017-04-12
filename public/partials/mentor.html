@@ -1,11 +1,11 @@
-<div id="wrap" ng-controller="WorkpartnerController" flex layout="row">
+<div id="wrap" ng-controller="WorkpartnerController" flex layout="row" style="height:80%">
     <md-content id="groups" flex layout="column" style="width:40%">
         <h1>Find a Work Partner</h1>
         <div style="text-align: center;">
             <md-button class="md-raised md-primary" ng-click="clear()" align="center" style="width:125px;">Clear Search</md-button>
         </div>
-        <md-content flex layout="row" layout-padding>
-            <md-content layout="column" style="width:60%">
+        <div flex layout="row" layout-padding>
+            <div layout="column" style="width:60%">
                 <div>
                     <br>
                     <md-input-container flex="50">
@@ -26,7 +26,7 @@
                         <input type="number" placeholder="Maximum Age" ng-model="maxAge">
                     </md-input-container>
                     <br>
-                    <md-content layout="row" style="padding-top: 20px; padding-bottom:20px;" layout-align="left center">
+                    <div layout="row" style="padding-top: 20px; padding-bottom:20px;" layout-align="left center">
                         <h4>I'd like to find a...</h4>
                         <md-input-container flex="1">
                             <label>Partner Type</label>
@@ -35,9 +35,9 @@
                                 <md-option value="mentee">Mentee</md-option>
                             </md-select>
                         </md-input-container>
-                    </md-content>
+                    </div>
                     <br>
-                    <md-content layout="row" layout-align="left center">
+                    <div layout="row" layout-align="left center">
                         <md-autocomplete md-selected-item="selectedItem" md-search-text="searchText"
                                          md-items="item in getWords(searchText)" md-item-text="item.display"
                                          style="width:100px;">
@@ -53,7 +53,7 @@
                             </md-select>
                         </md-input-container>
                         <md-button class="md-raised md-primary" ng-click="addWord(searchText)" style="height:35px;">Add Interest</md-button>
-                    </md-content>
+                    </div>
                     <md-checkbox md-no-ink aria-label="Checkbox No Ink" ng-model="similar" class="md-primary">
                         Would you like the site to look for similar words to your required interests?
                     </md-checkbox>
@@ -67,20 +67,20 @@
                     <md-button class="sideButton" ng-click="find = false">Go Back</md-button>
                     <md-button class="md-raised md-primary" ng-click="match()" style="">Find Partner</md-button>
                 </div>
-            </md-content>
-            <md-content style="width:40%">
+            </div>
+            <div style="width:40%">
                 <div ng-show="fullresponse === true">
                     <h2>Results for a {{partner}}</h2>
-                    <md-content ng-repeat="item in matches" layout="row">
+                    <div ng-repeat="item in matches" layout="row">
                         <md-content>
                             <h3>{{item.username}}</h3>
                             <h4>Score : {{item.score}}</h4>
                             <h4>Contact: {{item.email}}</h4>
                         </md-content>
                         <md-button class="md-raised md-primary" ng-click="request(item.username)" style="height: 35px;">Request Partner</md-button>
-                    </md-content>
+                    </div>
                 </div>
-            </md-content>
-        </md-content>
+            </div>
+        </div>
     </md-content>
 </div>

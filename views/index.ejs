@@ -26,7 +26,7 @@
   <link rel='stylesheet' href='/stylesheets/style.css' />
 </head>
 <body>
-<div ng-controller="HeaderController" layout="row" class="ng-cloak" layout-align="center">
+<div ng-controller="HeaderController" layout="row" class="ng-cloak" layout-align="center" style="height:10%">
   <button ng-show="isLoggedIn()" class="homeButton" ng-click="goHome()">Mentor Manager</button>
   <button ng-hide="isLoggedIn()" class="homeButton">Mentor Manager</button>
   <span flex></span>
@@ -35,7 +35,7 @@
   </md-button>
   <md-button ng-show="isLoggedIn()" class="md-raised md-primary" style="float: right; margin-right:50px; height: 1%; margin-top: 20px;" ng-click="userLogout()">Logout</md-button>
 </div>
-<div ng-controller="HeaderController" class="ng-cloak" layout="row" ng-show="isLoggedIn()">
+<div ng-controller="HeaderController" class="ng-cloak" layout="row" ng-show="isLoggedIn()" style="height:10%">
   <md-button ng-click="GroupsClick()">
     Groups
   </md-button>

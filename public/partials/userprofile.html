@@ -1,5 +1,5 @@
-<div id="wrap" ng-controller="UserprofileController" layout="row">
-    <md-content id="groups" flex layout="column">
+<div id="wrap" ng-controller="UserprofileController" layout="row" style="height:80%">
+    <md-content id="groups" flex layout="column" layout-align="center center">
         <h1>{{username}}'s Profile</h1>
         <h3>You are a {{user.level}} with a score of {{user.userscore}}!</h3>
         <h3>{{user.email}}</h3>
@@ -7,9 +7,32 @@
         <h3>{{user.age}}</h3>
         <h3>{{user.gender}}</h3>
         <h3>{{user.degree}}</h3>
-        <md-content ng-repeat="item in user.knowledge">
-            <h3>{{item.word}}</h3>
-            <h3>{{item.category}}</h3>
-        </md-content>
+        <h3>Interests:</h3>
+        <md-button class="md-raised md-primary" ng-show="!change" ng-click="change = true" style="width:170px;">Change Interests</md-button>
+        <md-button class="md-raised md-primary" ng-show="change" ng-click="saveInterests()" style="width:170px;">Save Interests</md-button>
+        <div ng-show="!change" ng-repeat="item in user.knowledge">
+            <h4>{{item.word}}</h4>
+            <h4>{{item.category}}</h4>
+        </div>
+        <div ng-show="change">
+            <div ng-repeat="item in interests" layout="row" layout-align="center">
+                <md-input-container style="padding-right: 20px;">
+                    <label>Interest</label>
+                    <input type="text" placeholder="Interest" ng-model="item.word" required>
+                </md-input-container>
+                <md-input-container flex="50">
+                    <label>Category</label>
+                    <md-select ng-model="item.category">
+                        <md-option ng-repeat="option in categoryList" value="{{option}}">{{option}}</md-option>
+                    </md-select>
+                </md-input-container>
+                <md-button class="md-icon-button md-primary" aria-label="Settings" ng-click="removeInterest(item)" style="display: block; margin: 1%;">
+                    <ng-md-icon icon="clear" style="fill: #636363;" size="20"></ng-md-icon>
+                </md-button>
+            </div>
+            <div layout="row" layout-align="center" style="">
+                <md-button id="newInterest" ng-click="addNew()">Add New Interest</md-button>
+            </div>
+        </div>
     </md-content>
 </div>

@@ -744,16 +744,63 @@ angular.module('app', ['ngRoute', 'ngResource', 'ngMaterial', 'ngCookies', 'ngMd
                 $location.url('/');
             }
 
+            $scope.categoryList = ['Accounting and Finance', 'Anthropology', 'Archaeology', 'Art', 'Astronomy', 'Biochemistry', 'Biology',
+                'Business', 'Chemistry', 'Computer Science', 'Criminology', 'Ecology', 'Economics', 'Education Studies', 'Engineering',
+                'English', 'Environmental Science', 'Fashion', 'Film', 'French', 'Geography', 'Geology', 'Geophysics',
+                'German', 'History', 'Information Technology', 'Language', 'Law', 'Management', 'Marketing', 'Mathematical Sciences',
+                'Medicine', 'Midwifery', 'Music', 'Natural Sciences', 'Nursing', 'Oceanography', 'Pharmacology', 'Philosophy',
+                'Physics', 'Physiotherapy', 'Politics and International Relations', 'Psychology', 'Ship Science', 'Sociology',
+                'Spanish', 'Zoology', 'Other'];
+            $scope.interests = [{
+                word : '',
+                category: ''
+            }];
         $scope.username = userPersistenceUsername.getCookieData();
         $scope.user = [];
+        $scope.change = false;
+            var counter = $scope.interests.length;
+            var limit = 10;
 
-        var getuserInfo = function(){
+            var getuserInfo = function(){
             $http.post('/users/userinfo', {'username' : $scope.username, 'sessionid' : userPersistenceSession.getCookieData()})
                 .then(function(response){
+                    console.log(response.data);
                     $scope.user = response.data;
+                    $scope.interests = response.data.knowledge;
                 });
         };
         getuserInfo();
+
+            $scope.addNew = function () {
+                if (counter !== limit) {
+                    $scope.interests.push({word: '', category: ''});
+                    counter++;
+                } else {
+                    alert("You've reached the limit on interest fields!")
+                }
+            };
+
+            $scope.removeInterest = function (item) {
+                for (var i = 0; i < $scope.interests.length; i++) {
+                    if (($scope.interests[i].word === item.word) && ($scope.interests[i].category === item.category)) {
+                        $scope.interests.splice(i, 1);
+                    }
+                }
+            };
+
+            //TODO: make sure all interests inputs are not blank
+        $scope.saveInterests = function(){
+            $http.post('/users/changeinterests', {'username' : userPersistenceUsername.getCookieData(),
+                                                'knowledge' : $scope.interests})
+                .then(function(response){
+                    console.log(response.data);
+                    if(response.data === ""){
+                        $scope.change = false;
+                    } else{
+                        alert("Adding interests failed, please try again.")
+                    }
+                });
+        }
     }])
 
     .controller('WorkpartnerController', ['$scope', '$location', '$http', 'userPersistenceSession','userPersistenceUsername',

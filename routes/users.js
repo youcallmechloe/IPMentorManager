@@ -12,6 +12,7 @@ var randomstring = require('randomstring');
 var userschema = require('../models/users');
 var wordschema = require('../models/words');
 var cookie = require('../models/cookies');
+var _ = require('underscore');
 
 /*
  * get userlist and returns in json to client
@@ -100,10 +101,9 @@ router.post('/userinfo', function(req, res){
     var db = req.db;
     var usercollection = db.get('userlist');
     var body = req.body;
-    console.log(body);
     var userinfo = [];
 
-    cookie.find({'username' : body['username'], 'sessionid' : body['sessionID']}, function(e, docs){
+    cookie.find({'username' : body['username'], 'sessionid' : body['sessionid']}, function(e, docs){
         if(docs.length > 0){
             usercollection.find({'username' : body['username']}, {}, function(e, docs){
                 if(docs.length > 0) {
@@ -130,6 +130,50 @@ router.post('/userinfo', function(req, res){
         }
     });
 
+});
+
+router.post('/changeinterests', function(req, res){
+    var body = req.body;
+
+    userschema.find({'username' : body['username']}, {}, function(e, docs){
+        if(docs.length > 0){
+            var oldknowledge = docs[0]['knowledge'];
+            var newknowledge = body['knowledge'];
+            userschema.update({'username' : body['username']}, {$set : {'knowledge' : newknowledge}}, function(e, docs){
+                if(!e){
+                    if (oldknowledge.length > 0) {
+                        for (var i = 0; i < oldknowledge.length; i++) {
+                            wordschema.update({
+                                    'word': oldknowledge[i]['word'],
+                                    'category': oldknowledge[i]['category']
+                                },
+                                {$pull: {'users': body['username']}}, function (e, docs) {
+                                    if (e) {
+                                        res.send("false");
+                                    }
+                                });
+                        }
+                    }
+                    if (newknowledge.length > 0) {
+                        for (var j = 0; j < newknowledge.length; j++) {
+                            wordschema.update({
+                                    'word': newknowledge[j]['word'],
+                                    'category': newknowledge[j]['category']
+                                },
+                                {$push: {'users': body['username']}}, {upsert: true}, function (e, docs) {
+                                    if (e) {
+                                        res.send("false");
+                                    }
+                                });
+                        }
+                    }
+                    res.send("");
+                } else{
+                    res.send('false');
+                }
+            });
+        }
+    });
 });
 
 /*

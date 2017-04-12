@@ -29,25 +29,25 @@
                     <md-radio-button value="Female" class="md-primary">Female</md-radio-button>
                     <md-radio-button value="Male" class="md-primary">Male</md-radio-button>
                 </md-radio-group>
-                <select style="height: 5%; width:27%; padding-top:20px; display: block; margin: 3%;" ng-model="degree">
-                    <option value="">---Choose Degree---</option> <!-- not selected / blank option -->
-                    <option ng-repeat="option in categoryList" value="{{option}}">{{option}}</option>
-                </select>
-                <md-input-container>
-                    <label>Degree Title</label>
-                    <input type="text" class="myform" placeholder="Degree Title" ng-model="degreetitle" required>
+                <md-input-container flex="25">
+                    <label>Degree</label>
+                    <md-select ng-model="degree">
+                        <md-option ng-repeat="option in categoryList" value="{{option}}">{{option}}</md-option>
+                    </md-select>
                 </md-input-container>
             </md-content>
             <h3>Interests:</h3>
             <md-content ng-repeat="item in interests" layout="row" layout-align="center">
-                <md-input-container layout-align="center">
+                <md-input-container layout-align="center" style="padding-right: 20px;">
                     <label>Interest</label>
                     <input type="text" placeholder="Interest" ng-model="item.word" required>
                 </md-input-container>
-                <select style="height: 5%; width:27%; padding-top:20px; display: block; margin: 3%;" ng-model="item.category">
-                    <option value="">---Choose Category---</option> <!-- not selected / blank option -->
-                    <option ng-repeat="option in categoryList" value="{{option}}">{{option}}</option>
-                </select>
+                <md-input-container flex="25">
+                    <label>Category</label>
+                    <md-select ng-model="item.category">
+                        <md-option ng-repeat="option in categoryList" value="{{option}}">{{option}}</md-option>
+                    </md-select>
+                </md-input-container>
                 <md-button class="md-icon-button md-primary" aria-label="Settings" ng-click="removeInterest(item)" style="display: block; margin: 1%;">
                     <ng-md-icon icon="clear" style="fill: #636363;" size="20"></ng-md-icon>
                 </md-button>
@@ -61,6 +61,4 @@
             </div>
 
         </form>
-
-    <md-button ng-click="addUsers(0)">Add 100 Users</md-button>
 </div>
