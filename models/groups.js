@@ -6,6 +6,7 @@ var mongoose = require('mongoose');
 var GroupSchema = new mongoose.Schema({
     groupname : String,
     description : String,
+    admin : String,
     members : [],
     posts : [{
         post: String,

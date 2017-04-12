@@ -1,27 +1,36 @@
-<div id="wrap" ng-controller="HomepageController" layout="row" style="height:80%">
-    <md-content id="groups" flex layout="column">
+<div id="wrap" ng-controller="HomepageController" layout="row" style="height:90%">
+    <md-content id="groups" flex >
         <h1>Home</h1>
-        <md-content id="findGroup">
-            <md-content ng-repeat="item in partners" layout="row" layout-align="center center">
-                <md-content style="padding: 10px 50px 10px 10px;">
-                    <h3>{{item.username}}</h3>
-                    <h4>{{item.status}}</h4>
-                    <h4>My {{item.relation}}</h4>
-                </md-content>
-                <md-content ng-show="item.status === 'requested'" >
-                    <md-button class="md-raised md-primary" ng-click="accept(item)" style="height: 35px;">Accept Partner</md-button>
-                </md-content>
-                <md-content ng-show="item.status === 'current'" layout="row" layout-align="center center" style="padding: 10px 10px 10px 100px;">
-                    <md-content>
-                        <md-button class="md-raised md-primary" ng-click="addPoints(item.username, pointvalue)" style="height: 35px;">Rate Your Partner</md-button>
-                    </md-content>
-                    <md-radio-group ng-model="pointvalue" style="height: 100px;">
-                        <md-radio-button value=20 class="md-primary">Excellent</md-radio-button>
-                        <md-radio-button value=10 class="md-primary"> Good </md-radio-button>
-                        <md-radio-button value=5 class="md-primary">Average</md-radio-button>
-                    </md-radio-group>
-                </md-content>
-            </md-content>
-        </md-content>
+        <div layout="row">
+            <div style="width:50%; height:90%;">
+                <h2>Your Current Partners:</h2>
+                <div ng-repeat="item in partners" layout="row" layout-align="center center">
+                    <div style="padding: 10px 50px 10px 10px;">
+                        <h3>{{item.username}}</h3>
+                        <h4>{{item.status}}</h4>
+                        <h4>My {{item.relation}}</h4>
+                    </div>
+                    <div ng-show="item.status === 'requested'" >
+                        <md-button class="md-raised md-primary" ng-click="accept(item)" style="height: 35px;">Accept Partner</md-button>
+                    </div>
+                    <div ng-show="item.status === 'current'" layout="row" layout-align="center center" style="padding: 10px 10px 10px 100px;">
+                        <div>
+                            <md-button class="md-raised md-primary" ng-click="addPoints(item.username, pointvalue)" style="height: 35px;">Rate Your Partner</md-button>
+                        </div>
+                        <md-radio-group ng-model="pointvalue" style="height: 100px;">
+                            <md-radio-button value=20 class="md-primary">Excellent</md-radio-button>
+                            <md-radio-button value=10 class="md-primary"> Good </md-radio-button>
+                            <md-radio-button value=5 class="md-primary">Average</md-radio-button>
+                        </md-radio-group>
+                    </div>
+                </div>
+            </div>
+            <div style="width:50%; height:90%">
+                <h2>Your Groups:</h2>
+                <div ng-repeat="item in groups" layout="row" layout-align="center center">
+                    <h3>{{item.groupname}}</h3>
+                </div>
+            </div>
+        </div>
     </md-content>
 </div>

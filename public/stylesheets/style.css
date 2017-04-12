@@ -16,9 +16,11 @@ hgroup {
   margin-top: 4em;
 }
 
-h1, h3, h4 { margin-top: 20px; font-weight: 300; text-align:center;}
+h1, h2, h3, h4 { margin-top: 20px; font-weight: 300; text-align:center;}
 
 h1 { color: #636363; }
+
+h2{ color : #3160B6; }
 
 h3 { color: #636363; }
 
@@ -263,15 +265,10 @@ footer img:focus , footer a:focus { outline: none; }
 .homeButton{
   background:none;
   border:none;
-  margin-top: 20px;
   font-weight: 300;
-  text-align:center;
   color: #636363;
   font-family: Helvetica;
   font-size: 32px;
-  height: 1%;
-  margin-left: 600px;
-  margin-bottom: 50px;
 }
 
 
@@ -293,4 +290,8 @@ footer img:focus , footer a:focus { outline: none; }
 
 .orangebutton{
   background-color: darkorange;
+}
+
+.md-button{
+  font-family: Helvetica;
 }

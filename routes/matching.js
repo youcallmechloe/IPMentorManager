@@ -24,7 +24,7 @@ router.post('/getwords', function(req, res){
             var dbword = docs[i]['word'].toUpperCase();
             var searchword = body['word'].toUpperCase();
             if(dbword.includes(searchword)){
-                words.push(docs[i]['word']);
+                words.push({'word' : docs[i]['word'], 'category' : docs[i]['category']});
             }
         }
         res.send(words);

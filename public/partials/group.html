@@ -1,4 +1,4 @@
-<div id="wrap" ng-controller="GroupController" layout="row" style="height:80%">
+<div id="wrap" ng-controller="GroupController" layout="row" style="height:90%">
     <md-content id="groups" flex layout="column">
         <h1>Groups</h1>
         <div layout="row">
@@ -17,17 +17,17 @@
                     <md-button ng-show="areMember(selectedItem)" ng-disabled="true" ng-click="joinGroup(selectedItem)">Join Group</md-button>
                 </div>
             </div>
-            <div id="createGroup" style="width: 60%;" layout="column">
-                <h3>My Groups</h3>
-                <div layout="row">
+            <div id="createGroup" style="width: 60%; padding-left: 50px;" layout="row">
+                <div layout="column" style="width:30%">
+                    <h3>My Groups</h3>
+                    <md-button ng-click="creatingGroup()" style="width:130px;">Create Group</md-button>
                     <div ng-repeat="groups in memberList">
                         <md-button ng-click="chooseGroup(groups)">{{groups.groupname}}</md-button>
                     </div>
                 </div>
                 <br>
-                <div ng-show="selectedGroup === ''" layout-align="center" style="height: 50%">
-                    <md-button class="sideButton" ng-click="creatingGroup()">Create a Group</md-button>
-                    <div class="createGroupDiv" ng-show="groups" layout="column">
+                <div ng-show="selectedGroup === ''" layout="column" style=" padding-left:50px;">
+                    <div class="createGroupDiv" ng-show="groups" layout="column" >
                         <div>
                             <md-input-container>
                                 <label>Group Names</label>
@@ -48,7 +48,7 @@
                         </div>
                     </div>
                 </div>
-                <div ng-show="selectedGroup !== ''" layout-align="center" style="height: 50%">
+                <div ng-show="selectedGroup !== ''" layout-align="center" >
                     <div layout="row" align="center">
                         <md-button class="sideButton" ng-click="goBack()">Go Back</md-button>
                         <h3>{{selectedGroup.groupname}}</h3>
