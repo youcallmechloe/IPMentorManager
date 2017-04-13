@@ -379,7 +379,8 @@ router.post('/matching3', function(req, res){
                                 'gender': users[i]['gender'],
                                 'degree': users[i]['degree'],
                                 'knowledge': users[i]['knowledge'],
-                                'score': 0
+                                'score': 0,
+                                'exists': 'No'
                             };
                             userList.push(user);
                         }
@@ -439,9 +440,9 @@ router.post('/matching3', function(req, res){
                         }
                     }
                 }
-                console.log(users[v]['username'] + " " + intersection.length + " " + union.length);
+                // console.log(users[v]['username'] + " " + intersection.length + " " + union.length);
                 users[v]['score'] = ((intersection.length)/(union.length));
-                console.log(((intersection.length)/(union.length)))
+                // console.log(((intersection.length)/(union.length)))
             }
             cb5(null, users, body);
         }
@@ -456,13 +457,22 @@ router.post('/matching3', function(req, res){
         result.sort(compare);
         var finalresult = result.splice(0,10);
         var newfinal = [];
+        console.log(body['partners']);
         for(var i = 0; i < finalresult.length; i++) {
             if (finalresult[i]['username'] !== body['username']) {
                 if (finalresult[i]['score'] !== 0) {
-                    newfinal.push(finalresult[i]);
+                    for(var j = 0; j < body['partners'].length; j++){
+                        if(finalresult[i]['username'] === body['partners'][j]['username']){
+                            finalresult[i]['exists'] = body['partners'][j]['relation'];
+                            newfinal.push(finalresult[i]);
+                        } else{
+                            newfinal.push(finalresult[i]);
+                        }
+                    }
                 }
             }
         }
+        console.log(newfinal);
         res.send(newfinal);
     });
 });

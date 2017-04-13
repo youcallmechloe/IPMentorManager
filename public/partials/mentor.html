@@ -69,13 +69,16 @@
             <div style="width:40%">
                 <div ng-show="fullresponse === true">
                     <h2>Results for a {{partner}}</h2>
-                    <div ng-repeat="item in matches" layout="row">
-                        <md-content>
+                    <div ng-repeat="item in matches" layout="row" layout-align="center center">
+                        <div>
                             <h3>{{item.username}}</h3>
                             <h4>Score : {{item.score}}</h4>
                             <h4>Contact: {{item.email}}</h4>
-                        </md-content>
-                        <md-button class="md-raised md-primary" ng-click="request(item.username)" style="height: 35px;">Request Partner</md-button>
+                        </div>
+                        <div layout='column' layout-align="center center">
+                            <md-button class="md-raised md-primary" ng-click="request(item.username)" style="height: 35px;">Request Partner</md-button>
+                            <h4 ng-show="item.exists !== 'No'">{{item.username}} is currently your {{item.exists}}</h4>
+                        </div>
                     </div>
                 </div>
             </div>

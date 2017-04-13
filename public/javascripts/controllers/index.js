@@ -503,30 +503,36 @@ angular.module('app', ['ngRoute', 'ngResource', 'ngMaterial', 'ngCookies', 'ngMd
 
             //TODO: add in degree choice?
             $scope.match = function(){
-                var data = {'gender' : $scope.Gender,
-                        'minAge' : $scope.minAge,
-                        'maxAge' : $scope.maxAge,
-                        'interests' : $scope.interests,
-                        'sessionID' : userPersistenceSession.getCookieData(),
-                        'username' : userPersistenceUsername.getCookieData(),
-                        'similar' : $scope.similar};
+                $http.post('/matching/getpartners', {'username' : userPersistenceUsername.getCookieData(),
+                                        'sessionID' : userPersistenceSession.getCookieData()})
+                    .then(function (response) {
+                        console.log(response.data);
+                        var data = {'gender' : $scope.Gender,
+                            'minAge' : $scope.minAge,
+                            'maxAge' : $scope.maxAge,
+                            'interests' : $scope.interests,
+                            'sessionID' : userPersistenceSession.getCookieData(),
+                            'username' : userPersistenceUsername.getCookieData(),
+                            'similar' : $scope.similar,
+                            'partners' : response.data};
 
-                if(($scope.Gender === undefined) || ($scope.minAge === undefined) || ($scope.maxAge === undefined) || ($scope.MentorType === undefined)){
-                    alert("Some fields empty, please fill in all fields.")
-                } else if($scope.maxAge < $scope.minAge){
-                    alert("Maximum age must be greater than minimum age, please try again.");
-                } else if($scope.interests.length < 1){
-                    alert("You must include at least 1 knowledge area, please try again.")
-                } else{
-                    console.log(data);
-                    $http.post('/matching/matching3', data)
-                        .then(function(response){
-                            $scope.find = false;
-                            $scope.fullresponse = true;
-                            $scope.matches = response.data;
-                            $scope.partner = $scope.MentorType;
-                        });
-                }
+                        if(($scope.Gender === undefined) || ($scope.minAge === undefined) || ($scope.maxAge === undefined) || ($scope.MentorType === undefined)){
+                            alert("Some fields empty, please fill in all fields.")
+                        } else if($scope.maxAge < $scope.minAge){
+                            alert("Maximum age must be greater than minimum age, please try again.");
+                        } else if($scope.interests.length < 1){
+                            alert("You must include at least 1 knowledge area, please try again.")
+                        } else{
+                            console.log(data);
+                            $http.post('/matching/matching3', data)
+                                .then(function(response){
+                                    $scope.find = false;
+                                    $scope.fullresponse = true;
+                                    $scope.matches = response.data;
+                                    $scope.partner = $scope.MentorType;
+                                });
+                        }
+                    });
             };
 
             $scope.request = function(item) {
