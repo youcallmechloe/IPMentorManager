@@ -1,66 +1,66 @@
 <div id="form" ng-controller="SignupController" layout="column" layout-align="center center">
         <form name="form" layout="column" class="createAccount">
-            <md-content layout="row" class="md-padding" layout-align="center">
-                <md-input-container>
+            <md-content md-theme="default" layout="row" class="md-padding" layout-align="center">
+                <md-input-container  md-theme="default">
                     <label>Username</label>
                     <input type="text" class="myform" placeholder="Username" ng-model="username" required>
                 </md-input-container>
-                <md-input-container>
+                <md-input-container md-theme="default">
                     <label>Email</label>
                     <input type="email" class="myform" placeholder="Email" ng-model="email" required ng-class="{ 'has-error': userForm.email.$invalid }">
                 </md-input-container>
-                <md-input-container>
+                <md-input-container md-theme="default">
                     <label>Password</label>
                     <input type="text" class="myform" placeholder="Password" ng-model="password" required>
                 </md-input-container>
             </md-content>
-            <md-content layout="row" class="md-padding" layout-align="center">
-                <md-input-container>
+            <md-content layout="row" class="md-padding" layout-align="center"  md-theme="default">
+                <md-input-container md-theme="default">
                     <label>Full Name</label>
                     <input type="text" class="myform" placeholder="Full Name" ng-model="fullname" required>
                 </md-input-container>
-                <md-input-container>
+                <md-input-container md-theme="default">
                     <label>Age</label>
                     <input type="number" class="myform" placeholder="Age" ng-model="age" required>
                 </md-input-container>
             </md-content>
-            <md-content layout="row" class="md-padding" layout-align="center">
-                <md-radio-group ng-model="GenderRadio" style="padding-right:50px;">
-                    <md-radio-button value="Female" class="md-primary">Female</md-radio-button>
-                    <md-radio-button value="Male" class="md-primary">Male</md-radio-button>
+            <md-content layout="row" class="md-padding" layout-align="center" md-theme="default">
+                <md-radio-group ng-model="GenderRadio" style="padding-right:50px;" md-theme="default">
+                    <md-radio-button value="Female" md-theme="default">Female</md-radio-button>
+                    <md-radio-button value="Male" md-theme="default">Male</md-radio-button>
                 </md-radio-group>
-                <md-input-container flex="25">
+                <md-input-container flex="25" md-theme="default">
                     <label>Degree</label>
-                    <md-select ng-model="degree">
-                        <md-option ng-repeat="option in categoryList" value="{{option}}">{{option}}</md-option>
+                    <md-select ng-model="degree" md-theme="default">
+                        <md-option ng-repeat="option in categoryList" value="{{option}}" md-theme="default">{{option}}</md-option>
                     </md-select>
                 </md-input-container>
-                <md-input-container ng-show="degree === 'Other'">
+                <md-input-container ng-show="degree === 'Other'" md-theme="default">
                     <label>Degree</label>
                     <input type="text" class="myform" placeholder="Degree" ng-model="degreetitle" required>
                 </md-input-container>
             </md-content>
             <h3>Interests:</h3>
-            <md-content ng-repeat="item in interests" layout="row" layout-align="center">
-                <md-input-container layout-align="center" style="padding-right: 20px;">
+            <md-content ng-repeat="item in interests" layout="row" layout-align="center" md-theme="default">
+                <md-input-container layout-align="center" style="padding-right: 20px;" md-theme="default">
                     <label>Interest</label>
                     <input type="text" placeholder="Interest" ng-model="item.word" required>
                 </md-input-container>
-                <md-input-container flex="25">
+                <md-input-container flex="25" md-theme="default">
                     <label>Category</label>
-                    <md-select ng-model="item.category">
-                        <md-option ng-repeat="option in categoryList" value="{{option}}">{{option}}</md-option>
+                    <md-select ng-model="item.category" md-theme="default">
+                        <md-option ng-repeat="option in categoryList" value="{{option}}" md-theme="default">{{option}}</md-option>
                     </md-select>
                 </md-input-container>
-                <md-button class="md-icon-button md-primary" aria-label="Settings" ng-click="removeInterest(item)" style="display: block; margin: 1%;">
-                    <ng-md-icon icon="clear" style="fill: #636363;" size="20"></ng-md-icon>
+                <md-button  md-theme="default" class="md-icon-button md-primary" aria-label="Settings" ng-click="removeInterest(item)" style="display: block; margin: 1%;">
+                    <ng-md-icon icon="clear" style="fill: #E91E63;" size="20" md-theme="default"></ng-md-icon>
                 </md-button>
             </md-content>
-            <md-content id=dynamicInput layout="row" class="md-padding" layout-align="center">
+            <md-content id=dynamicInput layout="row" class="md-padding" layout-align="center" md-theme="default">
             </md-content>
             <div layout="row" layout-align="center center" style="padding-top:20px;">
-                <md-button id="newInterest" ng-click="addNew()">Add New Interest</md-button>
-                <md-button class="md-raised md-primary" ng-click="signup()">Create Account</md-button>
+                <md-button id="newInterest" ng-click="addNew()" md-theme="default">Add New Interest</md-button>
+                <md-button class="md-raised md-primary" ng-click="signup()" md-theme="default">Create Account</md-button>
             <md-button class="md-raised" ng-click="goback()">Go Back</md-button>
             </div>
 

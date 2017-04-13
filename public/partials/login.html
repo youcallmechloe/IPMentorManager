@@ -1,31 +1,31 @@
 <div class="container" ng-controller="LoginController" style="height:90%">
     <div ng-controller="LoginController" layout="column" layout-align="center center" layout-fill="layout-fill">
         <div layout="column" class="loginBox md-whiteframe-z1">
-            <md-toolbar>
+            <md-toolbar md-theme="default" >
                 <h2 class="md-toolbar-tools" style="color: #eeeeee;"><span>Login</span></h2>
             </md-toolbar>
-            <md-content layout="column" class="md-padding">
-                <md-input-container>
+            <md-content md-theme="default" layout="column" class="md-padding">
+                <md-input-container md-theme="default">
                     <label>Username</label>
                     <input type="text" placeholder="Username" ng-model="username" required>
                 </md-input-container>
-                <md-input-container>
+                <md-input-container md-theme="default" >
                     <label>Password</label>
                     <input type="password" placeholder="Password" ng-model="password" required>
                 </md-input-container>
                 <div layout="row" layout-align="center center" style="padding-top:20px;">
                     <div ng-show="username.length && password.length">
-                        <md-button class="md-raised md-primary" ng-click="login()">Login</md-button>
+                        <md-button md-theme="default"  class="md-raised md-primary" ng-click="login()">Login</md-button>
                     </div>
                     <div ng-hide="username.length && password.length">
-                        <md-button ng-disabled="true" class="md-raised md-primary" ng-click="login()">Login</md-button>
+                        <md-button md-theme="default" ng-disabled="true" class="md-raised md-primary" ng-click="login()">Login</md-button>
                     </div>
                     <div flex="flex"></div>
-                    <md-button href="" ng-disabled="true" md-no-ink="md-no-ink">Forgot Password</md-button>
+                    <md-button md-theme="default" ng-disabled="true" md-no-ink="md-no-ink">Forgot Password</md-button>
                 </div>
                 <div layout="column" layout-align="center center" style="padding-top:20px">
                     Don't have an account?
-                    <md-button class="md-raised md-primary" ng-click="createAccount()">Create Account</md-button>
+                    <md-button md-theme="default" class="md-raised md-primary" ng-click="createAccount()">Create Account</md-button>
                 </div>
             </md-content>
         </div>

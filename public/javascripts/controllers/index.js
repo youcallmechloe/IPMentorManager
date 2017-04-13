@@ -345,8 +345,8 @@ angular.module('app', ['ngRoute', 'ngResource', 'ngMaterial', 'ngCookies', 'ngMd
             }
     }])
 
-    .controller('UserprofileController', ['$scope', '$location', '$http', 'userPersistenceSession', 'userPersistenceUsername',
-        function($scope, $location, $http, userPersistenceSession, userPersistenceUsername) {
+    .controller('UserprofileController', ['$scope', '$location', '$http', 'userPersistenceSession', 'userPersistenceUsername', '$mdDialog',
+        function($scope, $location, $http, userPersistenceSession, userPersistenceUsername, $mdDialog) {
 
             if(userPersistenceSession.getCookieData() === undefined){
                 $location.url('/');
@@ -387,6 +387,81 @@ angular.module('app', ['ngRoute', 'ngResource', 'ngMaterial', 'ngCookies', 'ngMd
                     alert("You've reached the limit on interest fields!")
                 }
             };
+
+            var newuser = "0-50 Points: New User";
+            var beginner = "5-200 Points: Beginner";
+
+            $scope.showAlert = function(ev) {
+                // Appending dialog to document.body to cover sidenav in docs app
+                // Modal dialogs should fully cover application
+                // to prevent interaction outside of dialog
+                $mdDialog.show(
+                    $mdDialog.show()
+                        .clickOutsideToClose(true)
+                        .title('Levels')
+                        .content(newuser + '<br>' + beginner)
+                        .ariaLabel('Alert Dialog Demo')
+                        .ok('Got it!')
+                        .targetEvent(ev)
+                );
+            };
+
+            $scope.showCustom = function(event) {
+                $mdDialog.show({
+                    clickOutsideToClose: true,
+                    scope: $scope,
+                    preserveScope: true,
+                    template: '<md-dialog style="width: 300;">' +
+                        '<md-toolbar>' +
+                    '    <div class="md-toolbar-tools">' +
+                    '        <h2 style="color: #eeeeee;">Levels</h2>' +
+                    '</div>   ' +
+                    '   </md-toolbar>' +
+                    '  <md-dialog-content style="color: #636363;">' +
+                        '<div class="md-dialog-content">' +
+                    '<p></p>' +
+                    '<p>0-50 Points: New User</p>' +
+                    '<p>5-200 Points: Beginner</p>' +
+                    '<p>200-500 Points: Novice</p>' +
+                    '<p>500-1000 Points: Intermediate</p>' +
+                    '<p>1000-2000 Points: Expert</p>' +
+                    '<p>2000-5000 Points: Professional</p>' +
+                    '<p>5000-10000 Points: Guru</p>' +
+                    '<p>10000+ Points: ???</p>' +
+                    '</div>' +
+                    '  </md-dialog-content>' +
+                    '</md-dialog>',
+                    controller: function DialogController($scope, $mdDialog) {
+                        $scope.closeDialog = function() {
+                            $mdDialog.hide();
+                        }
+                    }
+                });
+            };
+
+            // $scope.showAdvanced = function(ev) {
+            //     $mdDialog.show({
+            //         controller: DialogController,
+            //         templateUrl: 'partials/dialog1.tmpl.html',
+            //         parent: angular.element(document.body),
+            //         targetEvent: ev,
+            //         clickOutsideToClose: true
+            //     });
+            // };
+
+            function DialogController($scope, $mdDialog) {
+                $scope.hide = function() {
+                    $mdDialog.hide();
+                };
+
+                $scope.cancel = function() {
+                    $mdDialog.cancel();
+                };
+
+                $scope.answer = function(answer) {
+                    $mdDialog.hide(answer);
+                };
+            }
 
             $scope.removeInterest = function (item) {
                 for (var i = 0; i < $scope.interests.length; i++) {

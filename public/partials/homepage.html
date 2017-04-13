@@ -1,5 +1,5 @@
 <div id="wrap" ng-controller="HomepageController" layout="row" style="height:90%">
-    <md-content id="groups" flex >
+    <md-content id="groups" flex md-theme="default">
         <h1>Home</h1>
         <div layout="row">
             <div style="width:50%; height:90%;">
@@ -11,16 +11,16 @@
                         <h4>My {{item.relation}}</h4>
                     </div>
                     <div ng-show="item.status === 'requested'" >
-                        <md-button class="md-raised md-primary" ng-click="accept(item)" style="height: 35px;">Accept Partner</md-button>
+                        <md-button md-theme="default" class="md-raised md-primary" ng-click="accept(item)" style="height: 35px;">Accept Partner</md-button>
                     </div>
                     <div ng-show="item.status === 'current'" layout="row" layout-align="center center" style="padding: 10px 10px 10px 100px;">
                         <div>
-                            <md-button class="md-raised md-primary" ng-click="addPoints(item.username, pointvalue)" style="height: 35px;">Rate Your Partner</md-button>
+                            <md-button md-theme="default" class="md-raised md-primary" ng-click="addPoints(item.username, pointvalue)" style="height: 35px;">Rate Your Partner</md-button>
                         </div>
-                        <md-radio-group ng-model="pointvalue" style="height: 100px;">
-                            <md-radio-button value=20 class="md-primary">Excellent</md-radio-button>
-                            <md-radio-button value=10 class="md-primary"> Good </md-radio-button>
-                            <md-radio-button value=5 class="md-primary">Average</md-radio-button>
+                        <md-radio-group md-theme="default" ng-model="pointvalue" style="height: 100px;">
+                            <md-radio-button md-theme="default" value=20 >Excellent</md-radio-button>
+                            <md-radio-button md-theme="default" value=10 > Good </md-radio-button>
+                            <md-radio-button md-theme="default" value=5 >Average</md-radio-button>
                         </md-radio-group>
                     </div>
                 </div>

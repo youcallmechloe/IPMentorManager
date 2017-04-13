@@ -5,7 +5,7 @@
 }
 
 body {
-  font-family: Helvetica;
+  /*font-family: Helvetica;*/
   background: #eee;
   -webkit-font-smoothing: antialiased;
 }
@@ -16,7 +16,7 @@ hgroup {
   margin-top: 4em;
 }
 
-h1, h2, h3, h4 { margin-top: 20px; font-weight: 300; text-align:center;}
+h1, h2, h3, h4 { margin-top: 20px; font-weight: 400; text-align:center;}
 
 h1 { color: #636363; }
 
@@ -266,8 +266,8 @@ footer img:focus , footer a:focus { outline: none; }
   background:none;
   border:none;
   font-weight: 300;
-  color: #636363;
-  font-family: Helvetica;
+  color: #3F51B5;
+  /*font-family: Helvetica;*/
   font-size: 32px;
 }
 
@@ -275,7 +275,7 @@ footer img:focus , footer a:focus { outline: none; }
 .sideButton{
   background:none;
   border:none;
-  font-family: Helvetica;
+  /*font-family: Helvetica;*/
   color: #636363;
   text-align:center;
 
@@ -293,5 +293,5 @@ footer img:focus , footer a:focus { outline: none; }
 }
 
 .md-button{
-  font-family: Helvetica;
+  /*font-family: Helvetica;*/
 }
