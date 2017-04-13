@@ -51,25 +51,36 @@ angular.module('app', ['ngRoute', 'ngResource', 'ngMaterial', 'ngCookies', 'ngMd
     // Controllers
     //---------------
 
-    .controller('HeaderController', ['$scope', 'userPersistenceSession', 'userPersistenceUsername', '$location', '$http',
-        function($scope, userPersistenceSession, userPersistenceUsername, $location, $http){
+    .controller('HeaderController', ['$scope', 'userPersistenceSession', 'userPersistenceUsername', '$location', '$http', '$route',
+        function($scope, userPersistenceSession, userPersistenceUsername, $location, $http, $route){
 
         $scope.getUsername = function(){
             return userPersistenceUsername.getCookieData();
         };
 
-        $scope.DashboardClick = function(){
-            $location.url('/dashboard');
-        };
         $scope.MentoringClick = function(){
-            $location.url('/mentor');
+            if($location.url() === "/mentor"){
+                $route.reload();
+            } else{
+                $location.url('/mentor');
+
+            }
         };
         $scope.GroupsClick = function(){
-            $location.url('/group');
+            if($location.url() === "/group"){
+                $route.reload();
+            } else{
+                $location.url('/group');
+
+            }
         };
         $scope.ProfileClick = function(){
-            console.log('click');
-            $location.url('/profile');
+            if($location.url() === "/profile"){
+                $route.reload();
+            } else{
+                $location.url('/profile');
+
+            }
         };
 
         $scope.isLoggedIn = function(){
@@ -97,7 +108,12 @@ angular.module('app', ['ngRoute', 'ngResource', 'ngMaterial', 'ngCookies', 'ngMd
         };
 
         $scope.goHome = function() {
-            $location.url('/home');
+            if($location.url() === "/home"){
+                $route.reload();
+            } else{
+                $location.url('/home');
+
+            }
         };
 
     }])
@@ -146,139 +162,6 @@ angular.module('app', ['ngRoute', 'ngResource', 'ngMaterial', 'ngCookies', 'ngMd
                 $location.url('/home');
             }
 
-            var CSinterestWords = [{'word' : 'Algorithm', 'category' : 'Computer Science'},
-                {'word' : 'Programming', 'category' : 'Computer Science'},
-                {'word' : 'Database', 'category' : 'Computer Science'},
-                {'word' : 'Web Development', 'category' : 'Computer Science'},
-                {'word' : 'Javascript', 'category' : 'Computer Science'},
-                {'word' : 'Python', 'category' : 'Computer Science'},
-                {'word' : 'Java', 'category' : 'Computer Science'},
-                {'word' : 'HTML', 'category' : 'Computer Science'},
-                {'word' : 'SQL', 'category' : 'Computer Science'},
-                {'word' : 'Networking', 'category' : 'Computer Science'}
-            ];
-
-            var BinterestWords = [{'word' : 'Anaesthetics', 'category' : 'Biology'},
-                {'word' : 'Asexual reproduction', 'category' : 'Biology'},
-                {'word' : 'Capillaries', 'category' : 'Biology'},
-                {'word' : 'Diffusion', 'category' : 'Biology'},
-                {'word' : 'Digestion', 'category' : 'Biology'},
-                {'word' : 'Ecosystem', 'category' : 'Biology'},
-                {'word' : 'Enzymes', 'category' : 'Biology'},
-                {'word' : 'Fertilisation', 'category' : 'Biology'},
-                {'word' : 'Homeostasis', 'category' : 'Biology'},
-                {'word' : 'Hormone', 'category' : 'Biology'}
-            ];
-
-            var PinterestWords = [{'word' : 'Amplitude', 'category' : 'Physics'},
-                {'word' : 'Conduction', 'category' : 'Physics'},
-                {'word' : 'Energy', 'category' : 'Physics'},
-                {'word' : 'Matter', 'category' : 'Physics'},
-                {'word' : 'Electricity', 'category' : 'Physics'},
-                {'word' : 'Astronomy', 'category' : 'Physics'},
-                {'word' : 'Quantum', 'category' : 'Physics'},
-                {'word' : 'Galaxy', 'category' : 'Physics'},
-                {'word' : 'Particles', 'category' : 'Physics'},
-                {'word' : 'Cosmology', 'category' : 'Physics'}
-            ];
-
-            var GinterestWords = [{'word' : 'Earth', 'category' : 'Geography'},
-                {'word' : 'Culture', 'category' : 'Geography'},
-                {'word' : 'GIS', 'category' : 'Geography'},
-                {'word' : 'Environment', 'category' : 'Geography'},
-                {'word' : 'Climate', 'category' : 'Geography'},
-                {'word' : 'Landscape', 'category' : 'Geography'},
-                {'word' : 'River', 'category' : 'Geography'},
-                {'word' : 'Social', 'category' : 'Geography'},
-                {'word' : 'Weather Hazards', 'category' : 'Geography'},
-                {'word' : 'Economy', 'category' : 'Geography'}
-            ];
-
-            var EinterestWords = [{'word' : 'Markets', 'category' : 'Economics'},
-                {'word' : 'Strategy', 'category' : 'Economics'},
-                {'word' : 'Trade', 'category' : 'Economics'},
-                {'word' : 'Finance', 'category' : 'Economics'},
-                {'word' : 'Bootstrapping', 'category' : 'Economics'},
-                {'word' : 'Calculus', 'category' : 'Economics'},
-                {'word' : 'Costs and Efficiency', 'category' : 'Economics'},
-                {'word' : 'Covariance', 'category' : 'Economics'},
-                {'word' : 'Least squares', 'category' : 'Economics'},
-                {'word' : 'Microeconomics', 'category' : 'Economics'}
-            ];
-
-            var degreeList = ['Computer Science', 'Biology', 'Physics', 'Geography', 'Economics'];
-
-            $scope.addUsers = function(counter) {
-                if (counter > 100) {
-                    return;
-                } else {
-                    var gender;
-                    if (Math.random() > 0.5) {
-                        gender = "Female";
-                    } else {
-                        gender = "Male";
-                    }
-
-                    var degree = degreeList[Math.floor(Math.random() * degreeList.length)];
-                    var knowledge = [];
-                    for (var j = 0; j < Math.floor((Math.random() * 10) + 1); j++) {
-                        var interest;
-                        switch (degree) {
-                            case "Computer Science":
-                                interest = CSinterestWords[Math.floor(Math.random() * CSinterestWords.length)];
-                                break;
-                            case "Biology":
-                                interest = BinterestWords[Math.floor(Math.random() * BinterestWords.length)];
-                                break;
-                            case "Physics":
-                                interest = PinterestWords[Math.floor(Math.random() * PinterestWords.length)];
-                                break;
-                            case "Geography":
-                                interest = GinterestWords[Math.floor(Math.random() * GinterestWords.length)];
-                                break;
-                            case "Economics":
-                                interest = EinterestWords[Math.floor(Math.random() * EinterestWords.length)];
-                                break;
-                        }
-                        if (knowledge.indexOf(interest) === -1) {
-                            knowledge.push(interest);
-                        }
-                    }
-
-                    var exampleUser = {
-                        'username': "user" + counter,
-                        'email': "user" + counter + "@example.com",
-                        'password': "user" + counter,
-                        'fullname': "User" + counter + " Example",
-                        'age': Math.floor((Math.random() * 100) + 1),
-                        'gender': gender,
-                        'degree': degree,
-                        'knowledge': JSON.stringify(knowledge)
-                    };
-
-                    $http.post("/users/checkusername", {'username': name})
-                        .then(function (response) {
-                            var bool = response.data;
-
-                            if (bool) {
-                                $http.post("/users/addUser", exampleUser)
-                                    .then(function (response) {
-                                        console.log(response.data);
-                                        if (response.data !== 'false') {
-                                        } else {
-                                            alert('There has been a problem creating your account. Please try again.')
-                                        }
-                                    });
-                            } else {
-                                alert('Username taken, please choose another');
-                            }
-                            counter++;
-                            $scope.addUsers(counter);
-                        });
-
-                }
-            };
-
             var limit = 10;
             var counter = 1;
             $scope.GenderRadio = "Female";
@@ -307,6 +190,8 @@ angular.module('app', ['ngRoute', 'ngResource', 'ngMaterial', 'ngCookies', 'ngMd
                 for (var i = 0; i < $scope.interests.length; i++) {
                     if (($scope.interests[i].word === item.word) && ($scope.interests[i].category === item.category)) {
                         $scope.interests.splice(i, 1);
+                        counter--;
+                        break;
                     }
                 }
             };
@@ -336,17 +221,16 @@ angular.module('app', ['ngRoute', 'ngResource', 'ngMaterial', 'ngCookies', 'ngMd
                 return options;
             };
 
+            //TODO: check that boxes are filled before posting!!
             $scope.signup = function () {
                 var username = $scope.username;
-                // var knowledgeList = [];
-                // for (var i = 0; i < counter; i++) {
-                //     var interest = {
-                //         'category': $('#interestCategory' + i).find(":selected").text(),
-                //         'word': $('#interestText' + i).val()
-                //     };
-                //     knowledgeList[i] = interest;
-                // }
-                console.log($scope.interests);
+                var degree;
+                if($scope.degree === 'Other'){
+                    degree = $scope.degreetitle;
+                } else{
+                    degree = $scope.degree;
+                }
+
                 var newUser = {
                     'username': username,
                     'email': $scope.email,
@@ -354,7 +238,7 @@ angular.module('app', ['ngRoute', 'ngResource', 'ngMaterial', 'ngCookies', 'ngMd
                     'fullname': $scope.fullname,
                     'age': $scope.age,
                     'gender': $scope.GenderRadio,
-                    'degree': $scope.degree,
+                    'degree': degree,
                     'knowledge': JSON.stringify($scope.interests)
                 };
 
@@ -398,13 +282,67 @@ angular.module('app', ['ngRoute', 'ngResource', 'ngMaterial', 'ngCookies', 'ngMd
 
         }])
 
-    .controller('HomepageController', ['$scope', '$location', '$http', 'userPersistenceSession',
-        function($scope, $location, $http, userPersistenceSession) {
+    .controller('HomepageController', ['$scope', '$location', '$http', 'userPersistenceSession', 'userPersistenceUsername',
+        function($scope, $location, $http, userPersistenceSession, userPersistenceUsername) {
 
             if(userPersistenceSession.getCookieData() === undefined){
                 $location.url('/');
             }
 
+            $scope.partners = [];
+            $scope.pointvalue = 10;
+
+            var getPartners = function(){
+                $http.post('/matching/getpartners', {'username' : userPersistenceUsername.getCookieData(),
+                                                        'sessionID' : userPersistenceSession.getCookieData()})
+                    .then(function(response){
+                        $scope.partners = response.data;
+                    });
+            };
+            getPartners();
+
+            var getGroup = function(){
+                $http.post('/groups/groupsown', {'username':userPersistenceUsername.getCookieData(),
+                                            'sessionID' : userPersistenceSession.getCookieData()})
+                    .then(function(response){
+                        $scope.groups = response.data;
+                    });
+            };
+            getGroup();
+
+            $scope.accept = function(item){
+                var userrelation;
+                if(item.relation === 'mentor'){
+                    userrelation = 'mentee';
+                } else{
+                    userrelation = 'mentor';
+                }
+
+                var data = {'username' : userPersistenceUsername.getCookieData(),
+                    'sessionID' : userPersistenceSession.getCookieData(),
+                    'partnername' : item.username,
+                    'relation' : item.relation,
+                    'partnerrelation' : userrelation};
+
+                $http.post('/matching/acceptpartner', data)
+                    .then(function(response){
+                        getPartners();
+                    });
+            };
+
+            $scope.addPoints = function(username, point){
+                var data = {'username' : username,
+                            'amount' : point,
+                            'madeusername' : userPersistenceUsername.getCookieData()};
+                console.log(data);
+                $http.post('/users/addtoscore', data)
+                    .then(function(response){
+                        console.log(response);
+                        if(response.data === ""){
+                            alert("Points added to " + username + "'s score!")
+                        }
+                    });
+            }
     }])
 
     .controller('UserprofileController', ['$scope', '$location', '$http', 'userPersistenceSession', 'userPersistenceUsername',
@@ -414,21 +352,69 @@ angular.module('app', ['ngRoute', 'ngResource', 'ngMaterial', 'ngCookies', 'ngMd
                 $location.url('/');
             }
 
+            $scope.categoryList = ['Accounting and Finance', 'Anthropology', 'Archaeology', 'Art', 'Astronomy', 'Biochemistry', 'Biology',
+                'Business', 'Chemistry', 'Computer Science', 'Criminology', 'Ecology', 'Economics', 'Education Studies', 'Engineering',
+                'English', 'Environmental Science', 'Fashion', 'Film', 'French', 'Geography', 'Geology', 'Geophysics',
+                'German', 'History', 'Information Technology', 'Language', 'Law', 'Management', 'Marketing', 'Mathematical Sciences',
+                'Medicine', 'Midwifery', 'Music', 'Natural Sciences', 'Nursing', 'Oceanography', 'Pharmacology', 'Philosophy',
+                'Physics', 'Physiotherapy', 'Politics and International Relations', 'Psychology', 'Ship Science', 'Sociology',
+                'Spanish', 'Zoology', 'Other'];
+            $scope.interests = [{
+                word : '',
+                category: ''
+            }];
         $scope.username = userPersistenceUsername.getCookieData();
         $scope.user = [];
+        $scope.change = false;
+            var counter = $scope.interests.length;
+            var limit = 10;
 
-        var getuserInfo = function(){
-            $http.post('/users/userinfo', {'username' : $scope.username, 'sessionID' : userPersistenceSession.getCookieData()})
+            var getuserInfo = function(){
+            $http.post('/users/userinfo', {'username' : $scope.username, 'sessionid' : userPersistenceSession.getCookieData()})
                 .then(function(response){
+                    console.log(response.data);
                     $scope.user = response.data;
-                   console.log(response.data);
+                    $scope.interests = response.data.knowledge;
                 });
         };
         getuserInfo();
+
+            $scope.addNew = function () {
+                if (counter !== limit) {
+                    $scope.interests.push({word: '', category: ''});
+                    counter++;
+                } else {
+                    alert("You've reached the limit on interest fields!")
+                }
+            };
+
+            $scope.removeInterest = function (item) {
+                for (var i = 0; i < $scope.interests.length; i++) {
+                    if (($scope.interests[i].word === item.word) && ($scope.interests[i].category === item.category)) {
+                        $scope.interests.splice(i, 1);
+                        counter--;
+                        break;
+                    }
+                }
+            };
+
+            //TODO: make sure all interests inputs are not blank
+        $scope.saveInterests = function(){
+            $http.post('/users/changeinterests', {'username' : userPersistenceUsername.getCookieData(),
+                                                'knowledge' : $scope.interests})
+                .then(function(response){
+                    console.log(response.data);
+                    if(response.data === ""){
+                        $scope.change = false;
+                    } else{
+                        alert("Adding interests failed, please try again.")
+                    }
+                });
+        }
     }])
 
-    .controller('WorkpartnerController', ['$scope', '$location', '$http', 'userPersistenceSession',
-        function($scope, $location, $http, userPersistenceSession) {
+    .controller('WorkpartnerController', ['$scope', '$location', '$http', 'userPersistenceSession','userPersistenceUsername',
+        function($scope, $location, $http, userPersistenceSession, userPersistenceUsername) {
 
             $scope.categoryList = ['Accounting and Finance', 'Anthropology', 'Archaeology', 'Art', 'Astronomy', 'Biochemistry', 'Biology',
                 'Business', 'Chemistry', 'Computer Science', 'Criminology', 'Ecology', 'Economics', 'Education Studies', 'Engineering',
@@ -441,16 +427,41 @@ angular.module('app', ['ngRoute', 'ngResource', 'ngMaterial', 'ngCookies', 'ngMd
         $scope.age = [18, 22, 26, 30];
         $scope.gender = ['Female', 'Male', 'None'];
         $scope.matches = [];
+        var words = [];
+        var wordcategories = [];
 
             if(userPersistenceSession.getCookieData() === undefined){
                 $location.url('/');
             };
 
+            $scope.clear = function(){
+                $scope.matches = [];
+                $scope.fullresponse = false;
+                $scope.interests= [];
+                $scope.Gender = "";
+                $scope.minAge = "";
+                $scope.maxAge = "";
+                $scope.MentorType = "";
+                $scope.searchText = "";
+                $scope.itemCategory = "";
+                $scope.similar = null;
+            };
+
             $scope.getWords = function(search){
                 return $http.post('/matching/getwords', {'word' : search})
                     .then( function (response){
-                        return response.data;
+                        for(var i = 0; i < response.data.length; i++){
+                            words[i] = response.data[i]['word'];
+                            wordcategories[i] = response.data[i]['category'];
+                        }
+                        return words;
                     });
+            };
+
+            $scope.changeCategory = function(item){
+                for(var i = 0; i < words.length; i++){
+                    $scope.itemCategory = wordcategories[words.indexOf(item)];
+                }
             };
 
             $scope.addWord = function(word){
@@ -469,19 +480,53 @@ angular.module('app', ['ngRoute', 'ngResource', 'ngMaterial', 'ngCookies', 'ngMd
                 }
             };
 
-            //TODO: add in degree choice
+
+            //TODO: add in degree choice?
             $scope.match = function(){
                 var data = {'gender' : $scope.Gender,
-                        'age' : $scope.Age,
+                        'minAge' : $scope.minAge,
+                        'maxAge' : $scope.maxAge,
                         'interests' : $scope.interests,
                         'sessionID' : userPersistenceSession.getCookieData(),
-                        'username' : userPersistenceUsername.getCookieData()};
-                $http.post('/matching/matching1', data)
+                        'username' : userPersistenceUsername.getCookieData(),
+                        'similar' : $scope.similar};
+
+                if(($scope.Gender === undefined) || ($scope.minAge === undefined) || ($scope.maxAge === undefined) || ($scope.MentorType === undefined)){
+                    alert("Some fields empty, please fill in all fields.")
+                } else if($scope.maxAge < $scope.minAge){
+                    alert("Maximum age must be greater than minimum age, please try again.");
+                } else if($scope.interests.length < 1){
+                    alert("You must include at least 1 knowledge area, please try again.")
+                } else{
+                    console.log(data);
+                    $http.post('/matching/matching3', data)
+                        .then(function(response){
+                            $scope.find = false;
+                            $scope.fullresponse = true;
+                            $scope.matches = response.data;
+                            $scope.partner = $scope.MentorType;
+                        });
+                }
+            };
+
+            $scope.request = function(item) {
+                var theirstatus;
+                if($scope.partner === 'mentor'){
+                    theirstatus = 'mentee';
+                } else{
+                    theirstatus = 'mentor';
+                }
+                console.log(item);
+                var data = {
+                    'username': userPersistenceUsername.getCookieData(),
+                    'sessionID': userPersistenceSession.getCookieData(),
+                    'partner': item,
+                    'partnerstatus' : $scope.partner,
+                    'theirstatus' : theirstatus
+                };
+                $http.post('/matching/requestpartner', data)
                     .then(function(response){
-                        $scope.find = false;
-                        $scope.fullresponse = true;
-                        console.log(response.data);
-                        $scope.matches = response.data;
+
                     });
             };
 
@@ -494,7 +539,7 @@ angular.module('app', ['ngRoute', 'ngResource', 'ngMaterial', 'ngCookies', 'ngMd
             if(userPersistenceSession.getCookieData() === undefined){
                 $location.url('/');
             }
-        $scope.groups = false;
+        $scope.groups = true;
         $scope.searchList = [];
         $scope.selectedItem = '';
         $scope.memberList = [];
@@ -511,7 +556,8 @@ angular.module('app', ['ngRoute', 'ngResource', 'ngMaterial', 'ngCookies', 'ngMd
         };
         getGroups();
 
-            $scope.creatingGroup = function() {
+        $scope.creatingGroup = function() {
+            $scope.selectedGroup = "";
             $scope.groups = true;
         };
 
@@ -526,7 +572,6 @@ angular.module('app', ['ngRoute', 'ngResource', 'ngMaterial', 'ngCookies', 'ngMd
                 'description' : $scope.groupdescription,
                 'admin' : userPersistenceUsername.getCookieData(),
                 'members' : [userPersistenceUsername.getCookieData()],
-                'posts' : [],
                 'username' : userPersistenceUsername.getCookieData(),
                 'sessionID' : userPersistenceSession.getCookieData()
             };
@@ -571,6 +616,7 @@ angular.module('app', ['ngRoute', 'ngResource', 'ngMaterial', 'ngCookies', 'ngMd
 
             $http.post('/groups/postingroup', postJSON)
                 .then(function(response){
+                    console.log(response.data);
                     $scope.$parent.grouppost = '';
                     $scope.post = false;
                     $scope.memberList = [];
@@ -580,7 +626,7 @@ angular.module('app', ['ngRoute', 'ngResource', 'ngMaterial', 'ngCookies', 'ngMd
         };
 
         $scope.chooseGroup = function(groupName){
-            console.log(groupName);
+            $scope.group = false;
             $scope.selectedGroup = groupName;
         };
 
@@ -671,6 +717,7 @@ angular.module('app', ['ngRoute', 'ngResource', 'ngMaterial', 'ngCookies', 'ngMd
                 controller: 'GroupController'
             })
             .otherwise({
+
                 redirectTo: '/'
             });
     }]);

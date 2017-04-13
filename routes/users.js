@@ -1,20 +1,21 @@
 /*
- * Node.js file to deal with the user section of the backend, uses express to add, login, delete and update users as well as
+ * node.js file to deal with the user section of the backend, uses express to add, login, delete and update users as well as
  * checking usernames for new users.
- * Also contains the matching algorithm FOR NOW
- * TODO: move matching algorithm to it's own file!! probs
+ * also contains the matching algorithm for now
+ * todo: move matching algorithm to it's own file!! probs
  */
 
 var express = require('express');
 var router = express.Router();
 var bcrypt = require('bcryptjs');
 var randomstring = require('randomstring');
-var UserSchema = require('../models/users');
-var WordSchema = require('../models/words');
-var Cookie = require('../models/cookies');
+var userschema = require('../models/users');
+var wordschema = require('../models/words');
+var cookie = require('../models/cookies');
+var _ = require('underscore');
 
 /*
- * GET userlist and returns in JSON to client
+ * get userlist and returns in json to client
  */
 router.get('/userlist', function(req, res) {
     var db = req.db;
@@ -25,8 +26,8 @@ router.get('/userlist', function(req, res) {
 });
 
 /*
- * POST to adduser. Currently adds user's information and specified knowledge words to relevant databases
- * Hashes the password with a random salt which can be easily compared with the string password.
+ * post to adduser. currently adds user's information and specified knowledge words to relevant databases
+ * hashes the password with a random salt which can be easily compared with the string password.
  */
 router.post('/adduser', function(req, res) {
     var db = req.db;
@@ -36,24 +37,23 @@ router.post('/adduser', function(req, res) {
     var error = '';
 
 
-    const saltRounds = 10;
-    const myPlaintextPassword = body['password'];
+    const saltrounds = 10;
+    const myplaintextpassword = body['password'];
     var knowledge = [];
     if(body['knowledge'].length > 0){
         knowledge = JSON.parse(body['knowledge']);
     }
-    var userKnowledge = [];
+    var userknowledge = [];
 
     if (knowledge.length > 0) {
         for (var i = 0; i < knowledge.length; i++) {
             var obj = {'word': knowledge[i].word, 'category': knowledge[i].category};
-            userKnowledge.push(obj);
+            userknowledge.push(obj);
         }
     }
 
-    bcrypt.hash(myPlaintextPassword, saltRounds).then(function (hash) {
-        console.log(body['username']);
-        var userInfo = {
+    bcrypt.hash(myplaintextpassword, saltrounds).then(function (hash) {
+        var userinfo = {
             'username': body['username'],
             'email': body['email'],
             'password': hash,
@@ -62,28 +62,29 @@ router.post('/adduser', function(req, res) {
             'gender': body['gender'],
             'degree': body['degree'],
             'userscore' : 0,
-            'knowledge': userKnowledge,
+            'scoresmade' : [],
+            'level' : 'New User',
+            'knowledge': userknowledge,
             'workpartners' : []
         };
-        //TODO: why am i checking this twice???
+        //todo: why am i checking this twice???
         collection.find({'username': body['username']}, {}, function (e, docs) {
             if (docs.length > 0) {
                 res.send('false');
                 return;
             } else {
-                collection.insert(userInfo, function (err, result) {
+                collection.insert(userinfo, function (err, result) {
                     error = err;
                 });
 
                 var session = randomstring.generate();
-                cookies.update({'username' : body['username']}, {'username' : body['username'], 'sessionID' : session}, {upsert: true});
+                cookies.update({'username' : body['username']}, {'username' : body['username'], 'sessionid' : session}, {upsert: true});
 
-                var wordCollection = db.get('words');
-                console.log(knowledge);
+                var wordcollection = db.get('words');
 
                 if (knowledge.length !== undefined) {
                     for (var i = 0; i < knowledge.length; i++) {
-                        wordCollection.update({'word': knowledge[i]['word'], 'category': knowledge[i]['category']},
+                        wordcollection.update({'word': knowledge[i]['word'], 'category': knowledge[i]['category']},
                             {$push: {'users': body['username']}}, {upsert: true});
                     }
                 }
@@ -96,21 +97,15 @@ router.post('/adduser', function(req, res) {
 
 });
 
-var addMultiUsers = function(){
-    var choosing = Math.random();
-
-};
-
 router.post('/userinfo', function(req, res){
     var db = req.db;
-    var userCollection = db.get('userlist');
+    var usercollection = db.get('userlist');
     var body = req.body;
-    console.log(body);
-    var userInfo = [];
+    var userinfo = [];
 
-    Cookie.find({'username' : body['username'], 'sessionID' : body['sessionID']}, function(e, docs){
+    cookie.find({'username' : body['username'], 'sessionid' : body['sessionid']}, function(e, docs){
         if(docs.length > 0){
-            userCollection.find({'username' : body['username']}, {}, function(e, docs){
+            usercollection.find({'username' : body['username']}, {}, function(e, docs){
                 if(docs.length > 0) {
                     var user = {
                         'username' : docs[0]['username'],
@@ -121,9 +116,10 @@ router.post('/userinfo', function(req, res){
                         'degree' : docs[0]['degree'],
                         'degreetitle': docs[0]['degreetitle'],
                         'userscore' : docs[0]['userscore'],
+                        'level' : docs[0]['level'],
                         'knowledge' : docs[0]['knowledge']
                     };
-                    userInfo.push(user);
+                    userinfo.push(user);
                     console.log(user);
                 }
 
@@ -136,14 +132,58 @@ router.post('/userinfo', function(req, res){
 
 });
 
-/*
- * Get the database categories and return to client.
- */
-router.get('/databaseCategories', function(req, res){
-    var db = req.db;
-    var wordCollection = db.get('words');
+router.post('/changeinterests', function(req, res){
+    var body = req.body;
 
-    wordCollection.find({},{},function(e,docs){
+    userschema.find({'username' : body['username']}, {}, function(e, docs){
+        if(docs.length > 0){
+            var oldknowledge = docs[0]['knowledge'];
+            var newknowledge = body['knowledge'];
+            userschema.update({'username' : body['username']}, {$set : {'knowledge' : newknowledge}}, function(e, docs){
+                if(!e){
+                    if (oldknowledge.length > 0) {
+                        for (var i = 0; i < oldknowledge.length; i++) {
+                            wordschema.update({
+                                    'word': oldknowledge[i]['word'],
+                                    'category': oldknowledge[i]['category']
+                                },
+                                {$pull: {'users': body['username']}}, function (e, docs) {
+                                    if (e) {
+                                        res.send("false");
+                                    }
+                                });
+                        }
+                    }
+                    if (newknowledge.length > 0) {
+                        for (var j = 0; j < newknowledge.length; j++) {
+                            wordschema.update({
+                                    'word': newknowledge[j]['word'],
+                                    'category': newknowledge[j]['category']
+                                },
+                                {$push: {'users': body['username']}}, {upsert: true}, function (e, docs) {
+                                    if (e) {
+                                        res.send("false");
+                                    }
+                                });
+                        }
+                    }
+                    res.send("");
+                } else{
+                    res.send('false');
+                }
+            });
+        }
+    });
+});
+
+/*
+ * get the database categories and return to client.
+ */
+router.get('/databasecategories', function(req, res){
+    var db = req.db;
+    var wordcollection = db.get('words');
+
+    wordcollection.find({},{},function(e,docs){
         var categories = [];
         console.log(docs);
         if(docs !== undefined) {
@@ -158,25 +198,65 @@ router.get('/databaseCategories', function(req, res){
 /*
  * post request to add a specified amount to a users score - can be used to update
  */
+//TODO: change level based on point score!!
 router.post('/addtoscore', function(req, res){
     var db = req.db;
     var collection = db.get('userlist');
     var body = req.body;
-    console.log(body['amount']);
 
-    collection.update({'username': body['username']}, {$inc : {'userscore' : body['amount']}}, function(e, docs){
-        if(docs !== undefined) {
-            console.log(docs);
-            res.send(String(docs["nModified"]));
-        } else{
-            res.send("");
+    collection.find({'username' : body['username']}, {}, function(e, docs){
+        if(!e){
+            var newscore = docs[0]['userscore'] + parseInt(body['amount']);
+            var level;
+            if(newscore < 50){
+                level = 'New User';
+            } else if(newscore < 200){
+                level = 'Beginner';
+            } else if(newscore < 500){
+                level = 'Novice';
+            } else if(newscore < 1000){
+                level = 'Intermediate';
+            } else if(newscore < 2000){
+                level = 'Advanced';
+            } else if(newscore < 5000){
+                level = 'Expert';
+            } else if(newscore < 10000){
+                level = 'Professional';
+            } else {
+                level = 'Guru';
+            }
+            userschema.update({'username': body['username']}, {
+                $set : {'userscore': newscore,
+                'level': level}
+            }, function (e, docs) {
+                if (!e) {
+                    userschema.update({'username': body['madeusername']}, {
+                            $push: {
+                                'scoresmade': {
+                                    'username': body['username'],
+                                    'score': body['amount']
+                                }
+                            }
+                        },
+                        function (e, docs) {
+                            if (!e) {
+                                res.send("");
+                            } else {
+                                res.send(e)
+                            }
+                        });
+                } else {
+                    res.send(e);
+                }
+            })
+        } else {
+            res.send(e);
         }
     });
-
 });
 
 /*
- * Post request to check if a username exists in the database already (so user's cannot sign up with duplicate
+ * post request to check if a username exists in the database already (so user's cannot sign up with duplicate
  * usernames)
  */
 router.post('/checkusername', function(req, res){
@@ -194,8 +274,8 @@ router.post('/checkusername', function(req, res){
 });
 
 /*
- * Post request to log a user in with a specified username and password. Returns true if logged in and false if not.
- * TODO: return different values if the user does not exist and if the password is wrong
+ * post request to log a user in with a specified username and password. returns true if logged in and false if not.
+ * todo: return different values if the user does not exist and if the password is wrong
  */
 router.post('/loginuser', function(req, res){
     var db = req.db;
@@ -211,7 +291,7 @@ router.post('/loginuser', function(req, res){
                 if (result) {
                     var session = randomstring.generate();
                     console.log(session);
-                    cookies.update({'username' : body['username']}, {'username' : body['username'], 'sessionID' : session}, {upsert: true});
+                    cookies.update({'username' : body['username']}, {'username' : body['username'], 'sessionid' : session}, {upsert: true});
                     res.send(session);
                 } else {
                     res.send('false');
@@ -224,8 +304,8 @@ router.post('/loginuser', function(req, res){
 });
 
 /*
- * DELETE to deleteuser.
- * TODO: write properly
+ * delete to deleteuser.
+ * todo: write properly
  */
 router.post('/deleteuser', function(req, res) {
     var db = req.db;
@@ -233,7 +313,7 @@ router.post('/deleteuser', function(req, res) {
     var cookies = db.get('cookies');
     var body = req.body;
 
-    Cookie.find({'username' : body['username'], 'sessionID' : body['sessionID']}, function(e, docs){
+    cookie.find({'username' : body['username'], 'sessionid' : body['sessionid']}, function(e, docs){
         if(docs.length > 0) {
             collection.remove({ 'username' : body['username'] }, function(err) {
                 res.send((err === null) ? '' : { msg:'error: ' + err });
@@ -246,13 +326,9 @@ router.post('/deleteuser', function(req, res) {
 
 router.post('/logoutuser', function(req, res){
     var body = req.body;
-    Cookie.remove({ 'username' : body['username'], 'sessionID' : body['sessionID']}, function(err){
+    cookie.remove({ 'username' : body['username'], 'sessionid' : body['sessionid']}, function(err){
         res.send((err === null) ? "true" : err);
     });
-
-    // Cookie.find({ 'username' : body['username'], 'sessionID' : body['sessionID']}).remove( function(err){
-    //
-    // });
 });
 
 module.exports = router;

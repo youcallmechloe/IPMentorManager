@@ -15,18 +15,23 @@ router.post('/creategroup', function(req, res){
     var collection = db.get('groups');
     var body = req.body;
 
-    Cookie.find({'username' : body['username'], 'sessionID' : body['sessionID']}, function(e, docs) {
-        console.log(docs);
+    Cookie.find({'username' : body['username'], 'sessionid' : body['sessionID']}, function(e, docs) {
         if (docs.length > 0) {
-
-            collection.find({'groupname': body['groupname']}, {}, function (e, docs) {
+            Groups.find({'groupname': body['groupname']}, {}, function (e, docs) {
 
                 console.log(docs);
 
                 if (docs.length > 0) {
                     res.send('false');
                 } else {
-                    collection.insert(body, function (err, result) {
+                    var data = {
+                        'groupname' : body['groupname'],
+                        'desription' : body['description'],
+                        'admin' : body['username'],
+                        'members' : body['members'],
+                        'posts' : []
+                    };
+                    collection.insert(data, function (err, result) {
                         res.send((err === null) ? '' : {msg: 'error: ' + err});
                     })
                 }
@@ -79,12 +84,15 @@ router.post('/postingroup', function(req, res){
     var collection = db.get('groups');
     var body = req.body;
 
-    Cookie.find({'username' : body['username'], 'sessionID' : body['sessionID']}, function(e, docs) {
-        console.log(docs);
+    Cookie.find({'username' : body['username'], 'sessionid' : body['sessionID']}, function(e, docs) {
+        var time = new Date().toTimeString();
+        var cuttime = time.substring(0, 8);
+        var date = new Date().toDateString();
+        console.log(date + time);
         if (docs.length > 0) {
-            Groups.findOneAndUpdate({'groupname': body['groupname']}, {$push: {'posts': {$each: [{'post': body['post'], 'username': body['username']}], $position: 0}}},
+            Groups.findOneAndUpdate({'groupname': body['groupname']},
+                {$push: {'posts': {$each: [{'post': body['post'], 'username': body['username'], 'time' : cuttime, 'date': date, 'replies' : []}], $position: 0}}},
             {new: true}, function(err, doc){
-                console.log(doc);
                 res.send(doc);
             });
         }
@@ -120,19 +128,38 @@ router.get('/getdescription/:id', function(req, res){
 });
 
 router.post('/groupsmemberof', function(req, res){
-    var db = req.db;
-    var collection = db.get('groups');
     var body = req.body;
 
-    Cookie.find({'username' : body['username'], 'sessionID' : body['sessionID']}, function(e, docs){
+    Cookie.find({'username' : body['username'], 'sessionid' : body['sessionID']}, function(e, docs){
         console.log(docs);
         if(docs.length > 0) {
-            collection.find({'members': {$in: [body['username']]}}, {}, function (e, docs) {
+            Groups.find({'members': {$in: [body['username']]}}, {}, function (e, docs) {
                 var names = [];
 
                 for (var i = 0; i < docs.length; i++) {
                     names.push(docs[i]);
                 }
+                res.send(names);
+            });
+        } else{
+            res.send([]);
+        }
+    });
+});
+
+router.post('/groupsown', function(req, res){
+    var body = req.body;
+
+    Cookie.find({'username' : body['username'], 'sessionid' : body['sessionID']}, function(e, docs){
+        console.log(docs);
+        if(docs.length > 0) {
+            Groups.find({'admin': body['username']}, {}, function (e, docs) {
+                var names = [];
+
+                for (var i = 0; i < docs.length; i++) {
+                    names.push(docs[i]);
+                }
+                console.log(names);
                 res.send(names);
             });
         } else{
