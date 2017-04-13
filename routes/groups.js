@@ -26,7 +26,7 @@ router.post('/creategroup', function(req, res){
                 } else {
                     var data = {
                         'groupname' : body['groupname'],
-                        'desription' : body['description'],
+                        'description' : body['description'],
                         'admin' : body['username'],
                         'members' : body['members'],
                         'posts' : []
