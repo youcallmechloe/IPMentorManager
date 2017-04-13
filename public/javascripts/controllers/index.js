@@ -410,6 +410,26 @@ angular.module('app', ['ngRoute', 'ngResource', 'ngMaterial', 'ngCookies', 'ngMd
                         alert("Adding interests failed, please try again.")
                     }
                 });
+                };
+
+        $scope.saveProfile = function(){
+            $scope.profchange = false;
+        };
+
+            $scope.removeUser = function(){
+                var c = confirm("Do you want to delete your account?");
+                console.log("sfds");
+                if(c){
+                    $http.post('/users/deleteuser', {'username' : userPersistenceUsername.getCookieData(),
+                        'sessionid' : userPersistenceSession.getCookieData()})
+                        .then(function(response){
+                                userPersistenceSession.clearCookieData();
+                                userPersistenceUsername.clearCookieData();
+                                $location.url('/');
+
+                        });
+
+            }
         }
     }])
 

@@ -1,5 +1,5 @@
 <div id="wrap" ng-controller="UserprofileController" style="height:90%">
-    <md-content id="groups" style="overflow: scroll;">
+    <md-content id="groups" style="overflow: scroll; padding-top: 1%;">
         <h1>{{username}}'s Profile</h1>
         <div layout-align="center center" flex layout="row">
             <div style="width: 50%;" layout="column" layout-align="center center" flex>
@@ -22,6 +22,9 @@
                 <div>
                     <md-button class="md-raised md-primary" ng-show="!profchange" ng-click="profchange = true" style="width:170px;">Change Details</md-button>
                     <md-button class="md-raised md-primary" ng-show="profchange" ng-click="saveProfile()" style="width:170px;">Save Details</md-button>
+                </div>
+                <div>
+                    <md-button ng-click="removeUser()">Delete Account</md-button>
                 </div>
             </div>
             <div style="width: 50%;" layout="column" layout-align="center center" flex>

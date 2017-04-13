@@ -315,8 +315,18 @@ router.post('/deleteuser', function(req, res) {
 
     cookie.find({'username' : body['username'], 'sessionid' : body['sessionid']}, function(e, docs){
         if(docs.length > 0) {
-            collection.remove({ 'username' : body['username'] }, function(err) {
-                res.send((err === null) ? '' : { msg:'error: ' + err });
+            collection.remove({ 'username' : body['username'] }, function(e) {
+                if(!e) {
+                    cookies.remove({'username': body['username']}, function (e, docs) {
+                        if(!e) {
+                            res.send('');
+                        } else{
+                            res.send("false");
+                        }
+                    });
+                } else{
+                    res.send("false");
+                }
             });
         } else{
             res.send("false");
