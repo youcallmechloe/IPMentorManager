@@ -2,13 +2,27 @@
     <md-content id="groups" style="overflow: scroll;">
         <h1>{{username}}'s Profile</h1>
         <div layout-align="center center" flex layout="row">
-            <div style="width: 50%; padding-top:50px;">
-                <h3>You are a {{user.level}} with a score of {{user.userscore}}!</h3>
-                <h3>{{user.email}}</h3>
-                <h3>{{user.fullname}}</h3>
-                <h3>{{user.age}}</h3>
-                <h3>{{user.gender}}</h3>
-                <h3>{{user.degree}}</h3>
+            <div style="width: 50%;" layout="column" layout-align="center center" flex>
+                <div style="width: 50%; padding-top:50px;" ng-show="!profchange">
+                    <h3>You are a {{user.level}} with a score of {{user.userscore}}!</h3>
+                    <h3>{{user.email}}</h3>
+                    <h3>{{user.fullname}}</h3>
+                    <h3>{{user.age}}</h3>
+                    <h3>{{user.gender}}</h3>
+                    <h3>{{user.degree}}</h3>
+                </div>
+                <div style="width: 50%; padding-top:50px;" ng-show="profchange">
+                    <h3>You are a {{user.level}} with a score of {{user.userscore}}!</h3>
+                    <h3>{{user.email}} change</h3>
+                    <h3>{{user.fullname}} change</h3>
+                    <h3>{{user.age}}change</h3>
+                    <h3>{{user.gender}}</h3>
+                    <h3>{{user.degree}}</h3>
+                </div>
+                <div>
+                    <md-button class="md-raised md-primary" ng-show="!profchange" ng-click="profchange = true" style="width:170px;">Change Details</md-button>
+                    <md-button class="md-raised md-primary" ng-show="profchange" ng-click="saveProfile()" style="width:170px;">Save Details</md-button>
+                </div>
             </div>
             <div style="width: 50%;" layout="column" layout-align="center center" flex>
                 <h3>Interests:</h3>

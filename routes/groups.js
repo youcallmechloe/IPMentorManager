@@ -85,11 +85,14 @@ router.post('/postingroup', function(req, res){
     var body = req.body;
 
     Cookie.find({'username' : body['username'], 'sessionid' : body['sessionID']}, function(e, docs) {
-        console.log(docs);
+        var time = new Date().toTimeString();
+        var cuttime = time.substring(0, 8);
+        var date = new Date().toDateString();
+        console.log(date + time);
         if (docs.length > 0) {
-            Groups.findOneAndUpdate({'groupname': body['groupname']}, {$push: {'posts': {$each: [{'post': body['post'], 'username': body['username']}], $position: 0}}},
+            Groups.findOneAndUpdate({'groupname': body['groupname']},
+                {$push: {'posts': {$each: [{'post': body['post'], 'username': body['username'], 'time' : cuttime, 'date': date, 'replies' : []}], $position: 0}}},
             {new: true}, function(err, doc){
-                console.log(doc);
                 res.send(doc);
             });
         }

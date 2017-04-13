@@ -265,11 +265,11 @@ router.post('/matching2', function(req, res) {
                                 if ((users[i]['gender'] === body['gender']) || (body['gender'] === 'none')) {
                                     var user = {
                                         'username': users[i]['username'],
-                                        // 'email': users[i]['email'],
-                                        // 'fullname': users[i]['fullname'],
-                                        // 'age': users[i]['age'],
-                                        // 'gender': users[i]['gender'],
-                                        // 'degree': users[i]['degree'],
+                                        'email': users[i]['email'],
+                                        'fullname': users[i]['fullname'],
+                                        'age': users[i]['age'],
+                                        'gender': users[i]['gender'],
+                                        'degree': users[i]['degree'],
                                         'knowledge': users[i]['knowledge'],
                                         'score': 0
                                     };
@@ -342,9 +342,11 @@ router.post('/matching2', function(req, res) {
                 result.sort(compare);
                 var finalresult = result.splice(0, 10);
                 var newfinal = [];
-                for(var i = 0; i < 10; i++){
-                    if(finalresult[i]['score'] !== 0){
-                        newfinal.push(finalresult[i]);
+                for(var i = 0; i < finalresult.length; i++) {
+                    if (finalresult[i]['username'] !== body['username']) {
+                        if (finalresult[i]['score'] !== 0) {
+                            newfinal.push(finalresult[i]);
+                        }
                     }
                 }
                 res.send(newfinal);

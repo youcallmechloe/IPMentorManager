@@ -26,7 +26,7 @@
                     </div>
                 </div>
                 <br>
-                <div ng-show="selectedGroup === ''" layout="column" style=" padding-right:50px; padding-top: 50px;">
+                <div ng-show="selectedGroup === ''" layout="column" style="padding-right:50px; padding-top: 50px;">
                     <div class="createGroupDiv" ng-show="groups" layout="column" layout-align="center center" >
                         <div>
                             <md-input-container>
@@ -44,10 +44,12 @@
                         </div>
                     </div>
                 </div>
-                <div ng-show="selectedGroup !== ''" layout="column" layout-align="center center" flex style="width: 60%" >
+                <div ng-show="selectedGroup !== ''" layout="column" flex style="width: 60%;" >
                     <h3>{{selectedGroup.groupname}}</h3>
                     <h4>{{selectedGroup.description}}</h4>
-                    <md-button ng-hide="post" class="md-raised md-primary" ng-click="post=true">Create Post</md-button>
+                    <div layout="column" flex layout-align="center center" style="padding-top: 7%; padding-bottom: 3%;">
+                        <md-button ng-hide="post" class="md-raised md-primary" ng-click="post=true" style="width:120px;">Create Post</md-button>
+                    </div>
                     <div ng-show="post">
                         <md-input-container class="md-block">
                             <label for="post">Description</label>
@@ -59,6 +61,8 @@
                     <div ng-repeat="post in selectedGroup.posts">
                         <h3>{{post.username}}</h3>
                         <h4>{{post.post}}</h4>
+                        <h4 style="font-size: 12px">{{post.date}}</h4>
+                        <h4 style="font-size: 12px">{{post.time}}</h4>
                     </div>
                 </div>
             </div>

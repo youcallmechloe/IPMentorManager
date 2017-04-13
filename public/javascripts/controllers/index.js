@@ -490,13 +490,23 @@ angular.module('app', ['ngRoute', 'ngResource', 'ngMaterial', 'ngCookies', 'ngMd
                         'sessionID' : userPersistenceSession.getCookieData(),
                         'username' : userPersistenceUsername.getCookieData(),
                         'similar' : $scope.similar};
-                $http.post('/matching/matching3', data)
-                    .then(function(response){
-                        $scope.find = false;
-                        $scope.fullresponse = true;
-                        $scope.matches = response.data;
-                        $scope.partner = $scope.MentorType;
-                    });
+
+                if(($scope.Gender === undefined) || ($scope.minAge === undefined) || ($scope.maxAge === undefined) || ($scope.MentorType === undefined)){
+                    alert("Some fields empty, please fill in all fields.")
+                } else if($scope.maxAge < $scope.minAge){
+                    alert("Maximum age must be greater than minimum age, please try again.");
+                } else if($scope.interests.length < 1){
+                    alert("You must include at least 1 knowledge area, please try again.")
+                } else{
+                    console.log(data);
+                    $http.post('/matching/matching3', data)
+                        .then(function(response){
+                            $scope.find = false;
+                            $scope.fullresponse = true;
+                            $scope.matches = response.data;
+                            $scope.partner = $scope.MentorType;
+                        });
+                }
             };
 
             $scope.request = function(item) {
@@ -606,6 +616,7 @@ angular.module('app', ['ngRoute', 'ngResource', 'ngMaterial', 'ngCookies', 'ngMd
 
             $http.post('/groups/postingroup', postJSON)
                 .then(function(response){
+                    console.log(response.data);
                     $scope.$parent.grouppost = '';
                     $scope.post = false;
                     $scope.memberList = [];
@@ -706,6 +717,7 @@ angular.module('app', ['ngRoute', 'ngResource', 'ngMaterial', 'ngCookies', 'ngMd
                 controller: 'GroupController'
             })
             .otherwise({
+
                 redirectTo: '/'
             });
     }]);

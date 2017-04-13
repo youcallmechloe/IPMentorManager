@@ -11,6 +11,8 @@ var GroupSchema = new mongoose.Schema({
     posts : [{
         post: String,
         username: String,
+        time: String,
+        date: String,
         replies : []
     }]
 });
