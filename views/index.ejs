@@ -26,25 +26,49 @@
   <link rel='stylesheet' href='/stylesheets/style.css' />
 </head>
 <body>
-<div ng-controller="HeaderController" layout="row" class="ng-cloak" layout-align="space-around center" style="height:10%">
-  <div style="margin-left: 2%;">
-    <md-button ng-show="isLoggedIn()" ng-click="GroupsClick()">
-      Groups
-    </md-button>
-    <md-button ng-show="isLoggedIn()" ng-click="MentoringClick()">
-      Mentoring
-    </md-button>
-  </div>
-  <span flex></span>
-  <button ng-show="isLoggedIn()" class="homeButton" ng-click="goHome()">Mentor Manager</button>
-  <button ng-hide="isLoggedIn()" class="homeButton">Mentor Manager</button>
-  <span flex></span>
-  <div style="margin-right: 2%;">
-    <md-button ng-show="isLoggedIn()" ng-click="ProfileClick()" style="">
-      {{getUsername()}}
-    </md-button>
-    <md-button ng-show="isLoggedIn()" class="md-raised md-primary" style="" ng-click="userLogout()">Logout</md-button>
-  </div>
+<div ng-controller="HeaderController" class="ng-cloak" style="height:10%">
+  <md-fab-toolbar md-open="demo.isOpen"
+                  md-direction="{{demo.selectedDirection}}" style="width:100%;">
+    <md-fab-trigger class="align-with-text">
+      <md-button aria-label="menu" class="md-icon-button md-primary">
+        <ng-md-icon icon="menu" style="fill: #E91E63;"></ng-md-icon>
+      </md-button>
+    </md-fab-trigger>
+
+    <md-toolbar>
+      <md-fab-actions class="md-toolbar-tools">
+        <md-button ng-show="isLoggedIn()" ng-click="GroupsClick()" style="color: #636363;">
+        Groups
+        </md-button>
+        <md-button ng-show="isLoggedIn()" ng-click="MentoringClick()" style="color: #636363;">
+        Mentoring
+        </md-button>
+        <md-button ng-show="isLoggedIn()" class="md-raised md-primary" style="" ng-click="userLogout()">Logout</md-button>
+
+      </md-fab-actions>
+    </md-toolbar>
+  </md-fab-toolbar>
+
+  <!--<div style="margin-left: 2%;">-->
+    <!---->
+    <!--<md-button ng-show="isLoggedIn()" ng-click="GroupsClick()">-->
+      <!--Groups-->
+    <!--</md-button>-->
+    <!--<md-button ng-show="isLoggedIn()" ng-click="MentoringClick()">-->
+      <!--Mentoring-->
+    <!--</md-button>-->
+  <!--</div>-->
+  <!--<span flex></span>-->
+  <!--<button ng-show="isLoggedIn()" class="homeButton" ng-click="goHome()">Mentor Manager</button>-->
+  <!--<button ng-hide="isLoggedIn()" class="homeButton">Mentor Manager</button>-->
+  <!--<span flex></span>-->
+  <!--<div style="margin-right: 2%;">-->
+    <!--<md-button ng-show="isLoggedIn()" ng-click="ProfileClick()" style="">-->
+      <!--{{getUsername()}}-->
+    <!--</md-button>-->
+    <!--<md-button ng-show="isLoggedIn()" class="md-raised md-primary" style="" ng-click="userLogout()">Logout</md-button>-->
+  <!--</div>-->
+
 </div>
 
 <div ng-view></div>

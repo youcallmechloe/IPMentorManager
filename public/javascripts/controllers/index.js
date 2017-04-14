@@ -83,6 +83,13 @@ angular.module('app', ['ngRoute', 'ngResource', 'ngMaterial', 'ngCookies', 'ngMd
             }
         };
 
+            $scope.isOpen = false;
+
+            $scope.demo = {
+                isOpen: false,
+                selectedDirection: 'right'
+            };
+
         $scope.isLoggedIn = function(){
             if(userPersistenceSession.getCookieData() !== undefined){
                 return true;
