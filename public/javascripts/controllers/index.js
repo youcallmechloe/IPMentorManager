@@ -87,7 +87,9 @@ angular.module('app', ['ngRoute', 'ngResource', 'ngMaterial', 'ngCookies', 'ngMd
 
             $scope.demo = {
                 isOpen: false,
-                selectedDirection: 'right'
+                selectedDirection: 'right',
+                selectedMode: 'md-scale',
+                hidden: false
             };
 
         $scope.isLoggedIn = function(){

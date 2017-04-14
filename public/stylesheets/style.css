@@ -6,7 +6,7 @@
 
 body {
   /*font-family: Helvetica;*/
-  background: #eee;
+  /*background: #eee;*/
   -webkit-font-smoothing: antialiased;
 }
 
@@ -294,4 +294,14 @@ footer img:focus , footer a:focus { outline: none; }
 
 .md-button{
   /*font-family: Helvetica;*/
+}
+
+.md-button.logo {
+  height: 7rem;
+  width: 7rem;
+}
+
+.logo-image {
+  height: 100%;
+  width: 100%;
 }

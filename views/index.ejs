@@ -26,28 +26,64 @@
   <link rel='stylesheet' href='/stylesheets/style.css' />
 </head>
 <body>
-<div ng-controller="HeaderController" class="ng-cloak" style="height:10%">
-  <md-fab-toolbar md-open="demo.isOpen"
-                  md-direction="{{demo.selectedDirection}}" style="width:100%;">
-    <md-fab-trigger class="align-with-text">
-      <md-button aria-label="menu" class="md-icon-button md-primary">
-        <ng-md-icon icon="menu" style="fill: #E91E63;"></ng-md-icon>
-      </md-button>
-    </md-fab-trigger>
+<div ng-controller="HeaderController" class="ng-cloak" style="height:68px; background: #eee;" >
+  <div layout="row" layout-align="space-between">
 
-    <md-toolbar>
-      <md-fab-actions class="md-toolbar-tools">
-        <md-button ng-show="isLoggedIn()" ng-click="GroupsClick()" style="color: #636363;">
-        Groups
+  <div layout-align="left" ng-show="isLoggedIn()">
+    <md-fab-speed-dial md-open="demo.isOpen" count="demo.count" ng-hide="demo.hidden" ng-class="demo.selectedMode" ng-class="{ 'md-hover-full': demo.hover }"
+                       ng-mouseenter="demo.isOpen=true" ng-mouseleave="demo.isOpen=false"
+                    md-direction="{{demo.selectedDirection}}">
+      <md-fab-trigger class="align-with-text">
+        <md-button aria-label="menu" class="md-fab md-primary">
+          <md-tooltip md-direction="bottom">Menu</md-tooltip>
+          <md-icon md-svg-src="images/icons/menu.svg"></md-icon>
         </md-button>
-        <md-button ng-show="isLoggedIn()" ng-click="MentoringClick()" style="color: #636363;">
-        Mentoring
-        </md-button>
-        <md-button ng-show="isLoggedIn()" class="md-raised md-primary" style="" ng-click="userLogout()">Logout</md-button>
+      </md-fab-trigger>
 
-      </md-fab-actions>
-    </md-toolbar>
-  </md-fab-toolbar>
+        <md-fab-actions>
+          <md-button aria-label="home" ng-click="goHome()" class="md-fab md-raised md-mini" style="padding: 0 10 0 10">
+            <md-tooltip md-direction="bottom">Home</md-tooltip>
+            <ng-md-icon icon="dashboard" style="fill: #636363;" size="20" md-theme="default"></ng-md-icon>
+          </md-button>
+          <md-button aria-label="groups" ng-click="GroupsClick()" class="md-fab md-raised md-mini" style="padding: 0 10 0 10">
+            <md-tooltip md-direction="bottom">Groups</md-tooltip>
+            <ng-md-icon icon="group" style="fill: #636363;" size="20" md-theme="default"></ng-md-icon>
+          </md-button>
+          <md-button aria-label="mentor" ng-click="MentoringClick()" class="md-fab md-raised md-mini" style="padding: 0 10 0 10">
+            <md-tooltip md-direction="bottom">Partners</md-tooltip>
+            <ng-md-icon icon="work" style="fill: #636363;" size="20" md-theme="default"></ng-md-icon>
+          </md-button>
+          <md-button ng-show="isLoggedIn()" ng-click="ProfileClick()"  class="md-fab md-raised md-mini" style="padding: 0 10 0 10">
+            <md-tooltip md-direction="bottom">Profile</md-tooltip>
+            <ng-md-icon icon="account_circle" style="fill: #636363;" size="20" md-theme="default"></ng-md-icon>
+          </md-button>
+          <md-button ng-show="isLoggedIn()" ng-click="userLogout()"  class="md-raised md-mini md-fab" style="padding: 0 10 0 10">
+            <md-tooltip md-direction="bottom">Logout</md-tooltip>
+            <ng-md-icon icon="exit_to_app" style="fill: #636363;" size="20" md-theme="default"></ng-md-icon>
+          </md-button>
+        </md-fab-actions>
+    </md-fab-speed-dial>
+
+  </div>
+
+  <div ng-show="isLoggedIn()">
+    <md-button aria-label="menu" ng-click="goHome()" class="md-fab md-primary">
+      <md-tooltip md-direction="bottom">Home</md-tooltip>
+      <img class="png-icon" src="images/icons/iconnoback.png" style="width: 24px; height: 24px;">
+
+    </md-button>
+
+  </div>
+  </div>
+
+
+  <div ng-show="!isLoggedIn()" layout="row" layout-align="center">
+    <md-button aria-label="menu" class="md-fab md-primary">
+      <md-tooltip md-direction="bottom">Home</md-tooltip>
+      <img class="png-icon" src="images/icons/iconnoback.png" style="width: 24px; height: 24px;">
+    </md-button>
+  </div>
+
 
   <!--<div style="margin-left: 2%;">-->
     <!---->

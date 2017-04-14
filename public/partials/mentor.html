@@ -52,12 +52,9 @@
                         </md-input-container>
                         <md-button md-theme="default" class="md-raised md-primary" ng-click="addWord(searchText)" style="height:35px;">Add Knowledge</md-button>
                     </div>
-                    <md-switch ng-show="interests.length > 0" md-theme="default"  md-no-ink aria-label="Switch No Ink" ng-model="similar">
+                    <md-switch ng-show="interests.length > 0" md-theme="default" class="md-primary" md-no-ink aria-label="Switch No Ink" ng-model="similar">
                         Would you like the site to look for similar words to your required interests?
                     </md-switch>
-                    <!--<md-checkbox ng-show="interests.length > 0" md-no-ink aria-label="Checkbox No Ink" ng-model="similar" class="md-primary">-->
-                        <!--Would you like the site to look for similar words to your required interests?-->
-                    <!--</md-checkbox>-->
                     <md-content md-theme="default" ng-repeat="item in interests" layout="row">
                         <h4>{{item.word}} in {{item.category}}</h4>
                         <md-button md-theme="default" class="md-icon-button md-primary" aria-label="Settings"

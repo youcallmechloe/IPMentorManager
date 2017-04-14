@@ -22,7 +22,7 @@
                     <h3>My Groups</h3>
                     <md-button ng-click="creatingGroup()" style="width:130px;">Create Group</md-button>
                     <div ng-repeat="groups in memberList">
-                        <md-button ng-click="chooseGroup(groups)">{{groups.groupname}}</md-button>
+                        <md-button aria-label="Choose Group" ng-click="chooseGroup(groups)">{{groups.groupname}}</md-button>
                     </div>
                 </div>
                 <br>
