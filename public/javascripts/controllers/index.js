@@ -535,20 +535,25 @@ angular.module('app', ['ngRoute', 'ngResource', 'ngMaterial', 'ngCookies', 'ngMd
         };
 
         $scope.saveProfile = function(){
-            $scope.profchange = false;
             var data = {'username' : userPersistenceUsername.getCookieData(),
                         'sessionid' : userPersistenceSession.getCookieData(),
                         'email' : $scope.user.email,
                         'fullname' : $scope.user.fullname};
             console.log(data);
-            $http.post('/users/changedetails', data)
-                .then(function(response){
-                    if(response.data === ""){
-                        $scope.change = false;
-                    } else{
-                        alert("Changing details failed, please try again.")
-                    }
-                });
+
+            if(($scope.user.email === undefined) || ($scope.user.fullname === undefined)){
+                alert("Some fields empty, please fill in all fields.");
+            } else {
+                $scope.profchange = false;
+                $http.post('/users/changedetails', data)
+                    .then(function (response) {
+                        if (response.data === "") {
+                            $scope.change = false;
+                        } else {
+                            alert("Changing details failed, please try again.")
+                        }
+                    });
+            }
         };
 
             $scope.removeUser = function(){
@@ -652,11 +657,11 @@ angular.module('app', ['ngRoute', 'ngResource', 'ngMaterial', 'ngCookies', 'ngMd
                             'partners' : response.data};
 
                         if(($scope.Gender === undefined) || ($scope.minAge === undefined) || ($scope.maxAge === undefined) || ($scope.MentorType === undefined)){
-                            alert("Some fields empty, please fill in all fields.")
+                            alert("Some fields empty, please fill in all fields.");
                         } else if($scope.maxAge < $scope.minAge){
                             alert("Maximum age must be greater than minimum age, please try again.");
                         } else if($scope.interests.length < 1){
-                            alert("You must include at least 1 knowledge area, please try again.")
+                            alert("You must include at least 1 knowledge area, please try again.");
                         } else{
                             console.log(data);
                             $http.post('/matching/matching3', data)
