@@ -433,10 +433,10 @@ angular.module('app', ['ngRoute', 'ngResource', 'ngMaterial', 'ngCookies', 'ngMd
                     '<p>5-200 Points: Beginner</p>' +
                     '<p>200-500 Points: Novice</p>' +
                     '<p>500-1000 Points: Intermediate</p>' +
-                    '<p>1000-2000 Points: Expert</p>' +
-                    '<p>2000-5000 Points: Professional</p>' +
-                    '<p>5000-10000 Points: Guru</p>' +
-                    '<p>10000+ Points: ???</p>' +
+                    '<p>1000-2000 Points: Advanced</p>' +
+                    '<p>2000-5000 Points: Expert</p>' +
+                    '<p>5000-10000 Points: Professional</p>' +
+                    '<p>10000+ Points: Guru</p>' +
                     '</div>' +
                     '  </md-dialog-content>' +
                     '</md-dialog>',
@@ -494,10 +494,23 @@ angular.module('app', ['ngRoute', 'ngResource', 'ngMaterial', 'ngCookies', 'ngMd
                         alert("Adding interests failed, please try again.")
                     }
                 });
-                };
+        };
 
         $scope.saveProfile = function(){
             $scope.profchange = false;
+            var data = {'username' : userPersistenceUsername.getCookieData(),
+                        'sessionid' : userPersistenceSession.getCookieData(),
+                        'email' : $scope.user.email,
+                        'fullname' : $scope.user.fullname};
+            console.log(data);
+            $http.post('/users/changedetails', data)
+                .then(function(response){
+                    if(response.data === ""){
+                        $scope.change = false;
+                    } else{
+                        alert("Changing details failed, please try again.")
+                    }
+                });
         };
 
             $scope.removeUser = function(){

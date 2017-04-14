@@ -176,6 +176,25 @@ router.post('/changeinterests', function(req, res){
     });
 });
 
+//TODO: make work properly
+router.post('/changedetails', function(req, res) {
+    var body = req.body;
+
+    cookie.find({'username': body['username'], 'sessionid': body['sessionid']}, function (e, docs) {
+        if (docs.length > 0) {
+            userschema.update({'username' : body['username']}, {$set : {'email' : body['email'], 'fullname' : body['fullname']}}, function(e, docs){
+                if(!e){
+                    res.send("");
+                } else{
+                    res.send("false");
+                }
+
+            });
+
+        }
+    });
+});
+
 /*
  * get the database categories and return to client.
  */

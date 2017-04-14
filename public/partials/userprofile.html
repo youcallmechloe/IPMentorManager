@@ -7,6 +7,7 @@
                     <div layout="row" layout-align="center">
                         <h3>You are a {{user.level}} with a score of {{user.userscore}}!</h3>
                         <md-button class="md-icon-button md-primary" ng-click="showCustom($event)" md-theme="default" >
+                            <md-tooltip md-direction="bottom">Info</md-tooltip>
                             <ng-md-icon icon="info" style="fill:#636363; padding: 0 0 0 0; width:5%;" size="20"></ng-md-icon>
                         </md-button>
                     </div>
@@ -16,11 +17,17 @@
                     <h3>{{user.gender}}</h3>
                     <h3>{{user.degree}}</h3>
                 </div>
-                <div style="width: 50%; padding-top:50px;" ng-show="profchange">
+                <div style="width: 50%; padding-top:50px;" ng-show="profchange" layout="column" layout-align="center">
                     <h3>You are a {{user.level}} with a score of {{user.userscore}}!</h3>
-                    <h3>{{user.email}} change</h3>
-                    <h3>{{user.fullname}} change</h3>
-                    <h3>{{user.age}}change</h3>
+                    <md-input-container md-theme="default">
+                        <label>Email</label>
+                        <input type="email" class="myform" placeholder="Email" ng-model="user.email" required ng-class="{ 'has-error': userForm.email.$invalid }">
+                    </md-input-container>
+                    <md-input-container md-theme="default">
+                        <label>Full Name</label>
+                        <input type="text" class="myform" placeholder="Full Name" ng-model="user.fullname" required>
+                    </md-input-container>
+                    <h3>{{user.age}}</h3>
                     <h3>{{user.gender}}</h3>
                     <h3>{{user.degree}}</h3>
                 </div>
