@@ -726,17 +726,21 @@ angular.module('app', ['ngRoute', 'ngResource', 'ngMaterial', 'ngCookies', 'ngMd
                 'sessionID' : userPersistenceSession.getCookieData()
             };
 
-            $http.post("/groups/creategroup", groupJSON)
-                .then(function(response){
-                    if(response.data === 'false'){
-                        alert('Sorry, that group name is taken, please choose another one');
-                    } else{
-                        getGroups();
-                        $scope.groupname = '';
-                        $scope.$parent.groupdescription = '';
-                        $scope.groups = false;
-                    }
-                });
+            if(($scope.groupname === undefined) || ($scope.description === undefined)){
+                alert("Some fields empty, please fill in all fields.")
+            } else {
+                $http.post("/groups/creategroup", groupJSON)
+                    .then(function (response) {
+                        if (response.data === 'false') {
+                            alert('Sorry, that group name is taken, please choose another one');
+                        } else {
+                            getGroups();
+                            $scope.groupname = '';
+                            $scope.$parent.groupdescription = '';
+                            $scope.groups = false;
+                        }
+                    });
+            }
 
         };
 
