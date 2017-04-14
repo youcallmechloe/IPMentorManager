@@ -768,15 +768,19 @@ angular.module('app', ['ngRoute', 'ngResource', 'ngMaterial', 'ngCookies', 'ngMd
                 'sessionID' : userPersistenceSession.getCookieData()
             };
 
-            $http.post('/groups/postingroup', postJSON)
-                .then(function(response){
-                    console.log(response.data);
-                    $scope.$parent.grouppost = '';
-                    $scope.post = false;
-                    $scope.memberList = [];
-                    getGroups();
-                    $scope.chooseGroup(response.data);
-                });
+            if($scope.grouppost === undefined){
+                alert("Some fields empty, please fill in all fields.")
+            } else {
+                $http.post('/groups/postingroup', postJSON)
+                    .then(function (response) {
+                        console.log(response.data);
+                        $scope.$parent.grouppost = '';
+                        $scope.post = false;
+                        $scope.memberList = [];
+                        getGroups();
+                        $scope.chooseGroup(response.data);
+                    });
+            }
         };
 
         $scope.chooseGroup = function(groupName){
