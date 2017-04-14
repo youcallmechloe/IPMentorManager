@@ -137,25 +137,33 @@ angular.module('app', ['ngRoute', 'ngResource', 'ngMaterial', 'ngCookies', 'ngMd
             $scope.login = function () {
                 var username = $scope.username;
 
-                var loginData = {
-                    'username': username,
-                    'password': $scope.password
-                };
+                if(($scope.username === undefined) || ($scope.password === undefined)){
+                    alert("Some fields empty, please fill in all fields.")
+                } else {
 
-                $http.post("/users/loginuser", loginData)
-                    .then(function (response) {
-                        console.log(response.data);
-                        if (response.data !== "false") {
-                            userPersistenceSession.setCookieData(response.data);
-                            userPersistenceUsername.setCookieData(username);
+                    var loginData = {
+                        'username': username,
+                        'password': $scope.password
+                    };
+
+                    $http.post("/users/loginuser", loginData)
+                        .then(function (response) {
                             console.log(response.data);
-                            $location.url('/home')
-                        } else {
-                            alert("Login Failed. Please try again");
-                        }
-                    });
+                            if (response.data === "false username") {
+                                alert("Username incorrect, please try again.");
+                            } else if(response.data === "false password"){
+                                alert("Password incorrect, please try again");
+                            } else {
+                                userPersistenceSession.setCookieData(response.data);
+                                userPersistenceUsername.setCookieData(username);
+                                console.log(response.data);
+                                $location.url('/home');
+                            }
+                        });
+                }
 
             };
+
 
             $scope.createAccount = function () {
                 $location.url('/signup');
@@ -251,28 +259,46 @@ angular.module('app', ['ngRoute', 'ngResource', 'ngMaterial', 'ngCookies', 'ngMd
                     'knowledge': JSON.stringify($scope.interests)
                 };
 
-                console.log(newUser);
-                $http.post("/users/checkusername", {'username': name})
-                    .then(function (response) {
-                        var bool = response.data;
-
-                        if (bool) {
-                            $http.post("/users/addUser", newUser)
-                                .then(function (response) {
-                                    console.log(response.data);
-                                    if (response.data !== 'false') {
-                                        userPersistenceUsername.setCookieData(username);
-                                        userPersistenceSession.setCookieData(response.data);
-                                        console.log(username);
-                                        $location.url('/home');
-                                    } else {
-                                        alert('There has been a problem creating your account. Please try again.')
-                                    }
-                                });
-                        } else {
-                            alert('Username taken, please choose another');
+                if(($scope.username === undefined) || ($scope.email === undefined) || ($scope.password === undefined) ||
+                    ($scope.fullname === undefined) || ($scope.age === undefined) || ($scope.GenderRadio === undefined) ||
+                    ($scope.degree === undefined)){
+                    alert("Some fields are empty, please fill in all fields");
+                } else if($scope.interests.length < 1){
+                    alert("You must have at least 1 knowledge area, please try again.")
+                } else {
+                    var bool = true;
+                    for(var i = 0; i < $scope.interests.length; i++){
+                        if(($scope.interests[i]['word'] === undefined) || ($scope.interests[i]['category'] === undefined)){
+                            bool = false;
+                            alert("Some fields are empty, please fill in all fields");
                         }
-                    });
+                    }
+                    console.log(newUser);
+                    if(bool) {
+                        $http.post("/users/checkusername", {'username': name})
+                            .then(function (response) {
+                                var bool = response.data;
+
+                                if (response.data === "false") {
+                                    console.log("posting");
+                                    $http.post("/users/addUser", newUser)
+                                        .then(function (response) {
+                                            console.log(response.data);
+                                            if (response.data !== 'false') {
+                                                userPersistenceUsername.setCookieData(username);
+                                                userPersistenceSession.setCookieData(response.data);
+                                                console.log(username);
+                                                $location.url('/home');
+                                            } else {
+                                                alert('There has been a problem creating your account. Please try again.')
+                                            }
+                                        });
+                                } else {
+                                    alert('Username taken, please choose another');
+                                }
+                            });
+                    }
+                }
             };
 
             //TODO: doesn't actually work needs to be looked at, think html needs to be moved out of md-input thingys to work?

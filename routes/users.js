@@ -176,7 +176,6 @@ router.post('/changeinterests', function(req, res){
     });
 });
 
-//TODO: make work properly
 router.post('/changedetails', function(req, res) {
     var body = req.body;
 
@@ -285,9 +284,9 @@ router.post('/checkusername', function(req, res){
     collection.find({'username': body['username']}, {}, function(e,docs){
         console.log(docs);
         if(docs.length > 0){
-            res.send(false);
+            res.send("false");
         } else{
-            res.send(true);
+            res.send("true");
         }
     })
 });
@@ -304,20 +303,17 @@ router.post('/loginuser', function(req, res){
 
     collection.find({'username': body['username']}, {}, function(e, docs){
         if(docs.length > 0) {
-            console.log('db: ' + docs[0]['password'] + ' and body: ' + body['password']);
-
             bcrypt.compare(body['password'], docs[0]['password']).then(function (result) {
                 if (result) {
                     var session = randomstring.generate();
-                    console.log(session);
                     cookies.update({'username' : body['username']}, {'username' : body['username'], 'sessionid' : session}, {upsert: true});
                     res.send(session);
                 } else {
-                    res.send('false');
+                    res.send('false password');
                 }
             });
         } else {
-            res.send('false');
+            res.send('false username');
         }
     });
 });
