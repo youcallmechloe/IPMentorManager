@@ -15,21 +15,35 @@
                     </div>
                     <div ng-show="item.status === 'current'" layout="row" layout-align="center center" style="padding: 10px 10px 10px 100px;">
                         <div>
-                            <md-button md-theme="default" class="md-raised md-primary" ng-click="addPoints(item.username, pointvalue)" style="height: 35px;">Rate Your Partner</md-button>
+                            <md-button  class="md-raised md-primary" ng-click="addPoints(item.username, pointvalue)" style="height: 35px;">Rate Your Partner</md-button>
                         </div>
-                        <md-radio-group md-theme="default" ng-model="pointvalue" style="height: 100px;">
-                            <md-radio-button md-theme="default" value=20 >Excellent</md-radio-button>
-                            <md-radio-button md-theme="default" value=10 > Good </md-radio-button>
-                            <md-radio-button md-theme="default" value=5 >Average</md-radio-button>
+                        <md-radio-group md-theme="default" class="md-primary" ng-model="pointvalue" style="height: 100px;">
+                            <md-radio-button aria-label="Excellent" md-theme="default" value=20>
+                                Excellent
+                                <!--<ng-md-icon icon="sentiment_very_satisfied" style="fill: #636363;" size="20" md-theme="default"></ng-md-icon>-->
+                            </md-radio-button>
+                            <md-radio-button aria-label="Good" md-theme="default" value=10 >
+                                Good
+                                <!--<ng-md-icon icon="mood" style="fill: #636363;" size="20" md-theme="default"></ng-md-icon>-->
+                            </md-radio-button>
+                            <md-radio-button aria-label="Neutral" md-theme="default" value=5 >
+                                Neutral
+                                <!--<ng-md-icon icon="sentiment_satisfied" style="fill: #636363;" size="20" md-theme="default"></ng-md-icon>-->
+                            </md-radio-button>
                         </md-radio-group>
                     </div>
+                    <md-divider ng-if="!$last" ></md-divider>
                 </div>
             </div>
             <div style="width:50%; height:90%">
                 <h2>Your Groups:</h2>
-                <div ng-repeat="item in groups" layout="row" layout-align="center center">
-                    <h3>{{item.groupname}}</h3>
-                </div>
+                <md-list flex>
+                    <md-list-item class="md-1-line" ng-repeat="item in groups" layout-align="center center" >
+                        <div class="md-list-item-text">
+                            <h3>{{item.groupname}}</h3>
+                        </div>
+                    </md-list-item>
+                </md-list>
             </div>
         </div>
     </md-content>

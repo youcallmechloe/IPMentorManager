@@ -655,6 +655,7 @@ angular.module('app', ['ngRoute', 'ngResource', 'ngMaterial', 'ngCookies', 'ngMd
         $scope.memberList = [];
         $scope.selectedGroup = '';
         $scope.post = false;
+        $scope.username = userPersistenceUsername.getCookieData();
 
         //TODO: search in descriptions too for more accurate searches
         var getGroups = function() {
@@ -767,7 +768,8 @@ angular.module('app', ['ngRoute', 'ngResource', 'ngMaterial', 'ngCookies', 'ngMd
             if(groupName !== '') {
                 console.log($scope.memberList);
                 for (var i = 0; i < $scope.memberList.length; i++) {
-                    if ($scope.memberList[i] === groupName) {
+                    console.log($scope.memberList[i]);
+                    if ($scope.memberList[i]['groupname'] === groupName) {
                         return true;
                     }
                 }

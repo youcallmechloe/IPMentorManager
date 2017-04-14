@@ -2,30 +2,23 @@
     <md-content id="groups" flex layout="column">
         <h1>Groups</h1>
         <div layout="row">
-            <div id="findGroup" style="width: 40%">
-                <h3>Find a group</h3>
-                <h4>Enter course or group name</h4>
-                <md-autocomplete md-selected-item="selectedItem" md-search-text="searchText" md-items="item in getGroups(searchText)" md-item-text="item.display">
-                    <span>{{item}}</span>
-                    <md-not-found>
-                        No matches found.
-                    </md-not-found>
-                </md-autocomplete>
-                <div ng-show="selectedItem.length > 2">
-                    <h3>{{selectedItem}}</h3>
-                    <md-button ng-hide="areMember(selectedItem)" ng-click="joinGroup(selectedItem)">Join Group</md-button>
-                    <md-button ng-show="areMember(selectedItem)" ng-disabled="true" ng-click="joinGroup(selectedItem)">Join Group</md-button>
-                </div>
-            </div>
-            <div id="createGroup" style="width: 60%; padding-left: 50px;" layout="row">
-                <div layout="column" style="width:30%">
+            <div id="createGroup" style="width: 60%;" layout="row">
+                <!--<div layout="column" style="width:30%">-->
+                    <!--<md-button ng-click="creatingGroup()" style="width:130px; text-align: left;">Create Group</md-button>-->
+                    <!--<div ng-repeat="groups in memberList">-->
+                        <!--<md-button aria-label="Choose Group" ng-click="chooseGroup(groups)" style="text-align: left;">{{groups.groupname}}</md-button>-->
+                    <!--</div>-->
+                <!--</div>-->
+
+                <div style="width:20%;">
                     <h3>My Groups</h3>
-                    <md-button ng-click="creatingGroup()" style="width:130px;">Create Group</md-button>
+                    <div layout="column" style="width:30%">
+                    <md-button ng-click="creatingGroup()" style="width:130px; text-align: left;">Create Group</md-button>
                     <div ng-repeat="groups in memberList">
-                        <md-button aria-label="Choose Group" ng-click="chooseGroup(groups)">{{groups.groupname}}</md-button>
+                    <md-button aria-label="Choose Group" ng-click="chooseGroup(groups)" style="text-align: left;">{{groups.groupname}}</md-button>
+                    </div>
                     </div>
                 </div>
-                <br>
                 <div ng-show="selectedGroup === ''" layout="column" style="padding-right:50px; padding-top: 50px;">
                     <div class="createGroupDiv" ng-show="groups" layout="column" layout-align="center center" >
                         <div>
@@ -68,7 +61,27 @@
                         <md-divider ng-if="!$last" ></md-divider>
                     </md-list-item>
                 </div>
+            <div id="findGroup" style="width: 40%; padding-right: 3%;">
+                <h3>Find a group</h3>
+                <h4>Enter course or group name</h4>
+                <md-autocomplete md-selected-item="selectedItem" md-search-text="searchText" md-items="item in getGroups(searchText)" md-item-text="item.display">
+                    <span>{{item}}</span>
+                    <md-not-found>
+                        No matches found.
+                    </md-not-found>
+                </md-autocomplete>
+                <div ng-show="selectedItem.length > 2">
+                    <h3>{{selectedItem}}</h3>
+                    <md-button ng-hide="areMember(selectedItem)" ng-click="joinGroup(selectedItem)">Join Group</md-button>
+                    <div ng-show="areMember(selectedItem)" layout="row" layout-align="center center">
+                        <h4 >Already a member of {{selectedItem}}</h4>
+                        <md-button ng-disabled="true" ng-click="joinGroup(selectedItem)">Join Group</md-button>
+                    </div>
+                </div>
             </div>
+            </div>
+
         </div>
+
     </md-content>
 </div>
