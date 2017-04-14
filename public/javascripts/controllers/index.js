@@ -510,16 +510,28 @@ angular.module('app', ['ngRoute', 'ngResource', 'ngMaterial', 'ngCookies', 'ngMd
 
             //TODO: make sure all interests inputs are not blank
         $scope.saveInterests = function(){
-            $http.post('/users/changeinterests', {'username' : userPersistenceUsername.getCookieData(),
-                                                'knowledge' : $scope.interests})
-                .then(function(response){
-                    console.log(response.data);
-                    if(response.data === ""){
-                        $scope.change = false;
-                    } else{
-                        alert("Adding interests failed, please try again.")
-                    }
-                });
+            var bool = true;
+            for(var i = 0; i< $scope.interests.length; i++){
+                console.log($scope.interests[i]);
+                if(($scope.interests[i]['word'] === "") || ($scope.interests[i]['category'] === "") || ($scope.interests[i]['word'] === undefined) ){
+                    bool = false;
+                    alert("Some fields empty, please fill in all fields.")
+                }
+            }
+            if(bool) {
+                $http.post('/users/changeinterests', {
+                    'username': userPersistenceUsername.getCookieData(),
+                    'knowledge': $scope.interests
+                })
+                    .then(function (response) {
+                        console.log(response.data);
+                        if (response.data === "") {
+                            $scope.change = false;
+                        } else {
+                            alert("Adding interests failed, please try again.")
+                        }
+                    });
+            }
         };
 
         $scope.saveProfile = function(){
