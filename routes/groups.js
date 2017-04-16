@@ -51,7 +51,7 @@ router.post('/joingroup', function(req, res){
     var collection = db.get('groups');
     var body = req.body;
 
-    Cookie.find({'username' : body['username'], 'sessionID' : body['sessionID']}, function(e, docs) {
+    Cookie.find({'username' : body['username'], 'sessionid' : body['sessionID']}, function(e, docs) {
         console.log(docs);
         if (docs.length > 0) {
             collection.update({'groupname': body['groupname']}, {$addToSet: {'members': body['username']}});
