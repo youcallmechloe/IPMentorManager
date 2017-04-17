@@ -291,6 +291,18 @@ router.post('/checkusername', function(req, res){
     })
 });
 
+router.post('/getemail', function(req, res){
+    var body = req.body;
+
+    userschema.find({'username' : body['username']}, function(e, docs){
+        if(docs.length > 0){
+            res.send(docs[0]['email']);
+        } else{
+            res.send("");
+        }
+    });
+});
+
 /*
  * post request to log a user in with a specified username and password. returns true if logged in and false if not.
  * todo: return different values if the user does not exist and if the password is wrong
