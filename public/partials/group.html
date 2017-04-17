@@ -1,27 +1,40 @@
 <div id="wrap" ng-controller="GroupController" layout="row" style="height:90%">
     <md-content id="groups" flex layout="column">
         <h1>Groups</h1>
-        <div layout="row">
-            <div id="createGroup" style="width: 60%;" layout="row">
-                <!--<div layout="column" style="width:30%">-->
-                    <!--<md-button ng-click="creatingGroup()" style="width:130px; text-align: left;">Create Group</md-button>-->
-                    <!--<div ng-repeat="groups in memberList">-->
-                        <!--<md-button aria-label="Choose Group" ng-click="chooseGroup(groups)" style="text-align: left;">{{groups.groupname}}</md-button>-->
-                    <!--</div>-->
-                <!--</div>-->
-
-                <div style="width:20%;">
+        <div layout="column" layout-align="center center">
+            <div id="findGroup" style=" width:100%" layout="row" layout-align="space-around center">
+                <div style="width:70%;" layout="column" layout-align="start center">
+                <h3>Find a group</h3>
+                <h4>Enter course or group name</h4>
+                <md-autocomplete md-selected-item="selectedItem" md-search-text="searchText" md-items="item in getGroups(searchText)" md-item-text="item.display" style="width:500px;">
+                    <span>{{item}}</span>
+                    <md-not-found>
+                        No matches found.
+                    </md-not-found>
+                </md-autocomplete>
+                <div ng-show="selectedItem.length > 2">
+                    <h3>{{selectedItem}}</h3>
+                    <md-button ng-hide="areMember(selectedItem)" ng-click="joinGroup(selectedItem)">Join Group</md-button>
+                    <div ng-show="areMember(selectedItem)" layout="row" layout-align="center center">
+                        <h4 >Already a member of {{selectedItem}}</h4>
+                        <md-button ng-disabled="true" ng-click="joinGroup(selectedItem)">Join Group</md-button>
+                    </div>
+                </div>
+                </div>
+            </div>
+            <div id="createGroup" style="width: 100%; height: 40%; padding-left: 3%;" layout="row" >
+                <div style="height:70%; width:20%;">
                     <h3>My Groups</h3>
-                    <div layout="column" style="width:30%">
+                    <div layout="column" style="height:70%;">
                     <md-button ng-click="creatingGroup()" style="width:130px; text-align: left;">Create Group</md-button>
                     <div ng-repeat="groups in memberList">
                     <md-button aria-label="Choose Group" ng-click="chooseGroup(groups)" style="text-align: left;">{{groups.groupname}}</md-button>
                     </div>
                     </div>
                 </div>
-                <div ng-show="selectedGroup === ''" layout="column" style="padding-right:50px; padding-top: 50px;">
-                    <div class="createGroupDiv" ng-show="groups" layout="column" layout-align="center center" >
-                        <div>
+                    <div ng-show="selectedGroup === ''" layout="column" style="height:70%; width:80%;">
+                        <div class="createGroupDiv" ng-show="groups">
+                            <h3>Create a Group</h3>
                             <md-input-container>
                                 <label>Group Names</label>
                                 <input type="text" class="myform" placeholder="Group Name" ng-model="groupname" required>
@@ -36,49 +49,34 @@
                             </div>
                         </div>
                     </div>
-                </div>
-                <md-list-item ng-show="selectedGroup !== ''" layout="column" flex style="width: 60%;" >
-                    <h3>{{selectedGroup.groupname}}</h3>
-                    <h4>{{selectedGroup.description}}</h4>
-                    <div layout="column" flex layout-align="center center" style="padding-top: 7%; padding-bottom: 3%;">
-                        <md-button ng-hide="post" class="md-raised md-primary" ng-click="post=true" style="width:120px;">Create Post</md-button>
-                    </div>
-                    <div ng-show="post">
-                        <md-input-container class="md-block">
-                            <label for="post">Description</label>
-                            <textarea id="post" ng-model="$parent.grouppost" placeholder="Post"  md-maxlength="150" rows="5" md-select-on-focus></textarea>
-                        </md-input-container>
-                        <md-button class="md-raised md-primary" ng-click="postGroup(selectedGroup)">Post</md-button>
-                        <md-button class="sideButton" ng-click="post=false">Cancel</md-button>
-                    </div>
-                    <md-list-item class="md-3-line" ng-repeat="post in selectedGroup.posts" layout-align="center center">
-                        <div class="md-list-item-text">
-                            <h3>{{post.username}}</h3>
-                            <h4> {{post.post}}</h4>
-                            <h4 style="font-size: 12px">{{post.date}} {{post.time}}</h4>
+                    <div ng-show="selectedGroup !== ''" layout="column" style="height:70%; width:80%;"  layout-align=" center">
+                        <h3>{{selectedGroup.groupname}}</h3>
+                        <h4>{{selectedGroup.description}}</h4>
+                        <h4>Group admin is {{selectedGroup.admin}}</h4>
+                        <div layout="column" layout-align="center center" style="padding-top: 1%; padding-bottom: 3%;">
+                            <md-button ng-hide="post" ng-click="leaveGroup(selectedGroup)" style="width:120px;">Leave Group</md-button>
                         </div>
+                        <div layout="column" layout-align="center center" style="padding-top: 1%; padding-bottom: 3%;">
+                            <md-button ng-hide="post" class="md-raised md-primary" ng-click="post=true" style="width:120px;">Create Post</md-button>
+                        </div>
+                        <div ng-show="post">
+                            <md-input-container class="md-block">
+                                <label for="post">Description</label>
+                                <textarea id="post" ng-model="$parent.grouppost" placeholder="Post"  md-maxlength="150" rows="5" md-select-on-focus></textarea>
+                            </md-input-container>
+                            <md-button class="md-raised md-primary" ng-click="postGroup(selectedGroup)">Post</md-button>
+                            <md-button class="sideButton" ng-click="post=false">Cancel</md-button>
+                        </div>
+                        <md-list-item class="md-3-line" ng-repeat="post in selectedGroup.posts" layout-align="center">
+                            <div class="md-list-item-text">
+                                <h3>{{post.username}}</h3>
+                                <h4> {{post.post}}</h4>
+                                <h4 style="font-size: 12px">{{post.date}} {{post.time}}</h4>
+                            </div>
 
-                        <md-divider ng-if="!$last" ></md-divider>
-                    </md-list-item>
+                            <md-divider ng-if="!$last" ></md-divider>
+                        </md-list-item>
                 </div>
-            <div id="findGroup" style="width: 40%; padding-right: 3%;">
-                <h3>Find a group</h3>
-                <h4>Enter course or group name</h4>
-                <md-autocomplete md-selected-item="selectedItem" md-search-text="searchText" md-items="item in getGroups(searchText)" md-item-text="item.display">
-                    <span>{{item}}</span>
-                    <md-not-found>
-                        No matches found.
-                    </md-not-found>
-                </md-autocomplete>
-                <div ng-show="selectedItem.length > 2">
-                    <h3>{{selectedItem}}</h3>
-                    <md-button ng-hide="areMember(selectedItem)" ng-click="joinGroup(selectedItem)">Join Group</md-button>
-                    <div ng-show="areMember(selectedItem)" layout="row" layout-align="center center">
-                        <h4 >Already a member of {{selectedItem}}</h4>
-                        <md-button ng-disabled="true" ng-click="joinGroup(selectedItem)">Join Group</md-button>
-                    </div>
-                </div>
-            </div>
             </div>
 
         </div>

@@ -61,6 +61,20 @@ router.post('/joingroup', function(req, res){
     res.send({msg: ''});
 });
 
+router.post('/leavegroup', function(req, res){
+    var body = req.body;
+    Cookie.find({'username' : body['username'], 'sessionid' : body['sessionID']}, function(e, docs) {
+        if (docs.length > 0) {
+            console.log(body['groupname']);
+            Groups.update({'groupname' : body['groupname']}, {$pull : {'members' : body['username']}}, function(e, docs){
+                res.send({msg: ''});
+            });
+        }
+
+    });
+
+});
+
 router.post('/groupmember', function(req, res){
     var db = req.db;
     var collection = db.get('groups');

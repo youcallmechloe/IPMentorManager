@@ -743,7 +743,7 @@ angular.module('app', ['ngRoute', 'ngResource', 'ngMaterial', 'ngCookies', 'ngMd
                 'sessionID' : userPersistenceSession.getCookieData()
             };
 
-            if(($scope.groupname === undefined) || ($scope.description === undefined)){
+            if(($scope.groupname === undefined) || ($scope.$parent.groupdescription === undefined)){
                 alert("Some fields empty, please fill in all fields.")
             } else {
                 $http.post("/groups/creategroup", groupJSON)
@@ -775,6 +775,27 @@ angular.module('app', ['ngRoute', 'ngResource', 'ngMaterial', 'ngCookies', 'ngMd
                     $scope.searchText = '';
                     console.log(response.data);
             });
+        };
+
+        $scope.leaveGroup = function(groupName){
+            var data = { 'username' : userPersistenceUsername.getCookieData(),
+                'groupname' : groupName.groupname,
+                'sessionID' : userPersistenceSession.getCookieData()
+            };
+
+            if(groupName.admin === userPersistenceUsername.getCookieData()){
+                alert('You cant leave a group you own!');
+            } else {
+                var c = confirm("Do you want to leave " + groupName.groupname);
+                if(c) {
+                    console.log("Posting");
+                    $http.post('/groups/leavegroup', data)
+                        .then(function (response) {
+                            getGroups();
+                            $scope.selectedGroup = '';
+                        });
+                }
+            }
         };
 
         $scope.postGroup = function(groupName){
