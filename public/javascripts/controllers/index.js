@@ -87,7 +87,7 @@ angular.module('app', ['ngRoute', 'ngResource', 'ngMaterial', 'ngCookies', 'ngMd
 
             $scope.demo = {
                 isOpen: false,
-                selectedDirection: 'right',
+                selectedDirection: 'left',
                 selectedMode: 'md-scale',
                 hidden: false
             };

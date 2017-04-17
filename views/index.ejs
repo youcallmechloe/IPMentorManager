@@ -29,6 +29,15 @@
 <div ng-controller="HeaderController" class="ng-cloak" style="height:10%; background: #eee;" >
   <div layout="row" layout-align="space-between">
 
+    <div ng-show="isLoggedIn()">
+      <md-button aria-label="menu" ng-click="goHome()" class="md-fab md-primary">
+        <md-tooltip md-direction="bottom">Home</md-tooltip>
+        <img class="png-icon" src="images/icons/iconnoback.png" style="width: 24px; height: 24px;">
+
+      </md-button>
+
+    </div>
+
   <div layout-align="left" ng-show="isLoggedIn()">
     <md-fab-speed-dial md-open="demo.isOpen" count="demo.count" ng-hide="demo.hidden" ng-class="demo.selectedMode" ng-class="{ 'md-hover-full': demo.hover }"
                        ng-mouseenter="demo.isOpen=true" ng-mouseleave="demo.isOpen=false"
@@ -66,14 +75,7 @@
 
   </div>
 
-  <div ng-show="isLoggedIn()">
-    <md-button aria-label="menu" ng-click="goHome()" class="md-fab md-primary">
-      <md-tooltip md-direction="bottom">Home</md-tooltip>
-      <img class="png-icon" src="images/icons/iconnoback.png" style="width: 24px; height: 24px;">
 
-    </md-button>
-
-  </div>
   </div>
 
 

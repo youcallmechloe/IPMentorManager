@@ -2,7 +2,7 @@
     <md-content md-theme="default" id="groups" flex layout="column" style="width:40%;" layout-padding>
         <h1>Find a Work Partner</h1>
         <div flex layout="row" layout-padding >
-            <div layout="column" style="width:60%">
+            <div layout="column" style="width:60%; padding-left: 5%;">
                 <div>
                     <br>
                     <md-input-container md-theme="default" flex="50">
@@ -44,7 +44,7 @@
                                 No matches found.
                             </md-not-found>
                         </md-autocomplete>
-                        <md-input-container md-theme="default" flex="25" style="padding-left: 20px">
+                        <md-input-container md-theme="default" flex="30" style="padding-left: 20px">
                             <label>Category</label>
                             <md-select md-theme="default" aria-label="Category" ng-model="itemCategory">
                                 <md-option md-theme="default" ng-repeat="option in categoryList" value="{{option}}">{{option}}</md-option>
@@ -66,7 +66,7 @@
                     <md-button md-theme="default" class="md-raised md-primary" ng-click="match()" style="">Find Partner</md-button>
                 </div>
             </div>
-            <div style="width:40%">
+            <div style="width:40%; padding-right: 3%;">
                 <div ng-show="fullresponse === true">
                     <h2>Results for a {{partner}}</h2>
                     <div ng-repeat="item in matches" layout="row" layout-align="center center">

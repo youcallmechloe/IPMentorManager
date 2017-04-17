@@ -284,9 +284,9 @@ router.post('/checkusername', function(req, res){
     collection.find({'username': body['username']}, {}, function(e,docs){
         console.log(docs);
         if(docs.length > 0){
-            res.send("false");
-        } else{
             res.send("true");
+        } else{
+            res.send("false");
         }
     })
 });

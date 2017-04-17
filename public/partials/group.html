@@ -1,29 +1,32 @@
-<div id="wrap" ng-controller="GroupController" layout="row" style="height:90%">
+<div id="wrap" ng-controller="GroupController"  style="height:90%">
     <md-content id="groups" flex layout="column">
         <h1>Groups</h1>
         <div layout="column" layout-align="center center">
             <div id="findGroup" style=" width:100%" layout="row" layout-align="space-around center">
-                <div style="width:70%;" layout="column" layout-align="start center">
-                <h3>Find a group</h3>
-                <h4>Enter course or group name</h4>
-                <md-autocomplete md-selected-item="selectedItem" md-search-text="searchText" md-items="item in getGroups(searchText)" md-item-text="item.display" style="width:500px;">
-                    <span>{{item}}</span>
-                    <md-not-found>
-                        No matches found.
-                    </md-not-found>
-                </md-autocomplete>
-                <div ng-show="selectedItem.length > 2">
-                    <h3>{{selectedItem}}</h3>
-                    <md-button ng-hide="areMember(selectedItem)" ng-click="joinGroup(selectedItem)">Join Group</md-button>
-                    <div ng-show="areMember(selectedItem)" layout="row" layout-align="center center">
-                        <h4 >Already a member of {{selectedItem}}</h4>
-                        <md-button ng-disabled="true" ng-click="joinGroup(selectedItem)">Join Group</md-button>
+                <div style="width:70%;" layout="column" layout-align=" center">
+                    <h3>Find a group</h3>
+                    <h4>Enter course or group name</h4>
+                    <md-autocomplete md-selected-item="selectedItem" md-search-text="searchText"
+                                     md-items="item in getGroups(searchText)" md-item-text="item.display"
+                                     style="width:500px;">
+                        <span>{{item}}</span>
+                        <md-not-found>
+                            No matches found.
+                        </md-not-found>
+                    </md-autocomplete>
+                    <div ng-show="selectedItem.length > 2">
+                        <h3>{{selectedItem}}</h3>
+                        <md-button ng-hide="areMember(selectedItem)" ng-click="joinGroup(selectedItem)">Join Group
+                        </md-button>
+                        <div ng-show="areMember(selectedItem)" layout="row" layout-align="center center">
+                            <h4>Already a member of {{selectedItem}}</h4>
+                            <md-button ng-disabled="true" ng-click="joinGroup(selectedItem)">Join Group</md-button>
+                        </div>
                     </div>
                 </div>
-                </div>
             </div>
-            <div id="createGroup" style="width: 100%; height: 40%; padding-left: 3%;" layout="row" >
-                <div style="height:70%; width:20%;">
+            <div id="createGroup" style="width: 100%; height: 40%; padding-left: 3%;" layout="row" layout-align="space-between center">
+                <div style="height:70%; width:20%; padding-left: 5%;">
                     <h3>My Groups</h3>
                     <div layout="column" style="height:70%;">
                     <md-button ng-click="creatingGroup()" style="width:130px; text-align: left;">Create Group</md-button>
