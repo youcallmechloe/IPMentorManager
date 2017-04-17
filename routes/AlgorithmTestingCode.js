@@ -309,7 +309,7 @@ var degreeList = ['Computer Science', 'Biology', 'Physics', 'Geography', 'Econom
     'Language', 'Pharmacology', 'Physiotherapy', 'Spanish'];
 
 $scope.addUsers = function(counter) {
-    if (counter > 99) {
+    if (counter > 819) {
         return;
     } else {
         var gender;
