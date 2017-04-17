@@ -3,9 +3,9 @@
         <h1>Home</h1>
         <div layout="row">
             <div style="width:50%; height:90%;">
-                <h2>Your Current Partners:</h2>
+                <h2>Your Partners:</h2>
                 <div ng-repeat="item in partners" layout="row" layout-align="center center">
-                    <div style="padding: 10px 50px 10px 10px;">
+                    <div style="padding-left: 20px;">
                         <h3>{{item.username}}</h3>
                         <h4>{{item.status}}</h4>
                         <h4>My {{item.relation}}</h4>
@@ -13,7 +13,10 @@
                     <div ng-show="item.status === 'requested'" >
                         <md-button md-theme="default" class="md-raised md-primary" ng-click="accept(item)" style="height: 35px;">Accept Partner</md-button>
                     </div>
-                    <div ng-show="item.status === 'current'" layout="row" layout-align="center center" style="padding: 10px 10px 10px 100px;">
+                    <div ng-show="item.status === 'current'" layout="row" layout-align="center center" style="padding: 10px 10px 10px 20px;">
+                        <div>
+                            <md-button ng-click="contact(item.username)" style="height: 35px; color: #636363;">Contact Your Partner</md-button>
+                        </div>
                         <div>
                             <md-button  class="md-raised md-primary" ng-click="addPoints(item.username, pointvalue)" style="height: 35px;">Rate Your Partner</md-button>
                         </div>
@@ -34,21 +37,27 @@
                     </div>
                     <md-divider ng-if="!$last" ></md-divider>
                 </div>
+                <div ng-show="partners.length === 0">
+                    <h3>You have no work partners.</h3>
+                </div>
             </div>
             <div style="width:50%; height:90%">
                 <h2>Your Groups:</h2>
                 <md-list flex>
-                    <md-list-item class="md-1-line" ng-repeat="item in groups" layout-align="center center" >
+                    <md-list-item class="md-1-line" ng-repeat="item in groups" layout-align="center center">
                         <div class="md-list-item-text">
                             <h3>{{item.groupname}}</h3>
                             <h4>{{item.description}}</h4>
                             <h4 style="font-size: 14px" ng-show="item.members.length > 1">{{item.members.length}} Members</h4>
                             <h4 style="font-size: 14px" ng-show="item.members.length === 1">{{item.members.length}} Member</h4>
                             <h4 style="font-size: 14px" ng-show="item.posts.length > 1">{{item.posts.length}} Posts</h4>
-                            <h4 style="font-size: 14px" ng-show="item.posts.length === 1">{{item.posts.length}} Posts</h4>
+                            <h4 style="font-size: 14px" ng-show="item.posts.length === 1">{{item.posts.length}} Post</h4>
                             <h4 style="font-size: 14px" ng-show="item.posts.length === 0">No Posts</h4>
                         </div>
                     </md-list-item>
+                    <div ng-show="groups.length === 0">
+                        <h3>You aren't the admin of any groups.</h3>
+                    </div>
                 </md-list>
             </div>
         </div>

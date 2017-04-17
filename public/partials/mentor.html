@@ -72,13 +72,17 @@
                     <div ng-repeat="item in matches" layout="row" layout-align="center center">
                         <div>
                             <h3>{{item.username}}</h3>
-                            <h4>Score : {{item.score}}</h4>
+                            <h3>{{item.fullname}}, {{item.age}}, {{item.gender}}</h3>
+                            <h4>Score: {{item.score}}</h4>
                             <h4>Contact: {{item.email}}</h4>
                         </div>
                         <div layout='column' layout-align="center center">
                             <md-button md-theme="default" class="md-raised md-primary" ng-click="request(item.username)" style="height: 35px;">Request Partner</md-button>
                             <h4 ng-show="item.exists !== 'No'">{{item.username}} is currently your {{item.exists}}</h4>
                         </div>
+                    </div>
+                    <div ng-show="matches.length === 0">
+                        <h3>No matches. Try widening your search requirements.</h3>
                     </div>
                 </div>
             </div>

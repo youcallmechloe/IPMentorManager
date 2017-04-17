@@ -461,13 +461,17 @@ router.post('/matching3', function(req, res){
         for(var i = 0; i < finalresult.length; i++) {
             if (finalresult[i]['username'] !== body['username']) {
                 if (finalresult[i]['score'] !== 0) {
-                    for(var j = 0; j < body['partners'].length; j++){
-                        if(finalresult[i]['username'] === body['partners'][j]['username']){
-                            finalresult[i]['exists'] = body['partners'][j]['relation'];
-                            newfinal.push(finalresult[i]);
-                        } else{
-                            newfinal.push(finalresult[i]);
+                    if(body['partners'].length > 0) {
+                        for (var j = 0; j < body['partners'].length; j++) {
+                            if (finalresult[i]['username'] === body['partners'][j]['username']) {
+                                finalresult[i]['exists'] = body['partners'][j]['relation'];
+                                newfinal.push(finalresult[i]);
+                            } else {
+                                newfinal.push(finalresult[i]);
+                            }
                         }
+                    } else{
+                        newfinal.push(finalresult[i]);
                     }
                 }
             }

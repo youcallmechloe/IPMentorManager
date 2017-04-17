@@ -103,7 +103,7 @@ angular.module('app', ['ngRoute', 'ngResource', 'ngMaterial', 'ngCookies', 'ngMd
         $scope.userLogout = function(){
             var logged = confirm("Do you want to log out?");
             if(logged === true){
-                $http.post('/users/logoutuser', {'username' : userPersistenceUsername.getCookieData(), 'sessionID' : userPersistenceSession.getCookieData()})
+                $http.post('/users/logoutuser', {'username' : userPersistenceUsername.getCookieData(), 'sessionid' : userPersistenceSession.getCookieData()})
                     .then(function(response){
                         if(response.data === "true"){
                             userPersistenceSession.clearCookieData();
@@ -317,8 +317,8 @@ angular.module('app', ['ngRoute', 'ngResource', 'ngMaterial', 'ngCookies', 'ngMd
 
         }])
 
-    .controller('HomepageController', ['$scope', '$location', '$http', 'userPersistenceSession', 'userPersistenceUsername',
-        function($scope, $location, $http, userPersistenceSession, userPersistenceUsername) {
+    .controller('HomepageController', ['$scope', '$location', '$http', 'userPersistenceSession', 'userPersistenceUsername', '$mdDialog',
+        function($scope, $location, $http, userPersistenceSession, userPersistenceUsername, $mdDialog) {
 
             if(userPersistenceSession.getCookieData() === undefined){
                 $location.url('/');
@@ -377,7 +377,44 @@ angular.module('app', ['ngRoute', 'ngResource', 'ngMaterial', 'ngCookies', 'ngMd
                             alert("Points added to " + username + "'s score!")
                         }
                     });
-            }
+            };
+
+            $scope.contact = function(username){
+                var data = {'username' : username};
+                $http.post('/users/getemail', data)
+                    .then(function(response){
+                        if(response.data !== ""){
+                            $scope.partneremail = response.data;
+                            showCustom(response.data);
+                        }
+                    });
+            };
+
+            var showCustom = function(email) {
+                $mdDialog.show({
+                    clickOutsideToClose: true,
+                    scope: $scope,
+                    preserveScope: true,
+                    template: '<md-dialog style="width: 30%;">' +
+                    '<md-toolbar>' +
+                    '    <div class="md-toolbar-tools">' +
+                    '        <h2 style="color: #eeeeee;">Contact Details</h2>' +
+                    '</div>   ' +
+                    '   </md-toolbar>' +
+                    '  <md-dialog-content style="color: #636363;">' +
+                    '<div class="md-dialog-content">' +
+                    '<p>Currently the messaging system is not working so to contact your partner please email them!</p>' +
+                    '<p>Email Address: {{partneremail}}</p>' +
+                    '</div>' +
+                    '  </md-dialog-content>' +
+                    '</md-dialog>',
+                    controller: function DialogController($scope, $mdDialog) {
+                        $scope.closeDialog = function() {
+                            $mdDialog.hide();
+                        }
+                    }
+                });
+            };
     }])
 
     .controller('UserprofileController', ['$scope', '$location', '$http', 'userPersistenceSession', 'userPersistenceUsername', '$mdDialog',
@@ -474,29 +511,21 @@ angular.module('app', ['ngRoute', 'ngResource', 'ngMaterial', 'ngCookies', 'ngMd
                 });
             };
 
-            // $scope.showAdvanced = function(ev) {
-            //     $mdDialog.show({
-            //         controller: DialogController,
-            //         templateUrl: 'partials/dialog1.tmpl.html',
-            //         parent: angular.element(document.body),
-            //         targetEvent: ev,
-            //         clickOutsideToClose: true
-            //     });
-            // };
-
-            function DialogController($scope, $mdDialog) {
-                $scope.hide = function() {
-                    $mdDialog.hide();
-                };
-
-                $scope.cancel = function() {
-                    $mdDialog.cancel();
-                };
-
-                $scope.answer = function(answer) {
-                    $mdDialog.hide(answer);
-                };
-            }
+            $scope.userLogout = function(){
+                var logged = confirm("Do you want to log out?");
+                if(logged === true){
+                    $http.post('/users/logoutuser', {'username' : userPersistenceUsername.getCookieData(), 'sessionid' : userPersistenceSession.getCookieData()})
+                        .then(function(response){
+                            if(response.data === "true"){
+                                userPersistenceSession.clearCookieData();
+                                userPersistenceUsername.clearCookieData();
+                                $location.url('/');
+                            } else{
+                                alert('Something went wrong, please try again');
+                            }
+                        });
+                }
+            };
 
             $scope.removeInterest = function (item) {
                 for (var i = 0; i < $scope.interests.length; i++) {
@@ -655,6 +684,7 @@ angular.module('app', ['ngRoute', 'ngResource', 'ngMaterial', 'ngCookies', 'ngMd
                             'username' : userPersistenceUsername.getCookieData(),
                             'similar' : $scope.similar,
                             'partners' : response.data};
+                        $scope.matches = [];
 
                         if(($scope.Gender === undefined) || ($scope.minAge === undefined) || ($scope.maxAge === undefined) || ($scope.MentorType === undefined)){
                             alert("Some fields empty, please fill in all fields.");
