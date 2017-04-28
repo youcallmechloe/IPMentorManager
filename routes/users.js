@@ -181,7 +181,7 @@ router.post('/changedetails', function(req, res) {
 
     cookie.find({'username': body['username'], 'sessionid': body['sessionid']}, function (e, docs) {
         if (docs.length > 0) {
-            userschema.update({'username' : body['username']}, {$set : {'email' : body['email'], 'fullname' : body['fullname']}}, function(e, docs){
+            userschema.update({'username' : body['username']}, {$set : {'email' : body['email'], 'fullname' : body['fullname'], 'age' : body['age']}}, function(e, docs){
                 if(!e){
                     res.send("");
                 } else{

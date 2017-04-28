@@ -457,7 +457,7 @@ router.post('/matching3', function(req, res){
         result.sort(compare);
         var finalresult = result.splice(0,10);
         var newfinal = [];
-        console.log(body['partners']);
+
         for(var i = 0; i < finalresult.length; i++) {
             if (finalresult[i]['username'] !== body['username']) {
                 if (finalresult[i]['score'] !== 0) {
@@ -465,18 +465,15 @@ router.post('/matching3', function(req, res){
                         for (var j = 0; j < body['partners'].length; j++) {
                             if (finalresult[i]['username'] === body['partners'][j]['username']) {
                                 finalresult[i]['exists'] = body['partners'][j]['relation'];
-                                newfinal.push(finalresult[i]);
-                            } else {
-                                newfinal.push(finalresult[i]);
                             }
                         }
+                        newfinal.push(finalresult[i]);
                     } else{
                         newfinal.push(finalresult[i]);
                     }
                 }
             }
         }
-        console.log(newfinal);
         res.send(newfinal);
     });
 });

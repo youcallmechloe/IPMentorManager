@@ -2,7 +2,7 @@
     <md-content md-theme="default" id="groups" flex layout="column" style="width:40%;" layout-padding>
         <h1>Find a Work Partner</h1>
         <div flex layout="row" layout-padding >
-            <div layout="column" style="width:60%; padding-left: 5%;">
+            <div layout="column" style="width:50%; padding-left: 1%;">
                 <div>
                     <br>
                     <md-input-container md-theme="default" flex="50">
@@ -66,18 +66,26 @@
                     <md-button md-theme="default" class="md-raised md-primary" ng-click="match()" style="">Find Partner</md-button>
                 </div>
             </div>
-            <div style="width:40%; padding-right: 3%;">
+            <div style="width:50%;" >
                 <div ng-show="fullresponse === true">
                     <h2>Results for a {{partner}}</h2>
-                    <div ng-repeat="item in matches" layout="row" layout-align="center center">
-                        <div>
+                    <div ng-repeat="item in matches" layout="row" layout-align="space-around center">
+                        <div style="padding-left: 1%;">
                             <h3>{{item.username}}</h3>
                             <h3>{{item.fullname}}, {{item.age}}, {{item.gender}}</h3>
                             <h4>Score: {{item.score}}</h4>
                             <h4>Contact: {{item.email}}</h4>
                         </div>
-                        <div layout='column' layout-align="center center">
-                            <md-button md-theme="default" class="md-raised md-primary" ng-click="request(item.username)" style="height: 35px;">Request Partner</md-button>
+                        <div style="padding-left: 1%;">
+                            <h3>Knowledge Areas:</h3>
+                            <div ng-repeat="know in item.knowledge">
+                                <h4>{{know.word}} in {{know.category}}</h4>
+                                <md-divider ng-if="!$last" ></md-divider>
+                            </div>
+                        </div>
+                        <div layout='column' layout-align="center center" style="padding-left: 1%;">
+                            <md-button ng-show="item.exists === 'No'" md-theme="default" class="md-raised md-primary" ng-click="request(item.username)" style="height: 35px;">Request Partner</md-button>
+                            <md-button ng-show="item.exists !== 'No'" md-theme="default" ng-disabled="true" class="md-raised md-primary" ng-click="request(item.username)" style="height: 35px;">Request Partner</md-button>
                             <h4 ng-show="item.exists !== 'No'">{{item.username}} is currently your {{item.exists}}</h4>
                         </div>
                     </div>
