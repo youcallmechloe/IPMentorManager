@@ -308,6 +308,7 @@ var degreeList = ['Computer Science', 'Biology', 'Physics', 'Geography', 'Econom
     'Chemistry', 'Fashion', 'Nursing', 'Law', 'Maths', 'Music', 'Sociology', 'History', 'Film',
     'Language', 'Pharmacology', 'Physiotherapy', 'Spanish'];
 
+//addUser method that takes parameter 0 to start the counter, and creates as many users as necessary
 $scope.addUsers = function(counter) {
     if (counter > 819) {
         return;
@@ -321,6 +322,7 @@ $scope.addUsers = function(counter) {
 
         var degree = degreeList[Math.floor(Math.random() * degreeList.length)];
         var knowledge = [];
+        //chooses interest words randomly between 1 and 20 from the degree of the user
         for (var j = 0; j < Math.floor((Math.random() * 20) + 1); j++) {
             var interest;
             switch (degree) {
@@ -386,6 +388,7 @@ $scope.addUsers = function(counter) {
                     break;
 
             }
+            //makes sure duplicate words cannot be added
             if (knowledge.indexOf(interest) === -1) {
                 knowledge.push(interest);
             }

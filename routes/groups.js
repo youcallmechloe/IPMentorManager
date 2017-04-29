@@ -6,20 +6,20 @@ var router = express.Router();
 var Cookie = require('../models/cookies');
 var Groups = require('../models/groups');
 
-//TODO: on front end!!! do the group name thingy so user gets told straight away of a taken group name!
 /*
  * want group JSON to look like: {'groupname' : '', 'description' : '', 'adim' : '', 'members' : ['', ''], 'posts' : ['', '']}
+ * method to create a group from passed parameters
  */
 router.post('/creategroup', function(req, res){
     var db = req.db;
     var collection = db.get('groups');
     var body = req.body;
 
+    //check cookies to confirm request coming from user
     Cookie.find({'username' : body['username'], 'sessionid' : body['sessionID']}, function(e, docs) {
         if (docs.length > 0) {
+            //check that group with passed groupname doesn't already exist
             Groups.find({'groupname': body['groupname']}, {}, function (e, docs) {
-
-                console.log(docs);
 
                 if (docs.length > 0) {
                     res.send('false');
@@ -42,17 +42,17 @@ router.post('/creategroup', function(req, res){
     });
 });
 
-//TODO: make sure actually works, check arrangement of req body?
 /*
  * Want post JSON to look like: {'username' : '', 'groupname' : ''}
+ * method to add a user to a group
  */
 router.post('/joingroup', function(req, res){
     var db = req.db;
     var collection = db.get('groups');
     var body = req.body;
 
+    //check cookies to confirm request coming from user
     Cookie.find({'username' : body['username'], 'sessionid' : body['sessionID']}, function(e, docs) {
-        console.log(docs);
         if (docs.length > 0) {
             collection.update({'groupname': body['groupname']}, {$addToSet: {'members': body['username']}});
         }
@@ -61,11 +61,13 @@ router.post('/joingroup', function(req, res){
     res.send({msg: ''});
 });
 
+//method to allow a user to leave a group
 router.post('/leavegroup', function(req, res){
     var body = req.body;
+
+    //check cookies to confirm request coming from user
     Cookie.find({'username' : body['username'], 'sessionid' : body['sessionID']}, function(e, docs) {
         if (docs.length > 0) {
-            console.log(body['groupname']);
             Groups.update({'groupname' : body['groupname']}, {$pull : {'members' : body['username']}}, function(e, docs){
                 res.send({msg: ''});
             });
@@ -75,6 +77,7 @@ router.post('/leavegroup', function(req, res){
 
 });
 
+//method to add a user to a group
 router.post('/groupmember', function(req, res){
     var db = req.db;
     var collection = db.get('groups');
@@ -89,20 +92,20 @@ router.post('/groupmember', function(req, res){
     });
 });
 
-//TODO: again check, could add timestamps to posts? could use $currentDate to set a timestamp
 /*
  * Want post JSON to look like: {'username' : '', 'groupname' : '', 'post' : ''}
+ * method to post into a group with date and time
  */
 router.post('/postingroup', function(req, res){
     var db = req.db;
     var collection = db.get('groups');
     var body = req.body;
 
+    //check cookies to confirm request coming from user
     Cookie.find({'username' : body['username'], 'sessionid' : body['sessionID']}, function(e, docs) {
         var time = new Date().toTimeString();
         var cuttime = time.substring(0, 8);
         var date = new Date().toDateString();
-        console.log(date + time);
         if (docs.length > 0) {
             Groups.findOneAndUpdate({'groupname': body['groupname']},
                 {$push: {'posts': {$each: [{'post': body['post'], 'username': body['username'], 'time' : cuttime, 'date': date, 'replies' : []}], $position: 0}}},
@@ -113,6 +116,7 @@ router.post('/postingroup', function(req, res){
     });
 });
 
+//returns groups with partial name as parameter passed
 router.get('/getgroups/:id', function (req, res) {
     var db = req.db;
     var groupCollection = db.get('groups');
@@ -127,6 +131,7 @@ router.get('/getgroups/:id', function (req, res) {
     });
 });
 
+//returns group description of group passed as parameter
 router.get('/getdescription/:id', function(req, res){
     var db = req.db;
     var groupCollection = db.get('groups');
@@ -141,12 +146,14 @@ router.get('/getdescription/:id', function(req, res){
     });
 });
 
+//method to return groups that a user is a member of
 router.post('/groupsmemberof', function(req, res){
     var body = req.body;
 
+    //check cookies to confirm request coming from user
     Cookie.find({'username' : body['username'], 'sessionid' : body['sessionID']}, function(e, docs){
-        console.log(docs);
         if(docs.length > 0) {
+            //finds all groups that user is member of from db
             Groups.find({'members': {$in: [body['username']]}}, {}, function (e, docs) {
                 var names = [];
 
@@ -161,19 +168,20 @@ router.post('/groupsmemberof', function(req, res){
     });
 });
 
+//method to return groups that a user owns
 router.post('/groupsown', function(req, res){
     var body = req.body;
 
+    //check cookies to confirm request coming from user
     Cookie.find({'username' : body['username'], 'sessionid' : body['sessionID']}, function(e, docs){
-        console.log(docs);
         if(docs.length > 0) {
+            //finds all groups that a user is an admin of
             Groups.find({'admin': body['username']}, {}, function (e, docs) {
                 var names = [];
 
                 for (var i = 0; i < docs.length; i++) {
                     names.push(docs[i]);
                 }
-                console.log(names);
                 res.send(names);
             });
         } else{

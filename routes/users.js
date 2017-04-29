@@ -2,7 +2,6 @@
  * node.js file to deal with the user section of the backend, uses express to add, login, delete and update users as well as
  * checking usernames for new users.
  * also contains the matching algorithm for now
- * todo: move matching algorithm to it's own file!! probs
  */
 
 var express = require('express');
@@ -52,6 +51,7 @@ router.post('/adduser', function(req, res) {
         }
     }
 
+    //using bcrypt to hash the password using the plain text password and generated salt rounds
     bcrypt.hash(myplaintextpassword, saltrounds).then(function (hash) {
         var userinfo = {
             'username': body['username'],
@@ -67,11 +67,10 @@ router.post('/adduser', function(req, res) {
             'knowledge': userknowledge,
             'workpartners' : []
         };
-        //todo: why am i checking this twice???
+        //check whether username exists already and if not create user
         collection.find({'username': body['username']}, {}, function (e, docs) {
             if (docs.length > 0) {
                 res.send('false');
-                return;
             } else {
                 collection.insert(userinfo, function (err, result) {
                     error = err;
@@ -97,12 +96,14 @@ router.post('/adduser', function(req, res) {
 
 });
 
+//returns user info (without password)
 router.post('/userinfo', function(req, res){
     var db = req.db;
     var usercollection = db.get('userlist');
     var body = req.body;
     var userinfo = [];
 
+    //check cookies to confirm request coming from user
     cookie.find({'username' : body['username'], 'sessionid' : body['sessionid']}, function(e, docs){
         if(docs.length > 0){
             usercollection.find({'username' : body['username']}, {}, function(e, docs){
@@ -120,7 +121,6 @@ router.post('/userinfo', function(req, res){
                         'knowledge' : docs[0]['knowledge']
                     };
                     userinfo.push(user);
-                    console.log(user);
                 }
 
                 res.send(user);
@@ -132,53 +132,63 @@ router.post('/userinfo', function(req, res){
 
 });
 
+//method to change a user's interests passed in as a parameter
 router.post('/changeinterests', function(req, res){
     var body = req.body;
 
-    userschema.find({'username' : body['username']}, {}, function(e, docs){
-        if(docs.length > 0){
-            var oldknowledge = docs[0]['knowledge'];
-            var newknowledge = body['knowledge'];
-            userschema.update({'username' : body['username']}, {$set : {'knowledge' : newknowledge}}, function(e, docs){
-                if(!e){
-                    if (oldknowledge.length > 0) {
-                        for (var i = 0; i < oldknowledge.length; i++) {
-                            wordschema.update({
-                                    'word': oldknowledge[i]['word'],
-                                    'category': oldknowledge[i]['category']
-                                },
-                                {$pull: {'users': body['username']}}, function (e, docs) {
-                                    if (e) {
-                                        res.send("false");
-                                    }
-                                });
+    //check cookies to confirm request coming from user
+    cookie.find({'username' : body['username'], 'sessionid' : body['sessionid']}, function(e, docs){
+        if(docs.length > 0) {
+            userschema.find({'username': body['username']}, {}, function (e, docs) {
+                if (docs.length > 0) {
+                    var oldknowledge = docs[0]['knowledge'];
+                    var newknowledge = body['knowledge'];
+                    userschema.update({'username': body['username']}, {$set: {'knowledge': newknowledge}}, function (e, docs) {
+                        if (!e) {
+                            if (oldknowledge.length > 0) {
+                                for (var i = 0; i < oldknowledge.length; i++) {
+                                    wordschema.update({
+                                            'word': oldknowledge[i]['word'],
+                                            'category': oldknowledge[i]['category']
+                                        },
+                                        {$pull: {'users': body['username']}}, function (e, docs) {
+                                            if (e) {
+                                                res.send("false");
+                                            }
+                                        });
+                                }
+                            }
+                            if (newknowledge.length > 0) {
+                                for (var j = 0; j < newknowledge.length; j++) {
+                                    wordschema.update({
+                                            'word': newknowledge[j]['word'],
+                                            'category': newknowledge[j]['category']
+                                        },
+                                        {$push: {'users': body['username']}}, {upsert: true}, function (e, docs) {
+                                            if (e) {
+                                                res.send("false");
+                                            }
+                                        });
+                                }
+                            }
+                            res.send("");
+                        } else {
+                            res.send('false');
                         }
-                    }
-                    if (newknowledge.length > 0) {
-                        for (var j = 0; j < newknowledge.length; j++) {
-                            wordschema.update({
-                                    'word': newknowledge[j]['word'],
-                                    'category': newknowledge[j]['category']
-                                },
-                                {$push: {'users': body['username']}}, {upsert: true}, function (e, docs) {
-                                    if (e) {
-                                        res.send("false");
-                                    }
-                                });
-                        }
-                    }
-                    res.send("");
-                } else{
-                    res.send('false');
+                    });
                 }
             });
+        } else{
+            res.send("false");
         }
     });
 });
 
+//method to change a user's details passed in as parameters
 router.post('/changedetails', function(req, res) {
     var body = req.body;
 
+    //check cookies to confirm request coming from user
     cookie.find({'username': body['username'], 'sessionid': body['sessionid']}, function (e, docs) {
         if (docs.length > 0) {
             userschema.update({'username' : body['username']}, {$set : {'email' : body['email'], 'fullname' : body['fullname'], 'age' : body['age']}}, function(e, docs){
@@ -203,7 +213,6 @@ router.get('/databasecategories', function(req, res){
 
     wordcollection.find({},{},function(e,docs){
         var categories = [];
-        console.log(docs);
         if(docs !== undefined) {
             for (var i = 0; i < docs.length; i++) {
                 categories.push(docs[i]['category']['name']);
@@ -216,7 +225,6 @@ router.get('/databasecategories', function(req, res){
 /*
  * post request to add a specified amount to a users score - can be used to update
  */
-//TODO: change level based on point score!!
 router.post('/addtoscore', function(req, res){
     var db = req.db;
     var collection = db.get('userlist');
@@ -282,7 +290,6 @@ router.post('/checkusername', function(req, res){
     var collection = db.get('userlist');
     var body = req.body;
     collection.find({'username': body['username']}, {}, function(e,docs){
-        console.log(docs);
         if(docs.length > 0){
             res.send("true");
         } else{
@@ -291,6 +298,7 @@ router.post('/checkusername', function(req, res){
     })
 });
 
+//returns a users email passed in as parameter
 router.post('/getemail', function(req, res){
     var body = req.body;
 
@@ -305,7 +313,6 @@ router.post('/getemail', function(req, res){
 
 /*
  * post request to log a user in with a specified username and password. returns true if logged in and false if not.
- * todo: return different values if the user does not exist and if the password is wrong
  */
 router.post('/loginuser', function(req, res){
     var db = req.db;
@@ -332,7 +339,6 @@ router.post('/loginuser', function(req, res){
 
 /*
  * delete to deleteuser.
- * todo: write properly
  */
 router.post('/deleteuser', function(req, res) {
     var db = req.db;
@@ -340,6 +346,7 @@ router.post('/deleteuser', function(req, res) {
     var cookies = db.get('cookies');
     var body = req.body;
 
+    //check cookies to confirm request coming from user
     cookie.find({'username' : body['username'], 'sessionid' : body['sessionid']}, function(e, docs){
         if(docs.length > 0) {
             collection.remove({ 'username' : body['username'] }, function(e) {
@@ -361,8 +368,11 @@ router.post('/deleteuser', function(req, res) {
     });
 });
 
+//method to logout a user
 router.post('/logoutuser', function(req, res){
     var body = req.body;
+
+    //check cookies to confirm request coming from user
     cookie.remove({ 'username' : body['username'], 'sessionid' : body['sessionid']}, function(err){
         res.send((err === null) ? "true" : err);
     });

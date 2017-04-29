@@ -1,5 +1,5 @@
-/**
- * Created by root on 15/02/2017.
+/*
+ * Node.js file that uses express to deal with the matching algorithm.
  */
 
 var express = require('express');
@@ -14,13 +14,13 @@ var UserSchema = require('../models/users');
 var WordSchema = require('../models/words');
 var Cookie = require('../models/cookies');
 
+//gets all words containing passed parameter word and returns them
 router.post('/getwords', function(req, res){
     var body = req.body;
 
     WordSchema.find({}, function(e, docs){
         var words = [];
         for(var i = 0; i < docs.length; i++){
-            console.log(docs[i]['word']);
             var dbword = docs[i]['word'].toUpperCase();
             var searchword = body['word'].toUpperCase();
             if(dbword.includes(searchword)){
@@ -31,9 +31,11 @@ router.post('/getwords', function(req, res){
     });
 });
 
+//method that adds partners to user's lists and puts statuses on to showing pending or requested partners
 router.post('/requestpartner', function(req, res){
     var body = req.body;
 
+    //check cookies to confirm request coming from user
     Cookie.find({'username' : body['username'], 'sessionid' : body['sessionID']}, function(e, docs) {
         if(docs.length > 0) {
             async.waterfall([
@@ -43,7 +45,6 @@ router.post('/requestpartner', function(req, res){
                     });
                 },
                 function(body, cb2){
-                    console.log(body['partner']);
                     UserSchema.update({'username' : body['partner']}, {$push : {'workpartners' : {'username' : body['username'], 'status' : 'requested', 'relation' : body['theirstatus']}}}, function(e, docs){
                         cb2(null);
                     });
@@ -58,9 +59,11 @@ router.post('/requestpartner', function(req, res){
 
 });
 
-//TODO: not accepting properly figure out why, maybe use async?
+//method to accept a partner, changes statuses of partners in user's lists
 router.post('/acceptpartner', function(req, res){
     var body = req.body;
+
+    //check cookies to confirm request coming from user
     Cookie.find({'username' : body['username'], 'sessionid' : body['sessionID']}, function(e, docs) {
         if(docs.length > 0) {
 
@@ -76,13 +79,11 @@ router.post('/acceptpartner', function(req, res){
                     });
                 },
                 function(body, cb3){
-                    console.log(body['partnername'] + " " + body['partnerrelation']);
                     UserSchema.update({'username' : body['partnername']}, {$pull : {'workpartners' : {'username' : body['username'], 'status' : 'pending', 'relation' : body['partnerrelation']}}}, function(e, docs){
                         cb3(null, body);
                     });
                 },
                 function(body, cb4){
-                    console.log(body['username'] + " " + body['relation']);
                     UserSchema.update({'username' : body['username']}, {$pull : {'workpartners' : {'username' : body['partnername'], 'status' : 'requested', 'relation' : body['relation']}}}, function(e, docs){
                         cb4(null);
                     });
@@ -96,9 +97,11 @@ router.post('/acceptpartner', function(req, res){
     });
 });
 
+//returns all partners associated with a user
 router.post('/getpartners', function(req, res){
     var body = req.body;
 
+    //check cookies to confirm request coming from user
     Cookie.find({'username' : body['username'], 'sessionid' : body['sessionID']}, function(e, docs) {
         if(docs.length > 0) {
             UserSchema.find({'username' : body['username']}, function(e, docs){
@@ -116,6 +119,7 @@ router.post('/matching1', function(req, res){
     var body = req.body;
     var interests = body['interests'];
 
+    //check cookies to confirm request coming from user
     Cookie.find({'username' : body['username'], 'sessionid' : body['sessionID']}, function(e, docs){
         if(docs.length > 0){
             async.waterfall([
@@ -254,6 +258,8 @@ router.post('/matching1', function(req, res){
 router.post('/matching2', function(req, res) {
     var body = req.body;
     var interests = body['interests'];
+
+    //check cookies to confirm request coming from user
     Cookie.find({'username': body['username'], 'sessionid': body['sessionID']}, function (e, docs) {
         if (docs.length > 0) {
             async.waterfall([
@@ -440,9 +446,7 @@ router.post('/matching3', function(req, res){
                         }
                     }
                 }
-                // console.log(users[v]['username'] + " " + intersection.length + " " + union.length);
                 users[v]['score'] = ((intersection.length)/(union.length));
-                // console.log(((intersection.length)/(union.length)))
             }
             cb5(null, users, body);
         }

@@ -1,9 +1,3 @@
-/**
- * Created by root on 01/02/2017.
- */
-/**
- * Created by root on 01/02/2017.
- */
 
 angular.module('app', ['ngRoute', 'ngResource', 'ngMaterial', 'ngCookies', 'ngMdIcons', 'ngPageTitle'])
 
@@ -100,6 +94,7 @@ angular.module('app', ['ngRoute', 'ngResource', 'ngMaterial', 'ngCookies', 'ngMd
             }
         };
 
+        //Method to show info box on home button
             $scope.showCustom = function() {
                 $mdDialog.show({
                     clickOutsideToClose: true,
@@ -126,6 +121,7 @@ angular.module('app', ['ngRoute', 'ngResource', 'ngMaterial', 'ngCookies', 'ngMd
                     }
                 });
             };
+
 
         $scope.userLogout = function(){
             var logged = confirm("Do you want to log out?");
@@ -157,6 +153,7 @@ angular.module('app', ['ngRoute', 'ngResource', 'ngMaterial', 'ngCookies', 'ngMd
     .controller('LoginController', ['$scope', '$location', '$http', 'userPersistenceSession', 'userPersistenceUsername',
         function ($scope, $location, $http, userPersistenceSession, userPersistenceUsername) {
 
+        //if there's cookies then redirect to homepage
         if(userPersistenceSession.getCookieData() !== undefined){
             $location.url('/home');
         }
@@ -175,7 +172,6 @@ angular.module('app', ['ngRoute', 'ngResource', 'ngMaterial', 'ngCookies', 'ngMd
 
                     $http.post("/users/loginuser", loginData)
                         .then(function (response) {
-                            console.log(response.data);
                             if (response.data === "false username") {
                                 alert("Username incorrect, please try again.");
                             } else if(response.data === "false password"){
@@ -183,7 +179,6 @@ angular.module('app', ['ngRoute', 'ngResource', 'ngMaterial', 'ngCookies', 'ngMd
                             } else {
                                 userPersistenceSession.setCookieData(response.data);
                                 userPersistenceUsername.setCookieData(username);
-                                console.log(response.data);
                                 $location.url('/home');
                             }
                         });
@@ -201,7 +196,7 @@ angular.module('app', ['ngRoute', 'ngResource', 'ngMaterial', 'ngCookies', 'ngMd
     .controller('SignupController', ['$scope', '$location', '$http', 'userPersistenceSession', 'userPersistenceUsername',
         function($scope, $location, $http, userPersistenceSession, userPersistenceUsername) {
 
-
+            //if there's cookie data then redirect to homepage
             if(userPersistenceSession.getCookieData() !== undefined){
                 $location.url('/home');
             }
@@ -221,6 +216,7 @@ angular.module('app', ['ngRoute', 'ngResource', 'ngMaterial', 'ngCookies', 'ngMd
                 category: ''
             }];
 
+            //method to add new interest word option
             $scope.addNew = function () {
                 if (counter !== limit) {
                     $scope.interests.push({word: '', category: ''});
@@ -230,6 +226,7 @@ angular.module('app', ['ngRoute', 'ngResource', 'ngMaterial', 'ngCookies', 'ngMd
                 }
             };
 
+            //method to remove an interest word
             $scope.removeInterest = function (item) {
                 for (var i = 0; i < $scope.interests.length; i++) {
                     if (($scope.interests[i].word === item.word) && ($scope.interests[i].category === item.category)) {
@@ -240,12 +237,11 @@ angular.module('app', ['ngRoute', 'ngResource', 'ngMaterial', 'ngCookies', 'ngMd
                 }
             };
 
+            //gets the category for a specific word to fill the category box when an interest word is chosen
             $scope.getCategory = function (search) {
                 var newList = [];
                 if (search !== '') {
                     for (var i = 0; i < $scope.categoryList.length; i++) {
-                        console.log($scope.categoryList[i]);
-                        console.log(search);
                         if ($scope.categoryList[i].indexOf(search) !== -1) {
                             newList.push($scope.categoryList[i]);
                         }
@@ -265,7 +261,7 @@ angular.module('app', ['ngRoute', 'ngResource', 'ngMaterial', 'ngCookies', 'ngMd
                 return options;
             };
 
-            //TODO: check that boxes are filled before posting!!
+            //creates a user object then posts it to the server and redirects to homepage on successful return
             $scope.signup = function () {
                 var username = $scope.username;
                 var degree;
@@ -300,21 +296,17 @@ angular.module('app', ['ngRoute', 'ngResource', 'ngMaterial', 'ngCookies', 'ngMd
                             alert("Some fields are empty, please fill in all fields");
                         }
                     }
-                    console.log(newUser);
                     if(bool) {
                         $http.post("/users/checkusername", {'username': name})
                             .then(function (response) {
                                 var bool = response.data;
 
                                 if (response.data === "false") {
-                                    console.log("posting");
                                     $http.post("/users/addUser", newUser)
                                         .then(function (response) {
-                                            console.log(response.data);
                                             if (response.data !== 'false') {
                                                 userPersistenceUsername.setCookieData(username);
                                                 userPersistenceSession.setCookieData(response.data);
-                                                console.log(username);
                                                 $location.url('/home');
                                             } else {
                                                 alert('There has been a problem creating your account. Please try again.')
@@ -328,16 +320,6 @@ angular.module('app', ['ngRoute', 'ngResource', 'ngMaterial', 'ngCookies', 'ngMd
                 }
             };
 
-            //TODO: doesn't actually work needs to be looked at, think html needs to be moved out of md-input thingys to work?
-            function formIsEmpty() {
-                console.log('dsfsdf')
-                $('#form input').each(function (index, val) {
-                    if ($(this).val() === '') {
-                        return false;
-                    }
-                });
-            }
-
             $scope.goback = function () {
                 $location.url('/');
             };
@@ -347,6 +329,7 @@ angular.module('app', ['ngRoute', 'ngResource', 'ngMaterial', 'ngCookies', 'ngMd
     .controller('HomepageController', ['$scope', '$location', '$http', 'userPersistenceSession', 'userPersistenceUsername', '$mdDialog',
         function($scope, $location, $http, userPersistenceSession, userPersistenceUsername, $mdDialog) {
 
+        //if there's no cookie data redirect to the login page
             if(userPersistenceSession.getCookieData() === undefined){
                 $location.url('/');
             }
@@ -354,6 +337,7 @@ angular.module('app', ['ngRoute', 'ngResource', 'ngMaterial', 'ngCookies', 'ngMd
             $scope.partners = [];
             $scope.pointvalue = 10;
 
+            //functions to get a user's partners and groups
             var getPartners = function(){
                 $http.post('/matching/getpartners', {'username' : userPersistenceUsername.getCookieData(),
                                                         'sessionID' : userPersistenceSession.getCookieData()})
@@ -392,14 +376,13 @@ angular.module('app', ['ngRoute', 'ngResource', 'ngMaterial', 'ngCookies', 'ngMd
                     });
             };
 
+            //adds points to a user's score based on what option chose
             $scope.addPoints = function(username, point){
                 var data = {'username' : username,
                             'amount' : point,
                             'madeusername' : userPersistenceUsername.getCookieData()};
-                console.log(data);
                 $http.post('/users/addtoscore', data)
                     .then(function(response){
-                        console.log(response);
                         if(response.data === ""){
                             alert("Points added to " + username + "'s score!")
                         }
@@ -417,6 +400,7 @@ angular.module('app', ['ngRoute', 'ngResource', 'ngMaterial', 'ngCookies', 'ngMd
                     });
             };
 
+            //method to show a popup box to a user when they click 'contact'
             var showCustom = function(email) {
                 $mdDialog.show({
                     clickOutsideToClose: true,
@@ -447,6 +431,7 @@ angular.module('app', ['ngRoute', 'ngResource', 'ngMaterial', 'ngCookies', 'ngMd
     .controller('UserprofileController', ['$scope', '$location', '$http', 'userPersistenceSession', 'userPersistenceUsername', '$mdDialog',
         function($scope, $location, $http, userPersistenceSession, userPersistenceUsername, $mdDialog) {
 
+            //if there's no cookie data redirect to the login page
             if(userPersistenceSession.getCookieData() === undefined){
                 $location.url('/');
             }
@@ -468,10 +453,10 @@ angular.module('app', ['ngRoute', 'ngResource', 'ngMaterial', 'ngCookies', 'ngMd
             var counter = $scope.interests.length;
             var limit = 10;
 
+            //method to get user's info from the db
             var getuserInfo = function(){
             $http.post('/users/userinfo', {'username' : $scope.username, 'sessionid' : userPersistenceSession.getCookieData()})
                 .then(function(response){
-                    console.log(response.data);
                     $scope.user = response.data;
                     $scope.interests = response.data.knowledge;
                 });
@@ -487,30 +472,13 @@ angular.module('app', ['ngRoute', 'ngResource', 'ngMaterial', 'ngCookies', 'ngMd
                 }
             };
 
-            var newuser = "0-50 Points: New User";
-            var beginner = "5-200 Points: Beginner";
-
-            $scope.showAlert = function(ev) {
-                // Appending dialog to document.body to cover sidenav in docs app
-                // Modal dialogs should fully cover application
-                // to prevent interaction outside of dialog
-                $mdDialog.show(
-                    $mdDialog.show()
-                        .clickOutsideToClose(true)
-                        .title('Levels')
-                        .content(newuser + '<br>' + beginner)
-                        .ariaLabel('Alert Dialog Demo')
-                        .ok('Got it!')
-                        .targetEvent(ev)
-                );
-            };
-
+            //method to show a popup contain user level info when prompted
             $scope.showCustom = function(event) {
                 $mdDialog.show({
                     clickOutsideToClose: true,
                     scope: $scope,
                     preserveScope: true,
-                    template: '<md-dialog style="width: 300;">' +
+                    template: '<md-dialog style="width: 300px;">' +
                         '<md-toolbar>' +
                     '    <div class="md-toolbar-tools">' +
                     '        <h2 style="color: #eeeeee;">Levels</h2>' +
@@ -564,11 +532,10 @@ angular.module('app', ['ngRoute', 'ngResource', 'ngMaterial', 'ngCookies', 'ngMd
                 }
             };
 
-            //TODO: make sure all interests inputs are not blank
+            //method to update a user's interest words from the profile
         $scope.saveInterests = function(){
             var bool = true;
             for(var i = 0; i< $scope.interests.length; i++){
-                console.log($scope.interests[i]);
                 if(($scope.interests[i]['word'] === "") || ($scope.interests[i]['category'] === "") || ($scope.interests[i]['word'] === undefined) ){
                     bool = false;
                     alert("Some fields empty, please fill in all fields.")
@@ -577,10 +544,10 @@ angular.module('app', ['ngRoute', 'ngResource', 'ngMaterial', 'ngCookies', 'ngMd
             if(bool) {
                 $http.post('/users/changeinterests', {
                     'username': userPersistenceUsername.getCookieData(),
+                    'sessionid' : userPersistenceSession.getCookieData(),
                     'knowledge': $scope.interests
                 })
                     .then(function (response) {
-                        console.log(response.data);
                         if (response.data === "") {
                             $scope.change = false;
                         } else {
@@ -590,13 +557,13 @@ angular.module('app', ['ngRoute', 'ngResource', 'ngMaterial', 'ngCookies', 'ngMd
             }
         };
 
+        //method to update a user's information from the profile
         $scope.saveProfile = function(){
             var data = {'username' : userPersistenceUsername.getCookieData(),
                         'sessionid' : userPersistenceSession.getCookieData(),
                         'email' : $scope.user.email,
                         'fullname' : $scope.user.fullname,
                         'age' : $scope.user.age};
-            console.log(data);
 
             if(($scope.user.email === undefined) || ($scope.user.fullname === undefined) || ($scope.user.age === undefined)){
                 alert("Some fields empty, please fill in all fields.");
@@ -613,9 +580,9 @@ angular.module('app', ['ngRoute', 'ngResource', 'ngMaterial', 'ngCookies', 'ngMd
             }
         };
 
+        //method to delete an account
             $scope.removeUser = function(){
                 var c = confirm("Do you want to delete your account?");
-                console.log("sfds");
                 if(c){
                     $http.post('/users/deleteuser', {'username' : userPersistenceUsername.getCookieData(),
                         'sessionid' : userPersistenceSession.getCookieData()})
@@ -647,9 +614,10 @@ angular.module('app', ['ngRoute', 'ngResource', 'ngMaterial', 'ngCookies', 'ngMd
         var words = [];
         var wordcategories = [];
 
+            //if there's no cookie data redirect to the login page
             if(userPersistenceSession.getCookieData() === undefined){
                 $location.url('/');
-            };
+            }
 
             $scope.clear = function(){
                 $scope.matches = [];
@@ -664,6 +632,7 @@ angular.module('app', ['ngRoute', 'ngResource', 'ngMaterial', 'ngCookies', 'ngMd
                 $scope.similar = null;
             };
 
+            //get all matching words to passed parameter from database
             $scope.getWords = function(search){
                 words = [];
                 wordcategories = [];
@@ -677,6 +646,7 @@ angular.module('app', ['ngRoute', 'ngResource', 'ngMaterial', 'ngCookies', 'ngMd
                     });
             };
 
+            //update category to match chosen word in md-autocomplete
             $scope.changeCategory = function(item){
                 for(var i = 0; i < words.length; i++){
                     $scope.itemCategory = wordcategories[words.indexOf(item)];
@@ -700,14 +670,13 @@ angular.module('app', ['ngRoute', 'ngResource', 'ngMaterial', 'ngCookies', 'ngMd
             };
 
 
-            //TODO: add in degree choice?
+            //sends data object to server to find partners matching requirements
             $scope.match = function(){
                 $scope.matches = [];
 
                 $http.post('/matching/getpartners', {'username' : userPersistenceUsername.getCookieData(),
                                         'sessionID' : userPersistenceSession.getCookieData()})
                     .then(function (response) {
-                        console.log(response.data);
                         var data = {'gender' : $scope.Gender,
                             'minAge' : $scope.minAge,
                             'maxAge' : $scope.maxAge,
@@ -717,6 +686,7 @@ angular.module('app', ['ngRoute', 'ngResource', 'ngMaterial', 'ngCookies', 'ngMd
                             'similar' : $scope.similar,
                             'partners' : response.data};
 
+                        //checks that all fields are complete and that min and max ages are correct
                         if(($scope.Gender === undefined) || ($scope.minAge === undefined) || ($scope.maxAge === undefined) || ($scope.MentorType === undefined)){
                             alert("Some fields empty, please fill in all fields.");
                         } else if($scope.maxAge < $scope.minAge){
@@ -724,7 +694,6 @@ angular.module('app', ['ngRoute', 'ngResource', 'ngMaterial', 'ngCookies', 'ngMd
                         } else if($scope.interests.length < 1){
                             alert("You must include at least 1 knowledge area, please try again.");
                         } else{
-                            console.log(data);
                             $http.post('/matching/matching3', data)
                                 .then(function(response){
                                     $scope.find = false;
@@ -736,6 +705,7 @@ angular.module('app', ['ngRoute', 'ngResource', 'ngMaterial', 'ngCookies', 'ngMd
                     });
             };
 
+            //method to request a partner and updates database with statuses
             $scope.request = function(item) {
                 var theirstatus;
                 if($scope.partner === 'mentor'){
@@ -743,7 +713,6 @@ angular.module('app', ['ngRoute', 'ngResource', 'ngMaterial', 'ngCookies', 'ngMd
                 } else{
                     theirstatus = 'mentor';
                 }
-                console.log(item);
                 var data = {
                     'username': userPersistenceUsername.getCookieData(),
                     'sessionID': userPersistenceSession.getCookieData(),
@@ -759,10 +728,10 @@ angular.module('app', ['ngRoute', 'ngResource', 'ngMaterial', 'ngCookies', 'ngMd
 
     }])
 
-    //TODO: put text boxes for age so user can choose min and max age, makes it much easier
     .controller('GroupController', ['$scope', '$location', '$http', 'userPersistenceSession', 'userPersistenceUsername',
         function($scope, $location, $http, userPersistenceSession, userPersistenceUsername) {
 
+            //if there's no cookie data redirect to the login page
             if(userPersistenceSession.getCookieData() === undefined){
                 $location.url('/');
             }
@@ -774,7 +743,7 @@ angular.module('app', ['ngRoute', 'ngResource', 'ngMaterial', 'ngCookies', 'ngMd
         $scope.post = false;
         $scope.username = userPersistenceUsername.getCookieData();
 
-        //TODO: search in descriptions too for more accurate searches
+        //returns groups that a user is a member of
         var getGroups = function() {
             $http.post('/groups/groupsmemberof', {'username' : userPersistenceUsername.getCookieData(),
                 'sessionID' : userPersistenceSession.getCookieData()})
@@ -793,6 +762,7 @@ angular.module('app', ['ngRoute', 'ngResource', 'ngMaterial', 'ngCookies', 'ngMd
             $scope.groups = false;
         };
 
+        //creates a group using input fields and checks whether groupname is taken already and if not creates it and updates page
         $scope.createGroup = function() {
             var groupName = $scope.groupname;
             var groupJSON = {
@@ -827,14 +797,13 @@ angular.module('app', ['ngRoute', 'ngResource', 'ngMaterial', 'ngCookies', 'ngMd
                 'username' : userPersistenceUsername.getCookieData(),
                 'groupname' : groupName,
                 'sessionID' : userPersistenceSession.getCookieData()
-            }
+            };
 
             $http.post('/groups/joingroup', joinJSON)
                 .then(function(response){
                     getGroups();
                     $scope.selectedItem = '';
                     $scope.searchText = '';
-                    console.log(response.data);
             });
         };
 
@@ -849,7 +818,6 @@ angular.module('app', ['ngRoute', 'ngResource', 'ngMaterial', 'ngCookies', 'ngMd
             } else {
                 var c = confirm("Do you want to leave " + groupName.groupname);
                 if(c) {
-                    console.log("Posting");
                     $http.post('/groups/leavegroup', data)
                         .then(function (response) {
                             getGroups();
@@ -872,7 +840,6 @@ angular.module('app', ['ngRoute', 'ngResource', 'ngMaterial', 'ngCookies', 'ngMd
             } else {
                 $http.post('/groups/postingroup', postJSON)
                     .then(function (response) {
-                        console.log(response.data);
                         $scope.$parent.grouppost = '';
                         $scope.post = false;
                         $scope.memberList = [];
@@ -898,7 +865,6 @@ angular.module('app', ['ngRoute', 'ngResource', 'ngMaterial', 'ngCookies', 'ngMd
 
         $scope.goBack = function(){
             $scope.selectedGroup = '';
-            console.log('back');
         };
 
         $scope.getDescription = function(groupName) {
@@ -912,9 +878,7 @@ angular.module('app', ['ngRoute', 'ngResource', 'ngMaterial', 'ngCookies', 'ngMd
 
         $scope.areMember = function(groupName) {
             if(groupName !== '') {
-                console.log($scope.memberList);
                 for (var i = 0; i < $scope.memberList.length; i++) {
-                    console.log($scope.memberList[i]);
                     if ($scope.memberList[i]['groupname'] === groupName) {
                         return true;
                     }

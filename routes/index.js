@@ -1,6 +1,5 @@
 /*
- * Node.js file that deals with general backend stuff. For now simply renders the HTML and fetches database categories
- * for use on the front end
+ * Node.js file that deals with general backend stuff. For now simply renders the HTML
  */
 var express = require('express');
 var router = express.Router();
