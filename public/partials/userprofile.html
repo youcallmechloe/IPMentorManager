@@ -1,4 +1,4 @@
-<div id="wrap" ng-controller="UserprofileController" style="height:90%">
+<div id="wrap" ng-controller="UserprofileController" style="height:90%; box-shadow: 0px 10px 5px 10px #888888;">
     <md-content id="groups" style="overflow: scroll; padding-top: 1%;" md-theme="default">
         <h1>{{username}}'s Profile</h1>
         <div layout-align="center center" flex layout="row">
@@ -6,7 +6,7 @@
                 <div style="width: 70%; padding-top:50px;" ng-show="!profchange">
                     <div layout="row" layout-align="center">
                         <h3>You are a {{user.level}} with a score of {{user.userscore}}!</h3>
-                        <md-button class="md-icon-button md-primary" ng-click="showCustom($event)" md-theme="default" >
+                        <md-button class="md-icon-button md-primary" ng-click="showCustom()" md-theme="default" >
                             <md-tooltip md-direction="bottom">Info</md-tooltip>
                             <ng-md-icon icon="info" style="fill:#636363; padding: 0 0 0 0; width:5%;" size="20"></ng-md-icon>
                         </md-button>

@@ -51,8 +51,8 @@ angular.module('app', ['ngRoute', 'ngResource', 'ngMaterial', 'ngCookies', 'ngMd
     // Controllers
     //---------------
 
-    .controller('HeaderController', ['$scope', 'userPersistenceSession', 'userPersistenceUsername', '$location', '$http', '$route',
-        function($scope, userPersistenceSession, userPersistenceUsername, $location, $http, $route){
+    .controller('HeaderController', ['$scope', 'userPersistenceSession', 'userPersistenceUsername', '$location', '$http', '$route', '$mdDialog',
+        function($scope, userPersistenceSession, userPersistenceUsername, $location, $http, $route, $mdDialog){
 
         $scope.getUsername = function(){
             return userPersistenceUsername.getCookieData();
@@ -99,6 +99,33 @@ angular.module('app', ['ngRoute', 'ngResource', 'ngMaterial', 'ngCookies', 'ngMd
                 return false;
             }
         };
+
+            $scope.showCustom = function() {
+                $mdDialog.show({
+                    clickOutsideToClose: true,
+                    scope: $scope,
+                    preserveScope: true,
+                    template: '<md-dialog style="width: 30%;">' +
+                    '<md-toolbar>' +
+                    '    <div class="md-toolbar-tools">' +
+                    '        <h2 style="color: #eeeeee;">Mentor Manager</h2>' +
+                    '</div>   ' +
+                    '   </md-toolbar>' +
+                    '  <md-dialog-content style="color: #636363;">' +
+                    '<div class="md-dialog-content">' +
+                    '<p>Mentor Manager is a web application designed to help students find mentors easily.</p>' +
+                    '<p>You can also crate and join groups based on academic work to aid group collaboration.</p>' +
+                    '<p>Sign up and start collaborating today!</p>' +
+                    '</div>' +
+                    '  </md-dialog-content>' +
+                    '</md-dialog>',
+                    controller: function DialogController($scope, $mdDialog) {
+                        $scope.closeDialog = function() {
+                            $mdDialog.hide();
+                        }
+                    }
+                });
+            };
 
         $scope.userLogout = function(){
             var logged = confirm("Do you want to log out?");
