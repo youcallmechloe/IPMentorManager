@@ -467,6 +467,8 @@ router.post('/matching3', function(req, res){
                 if (finalresult[i]['score'] !== 0) {
                     if(body['partners'].length > 0) {
                         for (var j = 0; j < body['partners'].length; j++) {
+                            // finalresult[i]['score'] = Number(Math.round((parseInt(finalresult[i]['score']))*100)/100);
+                            finalresult[i]['score'] = roundNumber(finalresult[i]['score'], 2);
                             if (finalresult[i]['username'] === body['partners'][j]['username']) {
                                 finalresult[i]['exists'] = body['partners'][j]['relation'];
                             }
@@ -481,5 +483,18 @@ router.post('/matching3', function(req, res){
         res.send(newfinal);
     });
 });
+
+function roundNumber(num, scale) {
+    if(!("" + num).includes("e")) {
+        return +(Math.round(num + "e+" + scale)  + "e-" + scale);
+    } else {
+        var arr = ("" + num).split("e");
+        var sig = ""
+        if(+arr[1] + scale > 0) {
+            sig = "+";
+        }
+        return +(Math.round(+arr[0] + "e" + sig + (+arr[1] + scale)) + "e-" + scale);
+    }
+}
 
 module.exports = router;
