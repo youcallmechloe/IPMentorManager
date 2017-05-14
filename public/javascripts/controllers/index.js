@@ -385,7 +385,10 @@ angular.module('app', ['ngRoute', 'ngResource', 'ngMaterial', 'ngCookies', 'ngMd
                 $http.post('/users/addtoscore', data)
                     .then(function(response){
                         if(response.data === ""){
-                            alert("Points added to " + username + "'s score!")
+                            $scope.pointUsername = username;
+                            $scope.pointAmount = point;
+                            showAlert();
+                            // alert("Points added to " + username + "'s score!")
                         }
                     });
             };
@@ -399,6 +402,26 @@ angular.module('app', ['ngRoute', 'ngResource', 'ngMaterial', 'ngCookies', 'ngMd
                             showCustom(response.data);
                         }
                     });
+            };
+
+            var showAlert = function(){
+                $mdDialog.show({
+                    clickOutsideToClose: true,
+                    scope: $scope,
+                    preserveScope: true,
+                    template: '<md-dialog style="width: 30%;">' +
+                    '  <md-dialog-content style="color: #636363;">' +
+                    '<div class="md-dialog-content">' +
+                    '<p>{{pointAmount}} points added to {{pointUsername}}\'s score!</p>' +
+                    '</div>' +
+                    '  </md-dialog-content>' +
+                    '</md-dialog>',
+                    controller: function DialogController($scope, $mdDialog) {
+                        $scope.closeDialog = function() {
+                            $mdDialog.hide();
+                        }
+                    }
+                });
             };
 
             //method to show a popup box to a user when they click 'contact'
