@@ -52,6 +52,7 @@ angular.module('app', ['ngRoute', 'ngResource', 'ngMaterial', 'ngCookies', 'ngMd
             return userPersistenceUsername.getCookieData();
         };
 
+
         $scope.MentoringClick = function(){
             if($location.url() === "/mentor"){
                 $route.reload();

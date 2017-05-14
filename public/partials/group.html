@@ -56,13 +56,13 @@
                         <h3>{{selectedGroup.groupname}}</h3>
                         <h4>{{selectedGroup.description}}</h4>
                         <h4>Group admin is {{selectedGroup.admin}}</h4>
-                        <div layout="column" layout-align="center center" style="padding-top: 1%; padding-bottom: 3%;">
-                            <md-button ng-hide="post" ng-click="leaveGroup(selectedGroup)" style="width:120px;">Leave Group</md-button>
+                        <div ng-hide="post" layout="column" layout-align="center center" style="padding-top: 1%; padding-bottom: 3%;">
+                            <md-button ng-click="leaveGroup(selectedGroup)" style="width:120px;">Leave Group</md-button>
                         </div>
-                        <div layout="column" layout-align="center center" style="padding-top: 1%; padding-bottom: 3%;">
-                            <md-button ng-hide="post" class="md-raised md-primary" ng-click="post=true" style="width:120px;">Create Post</md-button>
+                        <div ng-hide="post" layout="column" layout-align="center center" style="padding-top: 1%; padding-bottom: 5%;">
+                            <md-button class="md-raised md-primary" ng-click="post=true" style="width:120px;">Create Post</md-button>
                         </div>
-                        <div ng-show="post">
+                        <div ng-show="post" style="padding-bottom: 5%;">
                             <md-input-container class="md-block">
                                 <label for="post">Description</label>
                                 <textarea id="post" ng-model="$parent.grouppost" placeholder="Post"  md-maxlength="150" rows="5" md-select-on-focus></textarea>
