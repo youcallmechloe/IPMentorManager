@@ -122,12 +122,12 @@ router.get('/getgroups/:id', function (req, res) {
     var groupCollection = db.get('groups');
     var body = req.params['id'];
 
-    groupCollection.find({'groupname': {'$regex' : body}}, {}, function (e, docs) {
+    Groups.find({'groupname': {'$regex' : body}}, {}, function (e, docs) {
         var categories = [];
         for (var i = 0; i < docs.length; i++) {
             categories.push(docs[i]['groupname']);
         }
-        res.json(categories);
+        res.send(categories);
     });
 });
 
