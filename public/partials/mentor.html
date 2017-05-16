@@ -29,7 +29,8 @@
                             </md-select>
                         </md-input-container>
                     <br>
-                        <md-autocomplete md-selected-item="selectedItem" md-search-text="searchText"
+                <h4 style="word-wrap: break-word; white-space: normal;">Search for knowledge areas:</h4>
+                <md-autocomplete md-selected-item="selectedItem" md-search-text="searchText"
                                          md-theme="default" md-items="item in getWords(searchText)" md-item-text="item.display"
                                          md-selected-item-change="changeCategory(selectedItem)">
                             <span>{{item}}</span>
@@ -48,7 +49,7 @@
                         <md-button md-theme="default" class="md-raised md-primary" ng-click="addWord(searchText)" style="height:35px;">Add Knowledge</md-button>
                 <br>
                 <md-switch ng-show="interests.length > 0" md-theme="default" class="md-primary" md-no-ink aria-label="Switch No Ink" ng-model="similar">
-                    <h4 style="word-wrap: break-word; white-space: normal;">Would you like the site to look for similar words to your required interests?</h4>
+                    <h4 style="word-wrap: break-word; white-space: normal;">Would you like the site to look for similar words to your required knowledge areas?</h4>
                 </md-switch>
                 <br>
                 <div style="height:100%;">

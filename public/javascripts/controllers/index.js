@@ -683,8 +683,6 @@ angular.module('app', ['ngRoute', 'ngResource', 'ngMaterial', 'ngCookies', 'ngMd
                     exists = true;
                 }
                 $scope.interests.push({'word' : word, 'category' : $scope.itemCategory, 'bool' : exists, 'score' : 1});
-                console.log(word);
-                console.log($scope.interests)
             };
 
             $scope.removeInterest = function(item){
