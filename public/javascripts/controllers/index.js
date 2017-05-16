@@ -683,6 +683,8 @@ angular.module('app', ['ngRoute', 'ngResource', 'ngMaterial', 'ngCookies', 'ngMd
                     exists = true;
                 }
                 $scope.interests.push({'word' : word, 'category' : $scope.itemCategory, 'bool' : exists, 'score' : 1});
+                console.log(word);
+                console.log($scope.interests)
             };
 
             $scope.removeInterest = function(item){
@@ -709,6 +711,8 @@ angular.module('app', ['ngRoute', 'ngResource', 'ngMaterial', 'ngCookies', 'ngMd
                             'username' : userPersistenceUsername.getCookieData(),
                             'similar' : $scope.similar,
                             'partners' : response.data};
+
+                        console.log(data);
 
                         //checks that all fields are complete and that min and max ages are correct
                         if(($scope.Gender === undefined) || ($scope.minAge === undefined) || ($scope.maxAge === undefined) || ($scope.MentorType === undefined)){

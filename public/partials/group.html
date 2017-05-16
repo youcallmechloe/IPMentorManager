@@ -62,7 +62,7 @@
                         <div ng-hide="post" layout="column" layout-align="center center" style="padding-top: 1%; padding-bottom: 5%;">
                             <md-button class="md-raised md-primary" ng-click="post=true" style="width:120px;">Create Post</md-button>
                         </div>
-                        <div ng-show="post" style="padding-bottom: 5%;">
+                        <div ng-show="post" style="padding-bottom: 7%;">
                             <md-input-container class="md-block">
                                 <label for="post">Description</label>
                                 <textarea id="post" ng-model="$parent.grouppost" placeholder="Post"  md-maxlength="150" rows="5" md-select-on-focus></textarea>
@@ -70,7 +70,7 @@
                             <md-button class="md-raised md-primary" ng-click="postGroup(selectedGroup)">Post</md-button>
                             <md-button class="sideButton" ng-click="post=false">Cancel</md-button>
                         </div>
-                        <md-list-item class="md-3-line" ng-repeat="post in selectedGroup.posts" layout-align="center">
+                        <md-list-item class="md-3-line" ng-repeat="post in selectedGroup.posts" layout-align="center" style="padding-bottom: 5%;">
                             <div class="md-list-item-text">
                                 <h3>{{post.username}}</h3>
                                 <h4> {{post.post}}</h4>

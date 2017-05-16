@@ -1,11 +1,10 @@
 <div id="wrap" ng-controller="WorkpartnerController" flex layout="row" style="height:90%; box-shadow: 0px 10px 5px 10px #888888;">
-    <md-content md-theme="default" id="groups" flex layout="column" style="width:40%;" layout-padding>
+    <md-content md-theme="default" id="groups" flex layout="column" style="padding-left: 3%;" layout-padding >
         <h1>Find a Work Partner</h1>
         <div flex layout="row" layout-padding >
-            <div layout="column" style="width:50%; padding-left: 1%;">
-                <div>
+            <div layout="column" layout-align="space-between" style="width:35%; padding-left: 1%; height:auto; overflow:auto; border: solid; border-color: #9E9E9E; border-width: 2px; border-radius: 5px;">
                     <br>
-                    <md-input-container md-theme="default" flex="50">
+                    <md-input-container md-theme="default" >
                         <label>Gender</label>
                         <md-select md-theme="default" aria-label="Gender" ng-model="Gender">
                             <md-option md-theme="default" value="Female">Female</md-option>
@@ -13,7 +12,6 @@
                             <md-option md-theme="default" value="none">No Preference</md-option>
                         </md-select>
                     </md-input-container>
-                    <br>
                     <md-input-container md-theme="default" >
                         <label>Minimum Age</label>
                         <input type="number" placeholder="Minimum Age" ng-model="minAge">
@@ -22,8 +20,6 @@
                         <label>Maximum Age</label>
                         <input type="number" placeholder="Maximum Age" ng-model="maxAge">
                     </md-input-container>
-                    <br>
-                    <div layout="row" style="padding-top: 20px; padding-bottom:20px;" layout-align="left center">
                         <h4>I'd like to find a...</h4>
                         <md-input-container md-theme="default" flex="1">
                             <label>Partner Type</label>
@@ -32,39 +28,41 @@
                                 <md-option md-theme="default" value="mentee">Mentee</md-option>
                             </md-select>
                         </md-input-container>
-                    </div>
                     <br>
-                    <div layout="row" layout-align="left center">
                         <md-autocomplete md-selected-item="selectedItem" md-search-text="searchText"
                                          md-theme="default" md-items="item in getWords(searchText)" md-item-text="item.display"
-                                         md-selected-item-change="changeCategory(selectedItem)"
-                                         style="width:100px;">
+                                         md-selected-item-change="changeCategory(selectedItem)">
                             <span>{{item}}</span>
                             <md-not-found md-theme="default" >
                                 No matches found.
                             </md-not-found>
                         </md-autocomplete>
-                        <md-input-container md-theme="default" flex="30" style="padding-left: 20px">
+                <br>
+                        <md-input-container md-theme="default" flex="30">
                             <label>Category</label>
                             <md-select md-theme="default" aria-label="Category" ng-model="itemCategory">
                                 <md-option md-theme="default" ng-repeat="option in categoryList" value="{{option}}">{{option}}</md-option>
                             </md-select>
                         </md-input-container>
+                        <br>
                         <md-button md-theme="default" class="md-raised md-primary" ng-click="addWord(searchText)" style="height:35px;">Add Knowledge</md-button>
-                    </div>
-                    <md-switch ng-show="interests.length > 0" md-theme="default" class="md-primary" md-no-ink aria-label="Switch No Ink" ng-model="similar">
-                        Would you like the site to look for similar words to your required interests?
-                    </md-switch>
-                    <md-content md-theme="default" ng-repeat="item in interests" layout="row">
+                <br>
+                <md-switch ng-show="interests.length > 0" md-theme="default" class="md-primary" md-no-ink aria-label="Switch No Ink" ng-model="similar">
+                    <h4 style="word-wrap: break-word; white-space: normal;">Would you like the site to look for similar words to your required interests?</h4>
+                </md-switch>
+                <br>
+                <div style="height:100%;">
+                    <div md-theme="default" ng-repeat="item in interests" layout="row" style="height:">
                         <h4>{{item.word}} in {{item.category}}</h4>
                         <md-button md-theme="default" class="md-icon-button md-primary" aria-label="Settings"
                                    ng-click="removeInterest(item)" style="display: block; margin: 1%;">
                             <ng-md-icon icon="clear" style="fill: #636363;" size="20"></ng-md-icon>
                         </md-button>
-                    </md-content>
-                    <md-button class="sideButton" ng-click="clear()" align="center" style="width:125px;">Clear Search</md-button>
-                    <md-button md-theme="default" class="md-raised md-primary" ng-click="match()" style="">Find Partner</md-button>
+                    </div>
                 </div>
+                 <md-button class="sideButton" ng-click="clear()" align="center">Clear Search</md-button>
+                    <md-button md-theme="default" class="md-raised md-primary" ng-click="match()" style="">Find Partner</md-button>
+                <br>
             </div>
             <div style="width:50%;" >
                 <div ng-show="fullresponse === true">
